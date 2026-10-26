@@ -200,6 +200,76 @@
       .no-print { display: none !important; }
     }
 
+    /* ===== ПЛАТФОРМЕННЫЙ БРЕНДИНГ ===== */
+    .platform-logo-wrap {
+      display: none;
+      width: 42px; height: 42px;
+      border-radius: 10px; overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid var(--primary);
+      background: white;
+      align-items: center; justify-content: center;
+    }
+    .platform-logo-wrap.active { display: inline-flex; }
+    .platform-logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
+    .platform-signature {
+      font-size: 11px; color: var(--text-muted);
+      margin-top: 4px; display: none;
+    }
+    .platform-signature.active { display: block; }
+    .platform-signature strong { color: var(--primary-dark); }
+    .platform-signature a { color: var(--primary); text-decoration: none; }
+
+    .app-footer {
+      text-align: center;
+      padding: 20px 10px 10px;
+      font-size: 12px; color: var(--text-muted);
+      margin-top: 20px;
+      border-top: 1px dashed var(--border-color);
+    }
+    .app-footer .footer-logo {
+      display: inline-block;
+      width: 24px; height: 24px;
+      vertical-align: middle;
+      border-radius: 4px; margin-right: 6px;
+      object-fit: contain;
+    }
+    .app-footer strong { color: var(--primary-dark); }
+    .app-footer a { color: var(--primary); text-decoration: none; }
+
+    .report-platform-mark {
+      display: none;
+      align-items: center; justify-content: center;
+      gap: 8px; margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-color);
+      font-size: 11px; color: var(--text-muted);
+    }
+    .report-platform-mark.active { display: flex; }
+    .report-platform-mark img {
+      width: 28px; height: 28px;
+      border-radius: 4px; object-fit: contain;
+    }
+
+    .platform-watermark {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      display: none; overflow: hidden;
+    }
+    .platform-watermark.active { display: block; }
+    .platform-watermark span {
+      position: absolute;
+      font-size: 60px; font-weight: 900;
+      color: var(--primary);
+      opacity: 0.04;
+      transform: rotate(-25deg);
+      user-select: none; white-space: nowrap;
+    }
+
+    #loginLogoWrap { display: none; margin-bottom: 12px; }
+    #loginLogoWrap img { max-height: 60px; max-width: 180px; object-fit: contain; }
+
     @media (max-width: 768px) {
       body { padding: 12px 8px; }
       .container { max-width: 100%; }
@@ -278,6 +348,10 @@
 
       .tour-tooltip { max-width: calc(100vw - 20px); }
       .tour-tooltip .tour-actions { flex-wrap: wrap; }
+
+      .platform-logo-wrap { width: 34px; height: 34px; }
+      .app-footer { font-size: 11px; padding: 16px 8px 8px; }
+      .platform-watermark span { font-size: 40px; }
     }
 
     @media (max-width: 400px) {
@@ -290,11 +364,16 @@
 </head>
 <body class="theme-chemistry">
 
+<div class="platform-watermark" id="platformWatermark"></div>
+
 <div class="container">
 
   <div id="auth-screen">
     <div class="login-card">
       <div class="login-header">
+        <div id="loginLogoWrap">
+          <img id="loginLogoImg" alt="logo">
+        </div>
         <div class="icon-badge" id="appLogoIcon">🎓</div>
         <h2 id="appTitleText">Кабинет Репетитора</h2>
         <p>Мультипредметный SaaS-сервис</p>
@@ -314,9 +393,15 @@
 
   <div id="app-screen">
     <header>
-      <div>
-        <h1><span id="headerSubjectIcon">🧪</span> <span id="headerTitle">Кабинет Репетитора</span></h1>
-        <p id="userWelcomeText">Управление расписанием</p>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="platform-logo-wrap" id="headerPlatformLogo">
+          <img id="headerPlatformLogoImg" alt="logo">
+        </div>
+        <div>
+          <h1><span id="headerSubjectIcon">🧪</span> <span id="headerTitle">Кабинет Репетитора</span></h1>
+          <p id="userWelcomeText">Управление расписанием</p>
+          <p class="platform-signature" id="platformSignature">Платформа: <strong id="platformSignatureName"></strong></p>
+        </div>
       </div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <button class="btn-action" style="background:#059669; color:white;" onclick="openCertificateModal()">📜 Сертификат</button>
@@ -654,7 +739,7 @@
               <option value="14">Каждые 2 недели</option>
             </select>
           </div>
-          <div class="form-group"><label>ДЗ (можно изменить)</label><textarea id="dupAssignedHw" rows="2" placeholder="Оставить как у исходного — по умолчанию"></textarea></div>
+          <div class="form-group"><label>ДЗ (можно изменить)</label><textarea id="dupAssignedHw" rows="2"></textarea></div>
           <div class="toggle-switch"><input type="checkbox" id="dupNotifyParent"><label for="dupNotifyParent">Уведомить родителя в TG</label></div>
           <div style="display:flex; gap:8px; margin-top:15px;">
             <button type="submit" class="btn-primary" style="flex:2; background:#6d28d9;">Создать 📋</button>
@@ -809,6 +894,10 @@
         <p id="repComment" style="font-style:italic; background:#f0f4f8; padding:8px; border-radius:4px; margin-top:4px;"></p>
         <p style="margin-top:8px; font-size:12px; color:var(--text-muted);">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></p>
       </div>
+      <div class="report-platform-mark" id="lessonReportPlatform">
+        <img id="lessonReportPlatformImg" alt="logo">
+        <span id="lessonReportPlatformText"></span>
+      </div>
       <div style="display: flex; gap: 10px; margin-top: 10px;">
         <button class="btn-action" style="flex:1;" onclick="window.print()">🖨️ Печать</button>
         <button class="btn-action tg-btn" style="flex:1; background:#0088cc; color:white;" onclick="sendLessonReportToTelegram()">✈️ В TG</button>
@@ -837,6 +926,10 @@
         <p id="pRepComment" style="background:#f0f4f8; padding:10px; border-radius:4px; font-style:italic;"></p>
         <p style="margin-top:8px; font-size:12px; color:var(--text-muted);">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></p>
       </div>
+      <div class="report-platform-mark" id="periodReportPlatform">
+        <img id="periodReportPlatformImg" alt="logo">
+        <span id="periodReportPlatformText"></span>
+      </div>
       <div style="display: flex; gap: 10px; margin-top: 10px;">
         <button class="btn-action" style="flex:1;" onclick="window.print()">🖨️ Печать</button>
         <button class="btn-action tg-btn" style="flex:1; background:#0088cc; color:white;" onclick="sendPeriodReportToTelegram()">✈️ В TG</button>
@@ -858,12 +951,21 @@
         </div>
         <div class="certificate-stamp" id="certStampText">ПРОВЕРЕНО<br>🧪<br>И СДАНО</div>
       </div>
+      <div class="report-platform-mark" id="certPlatform" style="border-top-color:#b45309; color:#78350f;">
+        <img id="certPlatformImg" alt="logo">
+        <span id="certPlatformText"></span>
+      </div>
       <div style="display: flex; gap: 10px; margin-top: 25px; position:relative; z-index:10;">
         <button class="btn-action" style="flex:1;" onclick="window.print()">🖨️ Печать</button>
         <button class="btn-action tg-btn" style="flex:1; background:#0088cc; color:white;" onclick="sendCertificateToTelegram()">✈️ В TG</button>
       </div>
     </div>
   </div>
+
+  <footer class="app-footer" id="appFooter" style="display:none;">
+    <span id="footerLogoWrap"></span>
+    <span id="footerText"></span>
+  </footer>
 </div>
 
 <script type="module">
@@ -884,6 +986,30 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // ============================================
+  // 🌟 НАСТРОЙКИ ПЛАТФОРМЫ — МЕНЯЙТЕ ЗДЕСЬ
+  // ============================================
+  const PLATFORM = {
+    // Ссылка на логотип — файл logo.png в той же папке, что index.html
+    logoUrl: "https://artyom57-cmd.github.io/cabinet/logo.png",
+
+    // Подпись — видна у ВСЕХ репетиторов в шапке и подвале
+    signature: "Сделано - Репетитор Артемий",
+
+    // Ссылка (Telegram, сайт) — сделает подпись кликабельной. Можно оставить пустой.
+    authorUrl: "",
+
+    // Текст в подвале
+    footerText: "Кабинет Репетитора",
+
+    // Показывать логотип и подпись в отчётах и сертификатах
+    showInReports: true,
+
+    // Водяные знаки на фоне (эмодзи/текст через пробел). Пусто — без знаков.
+    watermark: ""
+  };
+  // ============================================
 
   const SUBJECT_PRESETS = {
     chemistry: { title: "Химия", icon: "🧪", theme: "theme-chemistry", currency: "Колбы", currencyIcon: "🧪", bgPattern: "🧪 🔬 🧫 🧬 🧪 🔬 🧫 🧬" },
@@ -923,7 +1049,7 @@
   const TOUR_STEPS = [
     { selector: '[data-tour="schedule-form"]', title: "📅 Шаг 1: Запланируйте занятие", text: "Здесь создаются уроки. Укажите ученика, дату и повтор." },
     { selector: '[data-tour="students"]', title: "🗂️ Шаг 2: Картотека", text: "Добавьте учеников и шаблоны ДЗ. Кнопка QR — для родителя." },
-    { selector: '[data-tour="schedule"]', title: "📅 Шаг 3: Расписание", text: "Таблица / неделя / месяц. Кнопка 🖨️ печатает расписание на день. 📋 — задвоить занятие." },
+    { selector: '[data-tour="schedule"]', title: "📅 Шаг 3: Расписание", text: "Таблица / неделя / месяц. 🖨️ печатает день. 📋 — задвоить занятие." },
     { selector: '[data-tour="history"]', title: "📜 Шаг 4: История", text: "Поиск и фильтры по ученику, теме, оплате." },
     { selector: '[data-tour="settings"]', title: "⚙️ Шаг 5: Настройки", text: "Предмет, валюта, Telegram-интеграция." }
   ];
@@ -932,6 +1058,119 @@
   function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
   }
+
+  function applyPlatformBrandingUI() {
+    const p = PLATFORM;
+
+    // Логотип на экране входа
+    const loginWrap = document.getElementById('loginLogoWrap');
+    const loginImg = document.getElementById('loginLogoImg');
+    if (loginWrap && loginImg) {
+      if (p.logoUrl) {
+        loginImg.src = p.logoUrl;
+        loginWrap.style.display = 'block';
+        const badge = document.getElementById('appLogoIcon');
+        if (badge) badge.style.display = 'none';
+      }
+    }
+
+    // Логотип в шапке
+    const logoWrap = document.getElementById('headerPlatformLogo');
+    const logoImg = document.getElementById('headerPlatformLogoImg');
+    if (logoWrap && logoImg) {
+      if (p.logoUrl) {
+        logoImg.src = p.logoUrl;
+        logoWrap.classList.add('active');
+      } else {
+        logoWrap.classList.remove('active');
+      }
+    }
+
+    // Подпись в шапке
+    const sigEl = document.getElementById('platformSignature');
+    const sigName = document.getElementById('platformSignatureName');
+    if (sigEl && sigName) {
+      if (p.signature) {
+        sigEl.classList.add('active');
+        if (p.authorUrl) {
+          sigName.innerHTML = `<a href="${escapeHtml(p.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(p.signature)}</a>`;
+        } else {
+          sigName.textContent = p.signature;
+        }
+      } else {
+        sigEl.classList.remove('active');
+      }
+    }
+
+    // Подвал
+    const footer = document.getElementById('appFooter');
+    const footerLogo = document.getElementById('footerLogoWrap');
+    const footerText = document.getElementById('footerText');
+    if (footer && footerLogo && footerText) {
+      if (p.signature || p.logoUrl) {
+        footer.style.display = 'block';
+        footerLogo.innerHTML = p.logoUrl
+          ? `<img src="${escapeHtml(p.logoUrl)}" class="footer-logo" alt="logo">`
+          : '';
+        const sigHtml = p.signature
+          ? (p.authorUrl
+              ? `<a href="${escapeHtml(p.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(p.signature)}</a>`
+              : escapeHtml(p.signature))
+          : '';
+        const fText = p.footerText ? `<strong>${escapeHtml(p.footerText)}</strong>` : 'Кабинет Репетитора';
+        footerText.innerHTML = sigHtml ? `${sigHtml} · ${fText}` : fText;
+      } else {
+        footer.style.display = 'none';
+      }
+    }
+
+    // Отпечаток в отчётах и сертификате
+    const marks = [
+      { wrap: 'lessonReportPlatform', img: 'lessonReportPlatformImg', txt: 'lessonReportPlatformText' },
+      { wrap: 'periodReportPlatform', img: 'periodReportPlatformImg', txt: 'periodReportPlatformText' },
+      { wrap: 'certPlatform', img: 'certPlatformImg', txt: 'certPlatformText' }
+    ];
+    marks.forEach(({ wrap, img, txt }) => {
+      const w = document.getElementById(wrap);
+      if (!w) return;
+      if (p.showInReports && (p.logoUrl || p.signature)) {
+        w.classList.add('active');
+        const imgEl = document.getElementById(img);
+        if (p.logoUrl) imgEl.src = p.logoUrl;
+        else imgEl.style.display = 'none';
+        document.getElementById(txt).textContent = p.signature
+          ? `Сделано: ${p.signature}`
+          : (p.footerText || 'Кабинет Репетитора');
+      } else {
+        w.classList.remove('active');
+      }
+    });
+
+    // Водяные знаки
+    const wm = document.getElementById('platformWatermark');
+    if (wm) {
+      wm.innerHTML = '';
+      if (p.watermark && p.watermark.trim()) {
+        wm.classList.add('active');
+        const symbols = p.watermark.trim().split(/\s+/);
+        for (let i = 0; i < 40; i++) {
+          const span = document.createElement('span');
+          span.textContent = symbols[i % symbols.length];
+          const seed = i * 137;
+          span.style.left = ((seed * 13) % 95) + '%';
+          span.style.top = ((seed * 17) % 95) + '%';
+          span.style.fontSize = (40 + (seed % 40)) + 'px';
+          wm.appendChild(span);
+        }
+      } else {
+        wm.classList.remove('active');
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    applyPlatformBrandingUI();
+  });
 
   function notifyParentTelegram(text) {
     if (!userSettings.tgEnabled || !userSettings.tgBotToken || !userSettings.tgChatId) return;
@@ -1124,6 +1363,7 @@
     if (certPattern) certPattern.innerText = preset.bgPattern;
     const certStamp = document.getElementById('certStampText');
     if (certStamp) certStamp.innerHTML = `ПРОВЕРЕНО<br>${preset.icon}<br>И СДАНО`;
+    applyPlatformBrandingUI();
   }
 
   document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
