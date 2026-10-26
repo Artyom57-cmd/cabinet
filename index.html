@@ -2,8 +2,12 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>SaaS Кабинет Репетитора</title>
+  <link rel="manifest" href="manifest.json">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -24,7 +28,7 @@
     body.theme-russian { --primary: #7c3aed; --primary-dark: #6d28d9; }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-main); color: var(--text-dark); padding: 25px 15px; transition: background-color 0.3s ease; }
+    body { background-color: var(--bg-main); color: var(--text-dark); padding: 25px 15px; transition: background-color 0.3s ease; -webkit-text-size-adjust: 100%; }
     .container { max-width: 1100px; margin: 0 auto; }
 
     #auth-screen {
@@ -46,7 +50,7 @@
     .auth-toggle button.active { background: white; color: var(--primary); }
     .input-wrapper { margin-bottom: 16px; }
     .input-wrapper label { display: block; font-size: 11px; font-weight: 700; color: #374151; margin-bottom: 4px; text-transform: uppercase; }
-    .input-wrapper input, .input-wrapper select { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 10px; font-size: 14px; background: #f9fafb; outline: none; }
+    .input-wrapper input, .input-wrapper select { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 10px; font-size: 16px; background: #f9fafb; outline: none; }
     .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
     .error-msg { background: #fee2e2; color: #dc2626; font-size: 13px; padding: 10px; border-radius: 8px; margin-top: 15px; display: none; text-align: center; }
 
@@ -62,8 +66,8 @@
     .form-group { margin-bottom: 10px; }
     .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
-    input, select, textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; outline: none; }
-    button { padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
+    input, select, textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 16px; outline: none; }
+    button { padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; touch-action: manipulation; }
     button.btn-primary { background: var(--primary); color: white; }
     button.btn-action { background-color: #e0e7ff; color: var(--primary-dark); font-size: 12px; padding: 5px 10px; }
     button.btn-logout { background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
@@ -86,9 +90,9 @@
     .badge-draft { background-color: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 6px; }
     .badge-type { background-color: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
     .modal.active { display: flex; }
-    .modal-content { background: white; padding: 24px; border-radius: 12px; max-width: 650px; width: 95%; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: white; padding: 24px; border-radius: 12px; max-width: 650px; width: 100%; max-height: 92vh; overflow-y: auto; }
 
     .report-card { background: #ffffff; width: 100%; max-width: 650px; border: 2px solid var(--primary); border-radius: 10px; padding: 25px; color: var(--primary-dark); margin: 30px auto; display: none; }
     .report-card.active { display: block; }
@@ -122,7 +126,6 @@
     .certificate-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 35px; padding: 0 15px; position: relative; }
     .certificate-stamp { border: 3px double #b45309; border-radius: 50%; width: 90px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; color: #b45309; transform: rotate(-10deg); font-size: 10px; text-transform: uppercase; background: rgba(254, 243, 199, 0.4); box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1); }
 
-    /* ===== НОВЫЕ СТИЛИ: Календарь ===== */
     .schedule-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
     .view-tabs { display: inline-flex; background: #e0e7ff; border-radius: 8px; padding: 3px; }
     .view-tabs button { background: transparent; color: var(--primary-dark); padding: 6px 12px; font-size: 12px; border-radius: 6px; }
@@ -142,11 +145,9 @@
     .calendar-month .month-cell .day-num { font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
     .cal-lesson-mini { background: var(--primary); color: white; border-radius: 4px; padding: 2px 4px; font-size: 10px; margin-bottom: 2px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* ===== НОВЫЕ СТИЛИ: Фильтры истории ===== */
     .history-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }
-    .history-filters input, .history-filters select { font-size: 12px; padding: 6px 8px; }
+    .history-filters input, .history-filters select { font-size: 16px; padding: 6px 8px; }
 
-    /* ===== НОВЫЕ СТИЛИ: Онбординг-тур ===== */
     .tour-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 5000; }
     .tour-overlay.active { display: block; }
     .tour-tooltip {
@@ -161,17 +162,145 @@
     .tour-spotlight { position: fixed; box-shadow: 0 0 0 9999px rgba(15,23,42,0.55); border-radius: 8px; z-index: 5000; pointer-events: none; transition: all 0.3s ease; display: none; }
     .tour-spotlight.active { display: block; }
 
-    /* QR-модалка */
     .qr-modal-content { text-align: center; }
-    .qr-modal-content img { width: 260px; height: 260px; margin: 15px auto; border-radius: 10px; border: 1px solid var(--border-color); background: white; }
+    .qr-modal-content img { width: 260px; height: 260px; margin: 15px auto; border-radius: 10px; border: 1px solid var(--border-color); background: white; max-width: 100%; }
     .qr-link-box { background: #f3f4f6; border-radius: 6px; padding: 8px; font-size: 11px; word-break: break-all; margin: 10px 0; }
+
+    /* ===== ПЕЧАТЬ РАСПИСАНИЯ НА ДЕНЬ ===== */
+    .day-print-card {
+      background: white; border: 2px dashed var(--primary); border-radius: 12px;
+      padding: 16px; max-width: 400px; margin: 0 auto;
+    }
+    .day-print-header {
+      text-align: center; border-bottom: 2px solid var(--primary);
+      padding-bottom: 8px; margin-bottom: 12px;
+    }
+    .day-print-header h3 { color: var(--primary-dark); font-size: 16px; margin-bottom: 2px; }
+    .day-print-header p { color: var(--text-muted); font-size: 11px; }
+    .day-print-list { display: flex; flex-direction: column; gap: 8px; }
+    .day-print-item {
+      border: 1px solid var(--border-color); border-radius: 8px;
+      padding: 8px 10px; display: grid; grid-template-columns: 60px 1fr;
+      gap: 8px; align-items: start;
+    }
+    .day-print-item .time {
+      font-weight: 800; color: var(--primary); font-size: 15px;
+      text-align: center; border-right: 2px solid var(--border-color); padding-right: 8px;
+    }
+    .day-print-item .info .name { font-weight: 700; font-size: 14px; color: var(--text-dark); }
+    .day-print-item .info .hw { font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .day-print-item .info .hw strong { color: #d97706; }
+    .day-print-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px; }
+
+    @media print {
+      body * { visibility: hidden; }
+      #dayPrintCard, #dayPrintCard * { visibility: visible; }
+      #dayPrintCard {
+        position: absolute; left: 0; top: 0; width: 100%; max-width: none;
+        border: none; padding: 0; margin: 0;
+      }
+      .day-print-item { break-inside: avoid; }
+      .no-print { display: none !important; }
+    }
+
+    /* ============================================
+       📱 МОБИЛЬНАЯ ВЕРСИЯ
+       ============================================ */
+    @media (max-width: 768px) {
+      body { padding: 12px 8px; }
+      .container { max-width: 100%; }
+      #auth-screen { min-height: 70vh; border-radius: 12px; padding: 0 4px; }
+      .login-card { padding: 28px 20px; border-radius: 16px; }
+
+      header { margin-bottom: 16px; }
+      header h1 { font-size: 18px; }
+      #userWelcomeText { font-size: 12px; }
+      header > div:last-child { width: 100%; }
+      header button { flex: 1 1 auto; font-size: 11px; padding: 7px 8px; }
+
+      .card { padding: 14px; border-radius: 10px; margin-bottom: 14px; }
+      .card h3 { font-size: 15px; margin-bottom: 10px; }
+      .form-grid { grid-template-columns: 1fr; gap: 8px; }
+      .grid-2 { gap: 14px; }
+
+      .students-grid { grid-template-columns: 1fr; gap: 10px; }
+
+      /* Таблицы → карточки */
+      table, thead, tbody, th, td, tr { display: block; }
+      table { border: none; background: transparent; }
+      thead { display: none; }
+      tbody tr {
+        background: white; border: 1px solid var(--border-color);
+        border-radius: 10px; margin-bottom: 10px; padding: 10px 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      }
+      tbody td {
+        border: none; padding: 4px 0; font-size: 13px;
+        display: flex; justify-content: space-between; gap: 10px;
+        text-align: right;
+      }
+      tbody td::before {
+        content: attr(data-label);
+        font-weight: 700; color: var(--text-muted); font-size: 11px;
+        text-transform: uppercase; text-align: left; flex-shrink: 0;
+      }
+      tbody td:last-child { padding-top: 8px; border-top: 1px solid var(--border-color); margin-top: 6px; justify-content: flex-end; }
+      tbody td:last-child::before { content: ''; }
+      tbody td button { font-size: 12px; padding: 6px 8px; }
+
+      /* Календарь — горизонтальный скролл */
+      .calendar-week, .calendar-month {
+        display: flex; overflow-x: auto; gap: 6px;
+        -webkit-overflow-scrolling: touch; padding-bottom: 6px;
+      }
+      .calendar-week .day-col { min-width: 130px; min-height: 160px; flex-shrink: 0; }
+      .calendar-month .month-cell { min-width: 90px; min-height: 100px; flex-shrink: 0; }
+
+      .view-tabs button { padding: 6px 9px; font-size: 11px; }
+      .schedule-toolbar button { font-size: 11px; padding: 6px 8px; }
+
+      .history-filters { grid-template-columns: 1fr 1fr; }
+
+      /* Модалки на весь экран */
+      .modal { padding: 0; align-items: flex-end; }
+      .modal-content {
+        width: 100%; max-width: 100%; max-height: 94vh;
+        border-radius: 16px 16px 0 0; padding: 18px 14px;
+      }
+      .modal-content h3 { font-size: 16px; }
+
+      .form-group label { font-size: 11px; }
+      input, select, textarea { font-size: 16px; padding: 9px 10px; }
+
+      .report-card { padding: 15px; margin: 15px 0; }
+      .report-header h2 { font-size: 18px; }
+      .chart-container { height: 200px; }
+
+      .certificate-card { padding: 25px 15px; border-width: 6px; }
+      .certificate-header { font-size: 22px; letter-spacing: 2px; }
+      .certificate-recipient { font-size: 19px; padding: 0 15px 4px; }
+      .certificate-topic { font-size: 16px; }
+      .certificate-stamp { width: 70px; height: 70px; font-size: 8px; }
+      .cert-bg-overlay { font-size: 32px; }
+
+      .qr-modal-content img { width: 220px; height: 220px; }
+
+      .tour-tooltip { max-width: calc(100vw - 20px); }
+      .tour-tooltip .tour-actions { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 400px) {
+      header button { font-size: 10px; padding: 6px; }
+      .view-tabs button { padding: 5px 7px; font-size: 10px; }
+      .history-filters { grid-template-columns: 1fr; }
+      .day-print-item { grid-template-columns: 50px 1fr; }
+    }
   </style>
 </head>
 <body class="theme-chemistry">
 
 <div class="container">
 
-  <!-- ЭКРАН ВХОДА -->
   <div id="auth-screen">
     <div class="login-card">
       <div class="login-header">
@@ -184,21 +313,14 @@
         <button id="toggleRegister" onclick="switchAuthMode('register')">Регистрация</button>
       </div>
       <form id="authForm">
-        <div class="input-wrapper">
-          <label>Email</label>
-          <input type="email" id="authEmail" placeholder="teacher@example.com" required>
-        </div>
-        <div class="input-wrapper">
-          <label>Пароль</label>
-          <input type="password" id="authPassword" placeholder="••••••••" required>
-        </div>
+        <div class="input-wrapper"><label>Email</label><input type="email" id="authEmail" placeholder="teacher@example.com" required></div>
+        <div class="input-wrapper"><label>Пароль</label><input type="password" id="authPassword" placeholder="••••••••" required></div>
         <button type="submit" id="authSubmitBtn" class="btn-submit">Войти 🚀</button>
         <div class="error-msg" id="authError"></div>
       </form>
     </div>
   </div>
 
-  <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
   <div id="app-screen">
     <header>
       <div>
@@ -206,10 +328,10 @@
         <p id="userWelcomeText">Управление расписанием</p>
       </div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-        <button class="btn-action" style="background:#059669; color:white;" onclick="openCertificateModal()">📜 Выдать сертификат</button>
-        <button class="btn-action economy-field" style="background:#10b981; color:white;" onclick="openSettingsModal('shopTab')">🛍️ Настроить магазин</button>
+        <button class="btn-action" style="background:#059669; color:white;" onclick="openCertificateModal()">📜 Сертификат</button>
+        <button class="btn-action economy-field" style="background:#10b981; color:white;" onclick="openSettingsModal('shopTab')">🛍️ Магазин</button>
         <button class="btn-action" style="background:#e0e7ff;" onclick="openSettingsModal()" data-tour="settings">⚙️ Настройки</button>
-        <button class="btn-action" style="background:#fef3c7; color:#d97706;" onclick="startTour(true)">❓ Помощь</button>
+        <button class="btn-action" style="background:#fef3c7; color:#d97706;" onclick="startTour(true)">❓</button>
         <button class="btn-logout" id="logoutBtn">Выйти 🚪</button>
       </div>
     </header>
@@ -219,7 +341,7 @@
         <h3>📅 1. Запланировать занятие</h3>
         <form id="studentForm">
           <div class="form-group">
-            <label>Формат занятия</label>
+            <label>Формат</label>
             <select id="lessonFormatSelect" onchange="toggleLessonFormatFields()">
               <option value="individual">Индивидуальное</option>
               <option value="group">👥 Групповое</option>
@@ -235,10 +357,7 @@
             <select id="addGroupStudents" multiple style="height: 90px;"></select>
           </div>
           <div class="form-grid">
-            <div class="form-group">
-              <label>Дата и время</label>
-              <input type="datetime-local" id="nextLessonDate" required>
-            </div>
+            <div class="form-group"><label>Дата и время</label><input type="datetime-local" id="nextLessonDate" required></div>
             <div class="form-group">
               <label>Повтор</label>
               <select id="repeatInterval">
@@ -249,13 +368,13 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Домашнее задание</label>
+            <label>ДЗ</label>
             <select id="planHwTemplateSelect" style="margin-bottom: 5px;" onchange="applyPlanHwTemplate(this)">
               <option value="">-- Шаблон --</option>
             </select>
             <textarea id="addAssignedHw" rows="2" placeholder="Или вручную..."></textarea>
           </div>
-          <button type="submit" class="btn-primary" style="width: 100%; margin-top:5px;">Записать в расписание</button>
+          <button type="submit" class="btn-primary" style="width: 100%; margin-top:5px;">Записать</button>
         </form>
       </div>
 
@@ -270,64 +389,51 @@
             <div class="form-group"><label>С</label><input type="date" id="reportDateFrom" required></div>
             <div class="form-group"><label>ПО</label><input type="date" id="reportDateTo" required></div>
           </div>
-          <div class="form-group">
-            <label>Комментарий</label>
-            <textarea id="reportTeacherComment" rows="2" placeholder="Заметки..."></textarea>
-          </div>
+          <div class="form-group"><label>Комментарий</label><textarea id="reportTeacherComment" rows="2"></textarea></div>
           <button type="button" class="btn-primary" style="width: 100%; background: #059669;" onclick="generatePeriodReport()">Сформировать</button>
         </form>
       </div>
     </div>
 
-    <!-- КАРТОТЕКА -->
     <div class="card" data-tour="students">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3>🗂️ Картотека учеников</h3>
-        <button class="btn-primary" onclick="openStudentCardModal()">+ Добавить</button>
+        <h3>🗂️ Картотека</h3>
+        <button class="btn-primary" onclick="openStudentCardModal()">+ Ученик</button>
       </div>
       <div class="students-grid" id="studentsCardList"></div>
     </div>
 
-    <!-- РАСПИСАНИЕ: ТАБЛИЦА + КАЛЕНДАРЬ -->
     <div class="card" data-tour="schedule">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:8px;">
-        <h3>📌 Ближайшие занятия</h3>
-        <div class="view-tabs">
-          <button id="viewTableBtn" class="active" onclick="switchScheduleView('table')">📋 Таблица</button>
-          <button id="viewWeekBtn" onclick="switchScheduleView('week')">📅 Неделя</button>
-          <button id="viewMonthBtn" onclick="switchScheduleView('month')">🗓️ Месяц</button>
+        <h3>📌 Расписание</h3>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="btn-action" style="background:#8b5cf6; color:white;" onclick="openDayPrintModal()">🖨️ Печать на день</button>
+          <div class="view-tabs">
+            <button id="viewTableBtn" class="active" onclick="switchScheduleView('table')">📋 Таблица</button>
+            <button id="viewWeekBtn" onclick="switchScheduleView('week')">📅 Неделя</button>
+            <button id="viewMonthBtn" onclick="switchScheduleView('month')">🗓️ Месяц</button>
+          </div>
         </div>
       </div>
-
-      <!-- Навигация календаря -->
       <div class="schedule-toolbar" id="calendarNav" style="display:none;">
-        <button class="btn-action" onclick="navigateCalendar(-1)">◀ Назад</button>
+        <button class="btn-action" onclick="navigateCalendar(-1)">◀</button>
         <strong id="calendarLabel" style="flex:1; text-align:center; font-size:14px;"></strong>
-        <button class="btn-action" onclick="navigateCalendar(1)">Вперёд ▶</button>
+        <button class="btn-action" onclick="navigateCalendar(1)">▶</button>
         <button class="btn-action" style="background:#f3f4f6;" onclick="navigateCalendar(0)">Сегодня</button>
       </div>
-
-      <!-- Табличный вид -->
       <div id="scheduleTableView">
         <table>
-          <thead>
-            <tr>
-              <th>Дата</th><th>Ученик</th><th>Повтор</th><th>ДЗ</th><th>Действия</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Дата</th><th>Ученик</th><th>Повтор</th><th>ДЗ</th><th>Действия</th></tr></thead>
           <tbody id="upcomingTable"></tbody>
         </table>
       </div>
-
-      <!-- Календарь -->
       <div id="scheduleCalendarView" style="display:none;"></div>
     </div>
 
-    <!-- ИСТОРИЯ С ФИЛЬТРАМИ -->
     <div class="card" data-tour="history">
-      <h3>📜 История уроков</h3>
+      <h3>📜 История</h3>
       <div class="history-filters">
-        <input type="text" id="histSearch" placeholder="🔍 Поиск: ученик или тема" oninput="renderHistoryTable()">
+        <input type="text" id="histSearch" placeholder="🔍 Поиск" oninput="renderHistoryTable()">
         <select id="histTypeFilter" onchange="renderHistoryTable()">
           <option value="">Все типы</option>
           <option value="lesson">Уроки</option>
@@ -344,25 +450,45 @@
         <button class="btn-action" onclick="resetHistoryFilters()">Сброс</button>
       </div>
       <table>
-        <thead>
-          <tr>
-            <th>Дата</th><th>Ученик</th><th>Тип</th><th>Тема</th><th>Оценки</th><th>ДЗ</th><th>Действия</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Дата</th><th>Ученик</th><th>Тип</th><th>Тема</th><th>Оценки</th><th>ДЗ</th><th>Действия</th></tr></thead>
         <tbody id="historyTable"></tbody>
       </table>
     </div>
 
-    <!-- МОДАЛКИ -->
-    <!-- Сертификат -->
+    <!-- МОДАЛКА ПЕЧАТИ НА ДЕНЬ -->
+    <div class="modal" id="dayPrintModal">
+      <div class="modal-content" style="max-width: 480px;">
+        <h3 style="color:var(--primary-dark); margin-bottom:12px;" class="no-print">🖨️ Распечатка на день</h3>
+        <div class="form-group no-print">
+          <label>Дата</label>
+          <input type="date" id="dayPrintDate" onchange="renderDayPrintCard()">
+        </div>
+
+        <!-- Сама карточка для печати -->
+        <div id="dayPrintCard" class="day-print-card">
+          <div class="day-print-header">
+            <h3 id="dayPrintTitle">Расписание на сегодня</h3>
+            <p id="dayPrintSubtitle"></p>
+          </div>
+          <div class="day-print-list" id="dayPrintList"></div>
+        </div>
+
+        <div class="no-print" style="display:flex; gap:8px; margin-top:16px;">
+          <button class="btn-primary" style="flex:2;" onclick="window.print()">🖨️ Печать</button>
+          <button class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeDayPrintModal()">Отмена</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Остальные модалки (сертификат, настройки, онбординг, карточка, редактирование, перенос, отмена, завершение, история, QR) -->
     <div class="modal" id="certificateModal">
       <div class="modal-content">
         <h3 style="color:var(--primary-dark); margin-bottom:15px;">🎓 Сертификат</h3>
         <form id="certificateForm">
           <div class="form-group"><label>Ученик</label><select id="certStudentSelect" required></select></div>
           <div class="form-group"><label>ФИО преподавателя</label><input type="text" id="certTeacherName" required></div>
-          <div class="form-group"><label>Тема / модуль</label><input type="text" id="certTopic" required></div>
-          <div class="form-group"><label>Дата выдачи</label><input type="date" id="certDate" required></div>
+          <div class="form-group"><label>Тема</label><input type="text" id="certTopic" required></div>
+          <div class="form-group"><label>Дата</label><input type="date" id="certDate" required></div>
           <div style="display:flex; gap:8px; margin-top:20px;">
             <button type="button" class="btn-primary" style="flex:2;" onclick="generateCertificate()">Сформировать 📜</button>
             <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeCertificateModal()">Отмена</button>
@@ -371,7 +497,6 @@
       </div>
     </div>
 
-    <!-- Настройки -->
     <div class="modal" id="settingsModal">
       <div class="modal-content">
         <h3 style="color:var(--primary-dark); margin-bottom:15px;">⚙️ Настройки</h3>
@@ -392,10 +517,10 @@
             <div class="form-group"><label>Bot Token</label><input type="text" id="setTgBotToken"></div>
             <div class="form-group"><label>Chat ID</label><input type="text" id="setTgChatId"></div>
           </div>
-          <div class="toggle-switch"><input type="checkbox" id="setAutoMonthlyReport"><label for="setAutoMonthlyReport">Авто-отчёт 1-го числа</label></div>
+          <div class="toggle-switch"><input type="checkbox" id="setAutoMonthlyReport"><label for="setAutoMonthlyReport">Авто-отчёт</label></div>
           <hr style="margin: 15px 0;">
           <h4 style="font-size: 14px; margin-bottom: 8px;">🎮 Экономика</h4>
-          <div class="toggle-switch"><input type="checkbox" id="setEconomyEnabled"><label for="setEconomyEnabled">Включить магазин</label></div>
+          <div class="toggle-switch"><input type="checkbox" id="setEconomyEnabled"><label for="setEconomyEnabled">Магазин</label></div>
           <div class="form-grid">
             <div class="form-group"><label>Валюта</label><input type="text" id="setCurrencyName"></div>
             <div class="form-group"><label>Эмодзи</label><input type="text" id="setCurrencyIcon"></div>
@@ -417,11 +542,10 @@
       </div>
     </div>
 
-    <!-- Онбординг -->
     <div class="modal" id="onboardingModal">
       <div class="modal-content" style="max-width: 480px;">
         <h3 style="color:var(--primary-dark); text-align:center; margin-bottom:10px;">👋 Добро пожаловать!</h3>
-        <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-bottom:20px;">Настройте кабинет за 1 шаг:</p>
+        <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-bottom:20px;">Настройте кабинет:</p>
         <form id="onboardingForm">
           <div class="form-group"><label>Ваше ФИО</label><input type="text" id="onboardTeacherName" required style="padding:10px;"></div>
           <div class="form-group" style="margin-top:10px;">
@@ -432,13 +556,12 @@
               <option value="physics">⚙️ Физика</option><option value="russian">📚 Русский</option>
             </select>
           </div>
-          <div class="toggle-switch" style="margin-top:15px;"><input type="checkbox" id="onboardEconomy" checked><label for="onboardEconomy">Использовать валюту?</label></div>
+          <div class="toggle-switch" style="margin-top:15px;"><input type="checkbox" id="onboardEconomy" checked><label for="onboardEconomy">Валюта?</label></div>
           <button type="submit" class="btn-primary" style="width:100%; margin-top:20px; padding:12px;">Начать 🚀</button>
         </form>
       </div>
     </div>
 
-    <!-- Карточка ученика -->
     <div class="modal" id="studentCardModal">
       <div class="modal-content">
         <h3 style="color:var(--primary-dark); margin-bottom:15px;" id="studentCardModalTitle">Ученик</h3>
@@ -469,21 +592,16 @@
       </div>
     </div>
 
-    <!-- Редактирование урока -->
     <div class="modal" id="editModal">
       <div class="modal-content">
         <h3 style="color:var(--primary-dark); margin-bottom:15px;">✏️ Редактирование</h3>
         <form id="editLessonForm">
           <input type="hidden" id="editScheduleId">
-          <div class="form-group"><label>Имя ученика</label><input type="text" id="editStudentName" required></div>
+          <div class="form-group"><label>Ученик</label><input type="text" id="editStudentName" required></div>
           <div class="form-grid">
             <div class="form-group"><label>Дата и время</label><input type="datetime-local" id="editLessonDate" required></div>
             <div class="form-group"><label>Повтор</label>
-              <select id="editRepeatInterval">
-                <option value="7">Каждую неделю</option>
-                <option value="14">Каждые 2 недели</option>
-                <option value="0">Разовое</option>
-              </select>
+              <select id="editRepeatInterval"><option value="7">Каждую неделю</option><option value="14">Каждые 2 недели</option><option value="0">Разовое</option></select>
             </div>
           </div>
           <div class="form-group"><label>ДЗ</label><textarea id="editAssignedHw" rows="3"></textarea></div>
@@ -495,29 +613,18 @@
       </div>
     </div>
 
-    <!-- Модалка ПЕРЕНОСА -->
     <div class="modal" id="moveModal">
       <div class="modal-content" style="max-width: 480px;">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;">📅 Перенос занятия</h3>
+        <h3 style="color:var(--primary-dark); margin-bottom:15px;">📅 Перенос</h3>
         <form id="moveLessonForm">
           <input type="hidden" id="moveScheduleId">
           <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;" id="moveLessonInfo"></p>
-          <div class="form-group">
-            <label>Новая дата и время</label>
-            <input type="datetime-local" id="moveNewDateTime" required>
+          <div class="form-group"><label>Новая дата и время</label><input type="datetime-local" id="moveNewDateTime" required></div>
+          <div class="form-group"><label>Что переносим?</label>
+            <select id="moveScope"><option value="single">Только это</option><option value="series">Всю серию</option></select>
           </div>
-          <div class="form-group">
-            <label>Что переносим?</label>
-            <select id="moveScope">
-              <option value="single">Только это занятие</option>
-              <option value="series">Всю серию (все повторяющиеся)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Причина переноса (необязательно)</label>
-            <textarea id="moveReason" rows="2" placeholder="Болезнь, поездка..."></textarea>
-          </div>
-          <div class="toggle-switch"><input type="checkbox" id="moveNotifyParent"><label for="moveNotifyParent">Уведомить родителя в TG</label></div>
+          <div class="form-group"><label>Причина</label><textarea id="moveReason" rows="2"></textarea></div>
+          <div class="toggle-switch"><input type="checkbox" id="moveNotifyParent"><label for="moveNotifyParent">Уведомить в TG</label></div>
           <div style="display:flex; gap:8px; margin-top:15px;">
             <button type="submit" class="btn-primary" style="flex:2;">Перенести 📅</button>
             <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeMoveModal()">Отмена</button>
@@ -526,25 +633,17 @@
       </div>
     </div>
 
-    <!-- Модалка ОТМЕНЫ -->
     <div class="modal" id="cancelModal">
       <div class="modal-content" style="max-width: 480px;">
-        <h3 style="color:#dc2626; margin-bottom:15px;">❌ Отмена занятия</h3>
+        <h3 style="color:#dc2626; margin-bottom:15px;">❌ Отмена</h3>
         <form id="cancelLessonForm">
           <input type="hidden" id="cancelScheduleId">
           <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;" id="cancelLessonInfo"></p>
-          <div class="form-group">
-            <label>Что отменяем?</label>
-            <select id="cancelScope">
-              <option value="single">Только это занятие</option>
-              <option value="series">Всю серию</option>
-            </select>
+          <div class="form-group"><label>Что отменяем?</label>
+            <select id="cancelScope"><option value="single">Только это</option><option value="series">Всю серию</option></select>
           </div>
-          <div class="form-group">
-            <label>Причина отмены</label>
-            <textarea id="cancelReason" rows="2" placeholder="Болезнь, праздник..." required></textarea>
-          </div>
-          <div class="toggle-switch"><input type="checkbox" id="cancelNotifyParent" checked><label for="cancelNotifyParent">Уведомить родителя в TG</label></div>
+          <div class="form-group"><label>Причина</label><textarea id="cancelReason" rows="2" required></textarea></div>
+          <div class="toggle-switch"><input type="checkbox" id="cancelNotifyParent" checked><label for="cancelNotifyParent">Уведомить в TG</label></div>
           <div style="display:flex; gap:8px; margin-top:15px;">
             <button type="submit" class="btn-primary" style="flex:2; background:#dc2626;">Отменить ❌</button>
             <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeCancelModal()">Назад</button>
@@ -553,21 +652,16 @@
       </div>
     </div>
 
-    <!-- Завершение урока -->
     <div class="modal" id="completeModal">
       <div class="modal-content">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;"><span id="completeModalTitle">Проведение урока</span>: <span id="mStudentName"></span></h3>
+        <h3 style="color:var(--primary-dark); margin-bottom:15px;"><span id="completeModalTitle">Урок</span>: <span id="mStudentName"></span></h3>
         <form id="completeLessonForm">
-          <input type="hidden" id="mScheduleId">
-          <input type="hidden" id="mStudent">
-          <input type="hidden" id="mDate">
-          <input type="hidden" id="mRepeat">
+          <input type="hidden" id="mScheduleId"><input type="hidden" id="mStudent"><input type="hidden" id="mDate"><input type="hidden" id="mRepeat">
           <div style="display:flex; flex-direction:column; gap:10px;">
             <div class="form-group">
-              <label>Тип занятия</label>
+              <label>Тип</label>
               <select id="mLessonTypeSelect" onchange="toggleCompleteModalFields(this.value)">
-                <option value="lesson">Обычный урок</option>
-                <option value="exam">🎓 Зачёт</option>
+                <option value="lesson">Урок</option><option value="exam">🎓 Зачёт</option>
               </select>
             </div>
             <div class="form-group"><label>Тема</label><input type="text" id="mTopic" required></div>
@@ -579,18 +673,18 @@
             <div id="standardLessonFields">
               <div class="form-grid">
                 <div class="form-group"><label>Опрос</label><input type="text" id="mPollGrade"></div>
-                <div class="form-group"><label>Работа на уроке</label><input type="text" id="mLessonGrade"></div>
+                <div class="form-group"><label>Работа</label><input type="text" id="mLessonGrade"></div>
               </div>
               <div class="form-group economy-field" style="background: #e0e7ff; padding: 10px; border-radius: 6px; border: 1px solid var(--primary);">
                 <label style="color:var(--primary-dark); font-weight:bold;"><span class="currency-icon">🧪</span> Баллы:</label>
                 <div style="display:flex; gap: 8px; margin-top: 4px;">
                   <input type="number" id="mFlasksChange" placeholder="0" style="flex:1;">
                   <select id="mFlasksReason" style="flex:2;">
-                    <option value="ДЗ вовремя (+3)">ДЗ вовремя (+3)</option>
-                    <option value="Идеальное ДЗ (+15)">Идеальное ДЗ (+15)</option>
+                    <option value="ДЗ (+3)">ДЗ вовремя (+3)</option>
+                    <option value="Идеал (+15)">Идеал (+15)</option>
                     <option value="Активность (+5)">Активность (+5)</option>
                     <option value="Просрочка (-10)">Просрочка (-10)</option>
-                    <option value="Свой вариант">Свой</option>
+                    <option value="Свой">Свой</option>
                   </select>
                 </div>
               </div>
@@ -599,7 +693,7 @@
                 <div class="hw-list" id="modalHwList"></div>
               </div>
               <div class="form-grid">
-                <div class="form-group"><label>Оценка за ДЗ</label><input type="text" id="mHwGrade" style="font-weight:bold; text-align:center;"></div>
+                <div class="form-group"><label>Оценка ДЗ</label><input type="text" id="mHwGrade" style="font-weight:bold; text-align:center;"></div>
                 <div class="form-group"><label>Итоговая</label><input type="text" id="mTotalGrade" style="font-weight:bold; text-align:center;"></div>
               </div>
             </div>
@@ -607,10 +701,8 @@
               <select id="mPaidStatus"><option value="Оплачено">Оплачено ✅</option><option value="Не оплачено">Долг ❌</option></select>
             </div>
             <div class="form-group" style="background: #eef2f7; padding: 10px; border-radius: 6px; border: 1px dashed var(--primary-dark);">
-              <label style="color:var(--primary-dark); font-weight:bold;">📝 ДЗ на следующий урок:</label>
-              <select id="completeHwTemplateSelect" style="margin-bottom: 5px;" onchange="applyCompleteHwTemplate(this)">
-                <option value="">-- Шаблон --</option>
-              </select>
+              <label style="color:var(--primary-dark); font-weight:bold;">📝 ДЗ на след. урок:</label>
+              <select id="completeHwTemplateSelect" style="margin-bottom: 5px;" onchange="applyCompleteHwTemplate(this)"><option value="">-- Шаблон --</option></select>
               <textarea id="mNextHw" rows="2"></textarea>
             </div>
             <div class="form-group"><label>Комментарий</label><textarea id="mComment"></textarea></div>
@@ -624,13 +716,11 @@
       </div>
     </div>
 
-    <!-- Редактирование истории -->
     <div class="modal" id="editHistoryModal">
       <div class="modal-content">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;">✏️ Редактирование урока</h3>
+        <h3 style="color:var(--primary-dark); margin-bottom:15px;">✏️ Редактирование</h3>
         <form id="editHistoryForm">
-          <input type="hidden" id="ehHistoryId">
-          <input type="hidden" id="ehStudentId">
+          <input type="hidden" id="ehHistoryId"><input type="hidden" id="ehStudentId">
           <div class="form-grid">
             <div class="form-group"><label>Ученик</label><input type="text" id="ehStudentName" disabled style="background:#e5e7eb;"></div>
             <div class="form-group"><label>Дата</label><input type="text" id="ehDate" required></div>
@@ -640,8 +730,7 @@
             <div class="form-group"><label>Опрос</label><input type="text" id="ehPollGrade"></div>
             <div class="form-group"><label>Работа</label><input type="text" id="ehLessonGrade"></div>
           </div>
-          <div class="form-group">
-            <label style="font-weight:bold; color:var(--primary-dark);">ДЗ:</label>
+          <div class="form-group"><label style="font-weight:bold; color:var(--primary-dark);">ДЗ:</label>
             <div class="hw-list" id="editHistoryHwList"></div>
           </div>
           <div class="form-grid">
@@ -658,10 +747,9 @@
       </div>
     </div>
 
-    <!-- QR-код родителя -->
     <div class="modal" id="qrModal">
       <div class="modal-content qr-modal-content" style="max-width: 420px;">
-        <h3 style="color:var(--primary-dark); margin-bottom:8px;" id="qrTitle">📱 QR-код для родителя</h3>
+        <h3 style="color:var(--primary-dark); margin-bottom:8px;" id="qrTitle">📱 QR</h3>
         <p style="font-size:13px; color:var(--text-muted);" id="qrSubtitle"></p>
         <img id="qrImage" alt="QR" crossorigin="anonymous">
         <div class="qr-link-box" id="qrLinkBox"></div>
@@ -672,7 +760,6 @@
       </div>
     </div>
 
-    <!-- Онбординг-тур -->
     <div class="tour-overlay" id="tourOverlay"></div>
     <div class="tour-spotlight" id="tourSpotlight"></div>
     <div class="tour-tooltip" id="tourTooltip">
@@ -687,7 +774,6 @@
       </div>
     </div>
 
-    <!-- Отчёты и сертификат -->
     <div class="report-card" id="lessonReportCard">
       <div class="report-header"><h2>Отчёт родителю</h2></div>
       <div class="report-section">
@@ -726,7 +812,7 @@
       <div class="report-section">
         <div class="report-section-title">Сводка</div>
         <div class="stat-box"><span>Занятий:</span><strong id="pRepLessonsCount">0</strong></div>
-        <div class="stat-box"><span>Выполнение ДЗ:</span><strong id="pRepHwPercent">0%</strong></div>
+        <div class="stat-box"><span>ДЗ:</span><strong id="pRepHwPercent">0%</strong></div>
         <div class="stat-box"><span>Оценки за ДЗ:</span><strong id="pRepHwGradesList">-</strong></div>
         <div class="stat-box"><span>Итоговые:</span><strong id="pRepGradesList">-</strong></div>
       </div>
@@ -751,15 +837,12 @@
       <div class="certificate-sub">об успешном прохождении модуля</div>
       <div class="cert-icon-center" id="certCenterIcon">🧪</div>
       <p style="font-size: 14px; color: #78350f; margin-top: 10px;">Настоящий сертификат подтверждает, что</p>
-      <div class="certificate-recipient" id="certRenderName">Иван Иванов</div>
-      <div class="certificate-body">
-        успешно освоил(а) программу по теме:<br>
-        <span class="certificate-topic" id="certRenderTopic">«Органическая химия»</span>
-      </div>
+      <div class="certificate-recipient" id="certRenderName">Иван</div>
+      <div class="certificate-body">успешно освоил(а) программу по теме:<br><span class="certificate-topic" id="certRenderTopic">«Тема»</span></div>
       <div class="certificate-footer">
         <div style="text-align: left;">
           <p style="font-size: 12px; color: #78350f;">Дата: <strong id="certRenderDate">01.09.2026</strong></p>
-          <p style="font-size: 13px; color: #78350f; margin-top: 6px;">Преподаватель: <strong id="certRenderTeacher">Мария Сергеевна</strong></p>
+          <p style="font-size: 13px; color: #78350f; margin-top: 6px;">Преподаватель: <strong id="certRenderTeacher">Репетитор</strong></p>
         </div>
         <div class="certificate-stamp" id="certStampText">ПРОВЕРЕНО<br>🧪<br>И СДАНО</div>
       </div>
@@ -774,7 +857,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where, setDoc, updateDoc, getDoc, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where, setDoc, updateDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAHxz8YoyHn5QK-ekR9Q1aS9KfatAbe3Go",
@@ -800,12 +883,9 @@
   };
 
   const defaultShopItems = [
-    { title: "Пропуск опроса", price: 10 },
-    { title: "Перенос ДЗ", price: 30 },
-    { title: "Шпаргалка", price: 40 },
-    { title: "Иммунитет", price: 50 },
-    { title: "Решение от шефа", price: 70 },
-    { title: "Консультация", price: 150 },
+    { title: "Пропуск опроса", price: 10 }, { title: "Перенос ДЗ", price: 30 },
+    { title: "Шпаргалка", price: 40 }, { title: "Иммунитет", price: 50 },
+    { title: "Решение от шефа", price: 70 }, { title: "Консультация", price: 150 },
     { title: "Подарок", price: 200 }
   ];
 
@@ -825,22 +905,18 @@
   let studentsMap = {};
   let currentCardTemplates = [];
   let periodChartInstance = null;
-
-  // ==== Календарь ====
-  let scheduleView = 'table'; // 'table' | 'week' | 'month'
+  let scheduleView = 'table';
   let calendarCursor = new Date();
 
-  // ==== Онбординг-тур ====
   const TOUR_STEPS = [
-    { selector: '[data-tour="schedule-form"]', title: "📅 Шаг 1: Запланируйте занятие", text: "Здесь вы создаёте уроки. Можно указать ученика, дату и повтор (например, каждую неделю)." },
-    { selector: '[data-tour="students"]', title: "🗂️ Шаг 2: Картотека учеников", text: "Добавьте учеников, задайте цель, контакты родителя и шаблоны ДЗ. Здесь же — кнопка QR-кода для родителя." },
-    { selector: '[data-tour="schedule"]', title: "📅 Шаг 3: Расписание", text: "Переключайте вид: таблица, неделя или месяц. Клик по занятию в календаре — быстрый переход к завершению." },
-    { selector: '[data-tour="history"]', title: "📜 Шаг 4: История и фильтры", text: "Ищите уроки по ученику, теме, типу и статусу оплаты. Фильтры помогают быстро найти нужную запись." },
-    { selector: '[data-tour="settings"]', title: "⚙️ Шаг 5: Настройки", text: "Выберите предмет, настройте валюту, магазин и интеграцию с Telegram для отправки отчётов." }
+    { selector: '[data-tour="schedule-form"]', title: "📅 Шаг 1: Запланируйте занятие", text: "Здесь создаются уроки. Укажите ученика, дату и повтор." },
+    { selector: '[data-tour="students"]', title: "🗂️ Шаг 2: Картотека", text: "Добавьте учеников и шаблоны ДЗ. Кнопка QR — для родителя." },
+    { selector: '[data-tour="schedule"]', title: "📅 Шаг 3: Расписание", text: "Таблица / неделя / месяц. Кнопка 🖨️ печатает расписание на день." },
+    { selector: '[data-tour="history"]', title: "📜 Шаг 4: История", text: "Поиск и фильтры по ученику, теме, оплате." },
+    { selector: '[data-tour="settings"]', title: "⚙️ Шаг 5: Настройки", text: "Предмет, валюта, Telegram-интеграция." }
   ];
   let tourIndex = 0;
 
-  // ==================== УТИЛИТЫ ====================
   function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
   }
@@ -848,16 +924,14 @@
   function notifyParentTelegram(text) {
     if (!userSettings.tgEnabled || !userSettings.tgBotToken || !userSettings.tgChatId) return;
     fetch(`https://api.telegram.org/bot${userSettings.tgBotToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: userSettings.tgChatId, text, parse_mode: 'HTML' })
     }).catch(e => console.error(e));
   }
 
   async function sendElementAsPhotoToTelegram(elementId, captionText) {
     if (!userSettings.tgEnabled || !userSettings.tgChatId || !userSettings.tgBotToken) {
-      alert('Отправка в TG выключена или не введены токены в настройках!');
-      return;
+      alert('TG выключен или нет токенов!'); return;
     }
     const element = document.getElementById(elementId);
     if (!element) return;
@@ -871,17 +945,64 @@
         formData.append('parse_mode', 'HTML');
         const response = await fetch(`https://api.telegram.org/bot${userSettings.tgBotToken}/sendPhoto`, { method: 'POST', body: formData });
         const result = await response.json();
-        if (result.ok) alert('Успешно отправлено в TG! ✈️');
-        else alert('Ошибка Telegram API: ' + result.description);
+        if (result.ok) alert('Отправлено! ✈️'); else alert('Ошибка: ' + result.description);
       }, 'image/png');
-    } catch (err) {
-      alert('Ошибка при создании изображения: ' + err.message);
-    }
+    } catch (err) { alert('Ошибка: ' + err.message); }
   }
 
   window.sendLessonReportToTelegram = () => sendElementAsPhotoToTelegram('lessonReportCard', `🎓 Отчёт: ${document.getElementById('repStudent').innerText}`);
-  window.sendPeriodReportToTelegram = () => sendElementAsPhotoToTelegram('periodReportCard', `📊 Отчёт за период: ${document.getElementById('pRepStudent').innerText}`);
+  window.sendPeriodReportToTelegram = () => sendElementAsPhotoToTelegram('periodReportCard', `📊 Период: ${document.getElementById('pRepStudent').innerText}`);
   window.sendCertificateToTelegram = () => sendElementAsPhotoToTelegram('certificateDisplayCard', `📜 Сертификат: ${document.getElementById('certRenderName').innerText}`);
+
+  // ==================== ПЕЧАТЬ НА ДЕНЬ ====================
+  window.openDayPrintModal = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    document.getElementById('dayPrintDate').value = today;
+    renderDayPrintCard();
+    document.getElementById('dayPrintModal').classList.add('active');
+  };
+  window.closeDayPrintModal = () => document.getElementById('dayPrintModal').classList.remove('active');
+
+  window.renderDayPrintCard = () => {
+    const dateVal = document.getElementById('dayPrintDate').value;
+    if (!dateVal) return;
+    const target = new Date(dateVal);
+    const targetStr = target.toDateString();
+
+    const lessons = getScheduleItems().filter(item => {
+      const d = new Date(item.data.dateTime);
+      return d.toDateString() === targetStr;
+    });
+
+    const monthNames = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    const dayNames = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+    const todayStr = new Date().toDateString();
+    document.getElementById('dayPrintTitle').innerText = targetStr === todayStr ? '📌 Расписание на сегодня' : '📌 Расписание';
+    document.getElementById('dayPrintSubtitle').innerText = `${dayNames[target.getDay()]}, ${target.getDate()} ${monthNames[target.getMonth()]} ${target.getFullYear()}`;
+
+    const list = document.getElementById('dayPrintList');
+    list.innerHTML = '';
+    if (lessons.length === 0) {
+      list.innerHTML = '<div class="day-print-empty">Занятий нет 🎉</div>';
+      return;
+    }
+    lessons.sort((a, b) => new Date(a.data.dateTime) - new Date(b.data.dateTime));
+    lessons.forEach(item => {
+      const t = new Date(item.data.dateTime);
+      const time = t.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+      const hw = item.data.assignedHw || '—';
+      const div = document.createElement('div');
+      div.className = 'day-print-item';
+      div.innerHTML = `
+        <div class="time">${time}</div>
+        <div class="info">
+          <div class="name">${escapeHtml(item.data.studentName)}</div>
+          <div class="hw"><strong>Проверить ДЗ:</strong> ${escapeHtml(hw)}</div>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  };
 
   // ==================== AUTH ====================
   window.switchAuthMode = (mode) => {
@@ -890,13 +1011,8 @@
     const btnReg = document.getElementById('toggleRegister');
     const submitBtn = document.getElementById('authSubmitBtn');
     document.getElementById('authError').style.display = 'none';
-    if (mode === 'login') {
-      btnLogin.classList.add('active'); btnReg.classList.remove('active');
-      submitBtn.innerText = 'Войти 🚀';
-    } else {
-      btnReg.classList.add('active'); btnLogin.classList.remove('active');
-      submitBtn.innerText = 'Зарегистрироваться ✨';
-    }
+    if (mode === 'login') { btnLogin.classList.add('active'); btnReg.classList.remove('active'); submitBtn.innerText = 'Войти 🚀'; }
+    else { btnReg.classList.add('active'); btnLogin.classList.remove('active'); submitBtn.innerText = 'Зарегистрироваться ✨'; }
   };
 
   onAuthStateChanged(auth, async (user) => {
@@ -948,11 +1064,10 @@
         let totalHw = 0, doneHw = 0;
         filtered.forEach(h => { if (h.hwItems) h.hwItems.forEach(i => { totalHw++; if (i.status === 'done') doneHw++; }); });
         const hwPercent = totalHw > 0 ? Math.round((doneHw / totalHw) * 100) : 100;
-        const reportText = `📅 <b>Ежемесячный отчёт</b>\n<b>Ученик:</b> ${escapeHtml(student.name)}\n<b>Период:</b> ${firstDayLastMonth} — ${lastDayLastMonth}\n<b>Уроков:</b> ${filtered.length}\n<b>ДЗ:</b> ${hwPercent}%`;
         try {
           await fetch(`https://api.telegram.org/bot${userSettings.tgBotToken}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: userSettings.tgChatId, text: reportText, parse_mode: 'HTML' })
+            body: JSON.stringify({ chat_id: userSettings.tgChatId, text: `📅 <b>Отчёт</b>\n<b>Ученик:</b> ${escapeHtml(student.name)}\n<b>Уроков:</b> ${filtered.length}\n<b>ДЗ:</b> ${hwPercent}%`, parse_mode: 'HTML' })
           });
         } catch(e) { console.error(e); }
       }
@@ -971,8 +1086,7 @@
       else await createUserWithEmailAndPassword(auth, email, password);
     } catch (err) {
       errorMsg.style.display = 'block';
-      errorMsg.innerText = err.message.includes('email-already-in-use')
-        ? 'Email уже зарегистрирован!'
+      errorMsg.innerText = err.message.includes('email-already-in-use') ? 'Email уже есть!'
         : (err.message.includes('weak-password') ? 'Пароль минимум 6 символов!' : 'Ошибка входа!');
     }
   });
@@ -1015,19 +1129,16 @@
     const subKey = document.getElementById('onboardSubject').value;
     const econ = document.getElementById('onboardEconomy').checked;
     const preset = SUBJECT_PRESETS[subKey];
-    const initialData = {
+    await setDoc(doc(db, "users", currentUserId), {
       teacherName: tName || "Репетитор", subject: subKey,
       tgEnabled: true, tgBotToken: "", tgChatId: "", autoMonthlyReport: true,
       economyEnabled: econ, currencyName: preset.currency, currencyIcon: preset.currencyIcon,
       shopItems: defaultShopItems
-    };
-    await setDoc(doc(db, "users", currentUserId), initialData);
+    });
     document.getElementById('onboardingModal').classList.remove('active');
-    // Запуск онбординг-тура после регистрации
     setTimeout(() => startTour(false), 500);
   });
 
-  // ==================== НАСТРОЙКИ ====================
   window.openSettingsModal = (scrollTo = null) => {
     document.getElementById('setTeacherName').value = userSettings.teacherName || '';
     document.getElementById('setSubject').value = userSettings.subject || 'chemistry';
@@ -1048,10 +1159,7 @@
   window.closeSettingsModal = () => document.getElementById('settingsModal').classList.remove('active');
   window.onSubjectChange = (val) => {
     const preset = SUBJECT_PRESETS[val];
-    if (preset) {
-      document.getElementById('setCurrencyName').value = preset.currency;
-      document.getElementById('setCurrencyIcon').value = preset.currencyIcon;
-    }
+    if (preset) { document.getElementById('setCurrencyName').value = preset.currency; document.getElementById('setCurrencyIcon').value = preset.currencyIcon; }
   };
   function renderShopEditRows(items) {
     const list = document.getElementById('shopEditList');
@@ -1059,11 +1167,7 @@
     items.forEach(item => {
       const row = document.createElement('div');
       row.className = 'shop-edit-row';
-      row.innerHTML = `
-        <input type="text" class="shop-item-title" value="${escapeHtml(item.title)}" placeholder="Название" required>
-        <input type="number" class="shop-item-price" value="${item.price}" placeholder="Цена" min="0" required>
-        <button type="button" onclick="removeShopEditRow(this)">🗑️</button>
-      `;
+      row.innerHTML = `<input type="text" class="shop-item-title" value="${escapeHtml(item.title)}" placeholder="Название" required><input type="number" class="shop-item-price" value="${item.price}" placeholder="Цена" min="0" required><button type="button" onclick="removeShopEditRow(this)">🗑️</button>`;
       list.appendChild(row);
     });
   }
@@ -1075,9 +1179,7 @@
     list.appendChild(row);
   };
   window.removeShopEditRow = (btn) => { const row = btn.closest('.shop-edit-row'); if (row) row.remove(); };
-  window.resetShopItemsToDefault = () => {
-    if (confirm("Сбросить магазин?")) renderShopEditRows(defaultShopItems);
-  };
+  window.resetShopItemsToDefault = () => { if (confirm("Сбросить?")) renderShopEditRows(defaultShopItems); };
 
   document.getElementById('settingsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1088,26 +1190,24 @@
       const price = parseInt(row.querySelector('.shop-item-price').value) || 0;
       if (title) updatedShopItems.push({ title, price });
     });
-    const newData = {
-      teacherName: document.getElementById('setTeacherName').value.trim(),
-      subject: document.getElementById('setSubject').value,
-      tgEnabled: document.getElementById('setTgEnabled').checked,
-      tgBotToken: document.getElementById('setTgBotToken').value.trim(),
-      tgChatId: document.getElementById('setTgChatId').value.trim(),
-      autoMonthlyReport: document.getElementById('setAutoMonthlyReport').checked,
-      economyEnabled: document.getElementById('setEconomyEnabled').checked,
-      currencyName: document.getElementById('setCurrencyName').value.trim(),
-      currencyIcon: document.getElementById('setCurrencyIcon').value.trim(),
-      shopItems: updatedShopItems
-    };
     try {
-      await setDoc(doc(db, "users", currentUserId), newData, { merge: true });
+      await setDoc(doc(db, "users", currentUserId), {
+        teacherName: document.getElementById('setTeacherName').value.trim(),
+        subject: document.getElementById('setSubject').value,
+        tgEnabled: document.getElementById('setTgEnabled').checked,
+        tgBotToken: document.getElementById('setTgBotToken').value.trim(),
+        tgChatId: document.getElementById('setTgChatId').value.trim(),
+        autoMonthlyReport: document.getElementById('setAutoMonthlyReport').checked,
+        economyEnabled: document.getElementById('setEconomyEnabled').checked,
+        currencyName: document.getElementById('setCurrencyName').value.trim(),
+        currencyIcon: document.getElementById('setCurrencyIcon').value.trim(),
+        shopItems: updatedShopItems
+      }, { merge: true });
       closeSettingsModal();
-      alert("Настройки обновлены! 💾");
+      alert("Сохранено! 💾");
     } catch (err) { alert("Ошибка: " + err.message); }
   });
 
-  // ==================== ФОРМА ЗАНЯТИЯ ====================
   window.toggleLessonFormatFields = () => {
     const format = document.getElementById('lessonFormatSelect').value;
     if (format === 'group') {
@@ -1148,19 +1248,13 @@
     card.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // ==================== ИНИЦИАЛИЗАЦИЯ ====================
   function initApp() {
     const modalHwList = document.getElementById('modalHwList');
     modalHwList.innerHTML = '';
     for (let i = 1; i <= 8; i++) {
       const div = document.createElement('div');
       div.className = 'hw-item';
-      div.innerHTML = `
-        <select class="status-select" onchange="window.updateRowStatus(this)">
-          <option value="none">⚪</option><option value="done">✅</option><option value="fail">❌</option>
-        </select>
-        <input type="text" class="hw-text-input" placeholder="Пункт ДЗ №${i}">
-      `;
+      div.innerHTML = `<select class="status-select" onchange="window.updateRowStatus(this)"><option value="none">⚪</option><option value="done">✅</option><option value="fail">❌</option></select><input type="text" class="hw-text-input" placeholder="Пункт ДЗ №${i}">`;
       modalHwList.appendChild(div);
     }
     const editHistoryHwList = document.getElementById('editHistoryHwList');
@@ -1168,12 +1262,7 @@
     for (let i = 1; i <= 8; i++) {
       const div = document.createElement('div');
       div.className = 'hw-item';
-      div.innerHTML = `
-        <select class="status-select" onchange="window.updateRowStatus(this)">
-          <option value="none">⚪</option><option value="done">✅</option><option value="fail">❌</option>
-        </select>
-        <input type="text" class="hw-text-input" placeholder="Пункт ДЗ №${i}">
-      `;
+      div.innerHTML = `<select class="status-select" onchange="window.updateRowStatus(this)"><option value="none">⚪</option><option value="done">✅</option><option value="fail">❌</option></select><input type="text" class="hw-text-input" placeholder="Пункт ДЗ №${i}">`;
       editHistoryHwList.appendChild(div);
     }
 
@@ -1229,9 +1318,18 @@
       renderStudentsCards();
       renderHistoryTable();
     });
+
+    setTimeout(() => {
+      const key = `tourDone_${currentUserId}`;
+      if (!localStorage.getItem(key)) startTour(false);
+    }, 1500);
+
+    // Регистрация service worker для PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(e => console.log('SW not registered:', e));
+    }
   }
 
-  // ==================== КАРТОЧКИ УЧЕНИКОВ ====================
   function renderStudentsCards() {
     const container = document.getElementById('studentsCardList');
     container.innerHTML = '';
@@ -1266,7 +1364,7 @@
           📊 Уроков: <strong>${totalLessons}</strong> | ДЗ: <strong>${hwPercent}%</strong> | Ср. оценка: <strong>${avgHwGrade}</strong>
         </div>
         <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:8px;">
-          <button class="btn-action" onclick="openStudentCardModal('${sId}')">✏️ Редакт.</button>
+          <button class="btn-action" onclick="openStudentCardModal('${sId}')">✏️</button>
           <button class="btn-action" style="background:#10b981; color:white;" onclick="openQrModal('${sId}', '${escapeHtml(s.name)}')">📱 QR</button>
           <button class="btn-action" style="color:#ef4444; background:#fee2e2;" onclick="deleteStudentCard('${sId}', '${escapeHtml(s.name)}')">🗑️</button>
         </div>
@@ -1277,16 +1375,15 @@
   }
 
   window.deleteStudentCard = async (studentId, studentName) => {
-    if (confirm(`Удалить ученика "${studentName}"?`)) {
+    if (confirm(`Удалить "${studentName}"?`)) {
       try { await deleteDoc(doc(db, "students", studentId)); } catch (err) { alert("Ошибка: " + err.message); }
     }
   };
 
-  // ==================== QR-КОД ====================
   window.openQrModal = (studentId, studentName) => {
     const link = `https://artyom57-cmd.github.io/cabinet/parent.html?id=${studentId}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(link)}`;
-    document.getElementById('qrTitle').innerText = `📱 QR-код для родителя`;
+    document.getElementById('qrTitle').innerText = `📱 QR для родителя`;
     document.getElementById('qrSubtitle').innerText = `Ученик: ${studentName}`;
     document.getElementById('qrImage').src = qrUrl;
     document.getElementById('qrLinkBox').innerText = link;
@@ -1296,7 +1393,7 @@
   };
   window.closeQrModal = () => document.getElementById('qrModal').classList.remove('active');
 
-  // ==================== РАСПИСАНИЕ: 3 ВИДА ====================
+  // ==================== РАСПИСАНИЕ ====================
   window.switchScheduleView = (view) => {
     scheduleView = view;
     document.getElementById('viewTableBtn').classList.toggle('active', view === 'table');
@@ -1319,6 +1416,7 @@
     if (scheduleView === 'table') renderScheduleTable();
     else if (scheduleView === 'week') renderWeekView();
     else renderMonthView();
+    if (document.getElementById('dayPrintModal').classList.contains('active')) renderDayPrintCard();
   }
 
   function getScheduleItems() {
@@ -1339,11 +1437,11 @@
       const repeatText = data.repeatDays == 7 ? 'Каждую неделю' : (data.repeatDays == 14 ? 'Каждые 2 недели' : 'Разовое');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><strong>${formattedDate}</strong></td>
-        <td><strong>${escapeHtml(data.studentName)}</strong> ${hasDraft ? '<span class="badge-draft">📝 Черновик</span>' : ''}</td>
-        <td>${repeatText}</td>
-        <td><small>${escapeHtml(data.assignedHw || '—')}</small></td>
-        <td>
+        <td data-label="Дата"><strong>${formattedDate}</strong></td>
+        <td data-label="Ученик"><strong>${escapeHtml(data.studentName)}</strong> ${hasDraft ? '<span class="badge-draft">📝</span>' : ''}</td>
+        <td data-label="Повтор">${repeatText}</td>
+        <td data-label="ДЗ"><small>${escapeHtml(data.assignedHw || '—')}</small></td>
+        <td data-label="Действия">
           <button class="btn-action" style="background:#10b981; color:white;" onclick="openCompleteModal('${id}')">✅</button>
           <button class="btn-action" style="background:#fef3c7; color:#d97706;" onclick="openEditModal('${id}')">✏️</button>
           <button class="btn-action" style="background:#dbeafe; color:#2563eb;" onclick="openMoveModal('${id}')">📅</button>
@@ -1357,38 +1455,28 @@
   function renderWeekView() {
     const container = document.getElementById('scheduleCalendarView');
     const cur = new Date(calendarCursor);
-    const dayOfWeek = (cur.getDay() + 6) % 7; // Monday=0
+    const dayOfWeek = (cur.getDay() + 6) % 7;
     const monday = new Date(cur);
     monday.setDate(cur.getDate() - dayOfWeek);
     monday.setHours(0, 0, 0, 0);
-
     const items = getScheduleItems();
     const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
     const todayStr = new Date().toDateString();
-
     let html = '<div class="calendar-week">';
     for (let i = 0; i < 7; i++) {
       const d = new Date(monday);
       d.setDate(monday.getDate() + i);
-      const dayLessons = items.filter(item => {
-        const dd = new Date(item.data.dateTime);
-        return dd.toDateString() === d.toDateString();
-      });
+      const dayLessons = items.filter(item => new Date(item.data.dateTime).toDateString() === d.toDateString());
       const isToday = d.toDateString() === todayStr;
-      html += `<div class="day-col ${isToday ? 'today' : ''}">
-        <div class="day-header">${dayNames[i]} ${d.getDate()}.${(d.getMonth() + 1).toString().padStart(2, '0')}</div>`;
+      html += `<div class="day-col ${isToday ? 'today' : ''}"><div class="day-header">${dayNames[i]} ${d.getDate()}.${(d.getMonth() + 1).toString().padStart(2, '0')}</div>`;
       dayLessons.forEach(item => {
         const time = new Date(item.data.dateTime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        html += `<div class="cal-lesson" onclick="openCompleteModal('${item.id}')">
-          <div class="cal-time">${time}</div>
-          <div>${escapeHtml(item.data.studentName).slice(0, 18)}</div>
-        </div>`;
+        html += `<div class="cal-lesson" onclick="openCompleteModal('${item.id}')"><div class="cal-time">${time}</div><div>${escapeHtml(item.data.studentName).slice(0, 18)}</div></div>`;
       });
       html += `</div>`;
     }
     html += '</div>';
     container.innerHTML = html;
-
     const end = new Date(monday);
     end.setDate(monday.getDate() + 6);
     document.getElementById('calendarLabel').innerText = `${monday.toLocaleDateString('ru-RU')} — ${end.toLocaleDateString('ru-RU')}`;
@@ -1401,23 +1489,17 @@
     const firstDay = new Date(year, month, 1);
     const startOffset = (firstDay.getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-
     const items = getScheduleItems();
     const todayStr = new Date().toDateString();
     const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-
     let html = '<div class="calendar-month">';
     dayNames.forEach(n => html += `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:center; padding:4px;">${n}</div>`);
     for (let i = 0; i < startOffset; i++) html += `<div></div>`;
     for (let day = 1; day <= daysInMonth; day++) {
       const d = new Date(year, month, day);
       const isToday = d.toDateString() === todayStr;
-      const dayLessons = items.filter(item => {
-        const dd = new Date(item.data.dateTime);
-        return dd.toDateString() === d.toDateString();
-      });
-      html += `<div class="month-cell ${isToday ? 'today' : ''}">
-        <div class="day-num">${day}</div>`;
+      const dayLessons = items.filter(item => new Date(item.data.dateTime).toDateString() === d.toDateString());
+      html += `<div class="month-cell ${isToday ? 'today' : ''}"><div class="day-num">${day}</div>`;
       dayLessons.forEach(item => {
         const time = new Date(item.data.dateTime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
         html += `<div class="cal-lesson-mini" title="${escapeHtml(item.data.studentName)} ${time}" onclick="openCompleteModal('${item.id}')">${time} ${escapeHtml(item.data.studentName).slice(0, 12)}</div>`;
@@ -1426,12 +1508,10 @@
     }
     html += '</div>';
     container.innerHTML = html;
-
     const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
     document.getElementById('calendarLabel').innerText = `${monthNames[month]} ${year}`;
   }
 
-  // ==================== ИСТОРИЯ С ФИЛЬТРАМИ ====================
   window.resetHistoryFilters = () => {
     document.getElementById('histSearch').value = '';
     document.getElementById('histTypeFilter').value = '';
@@ -1449,19 +1529,14 @@
     const paidFilter = document.getElementById('histPaidFilter').value;
     const dateFrom = document.getElementById('histDateFrom').value;
     const dateTo = document.getElementById('histDateTo').value;
-
     const sorted = [...allHistory].sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0));
-
     sorted.forEach(data => {
       const typeOk = !typeFilter || (data.type || 'lesson') === typeFilter;
       const paidOk = !paidFilter || data.paidStatus === paidFilter;
-      const searchOk = !search
-        || (data.studentName || '').toLowerCase().includes(search)
-        || (data.topic || '').toLowerCase().includes(search);
+      const searchOk = !search || (data.studentName || '').toLowerCase().includes(search) || (data.topic || '').toLowerCase().includes(search);
       const hDate = data.rawDate ? data.rawDate.slice(0, 10) : '';
       const dateOk = (!dateFrom || hDate >= dateFrom) && (!dateTo || hDate <= dateTo);
       if (!typeOk || !paidOk || !searchOk || !dateOk) return;
-
       const filledHw = data.hwItems ? data.hwItems.filter(i => i.text.trim() !== '') : [];
       const doneHw = filledHw.filter(i => i.status === 'done').length;
       const isExam = data.type === 'exam';
@@ -1469,16 +1544,15 @@
       let typeBadge = '<span class="badge-type">Урок</span>';
       if (isExam) typeBadge = '<span class="badge-type" style="background:#fef3c7; color:#d97706;">🎓 Зачёт</span>';
       if (isCancelled) typeBadge = '<span class="badge-type" style="background:#fee2e2; color:#dc2626;">❌ Отменён</span>';
-
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${escapeHtml(data.date || '—')}</td>
-        <td><strong>${escapeHtml(data.studentName || '—')}</strong></td>
-        <td>${typeBadge}</td>
-        <td>${escapeHtml(data.topic || '—')} ${isExam ? `(${escapeHtml(data.examStatus || '')})` : ''} ${isCancelled ? `<br><small style="color:#6b7280;">Причина: ${escapeHtml(data.cancelReason || '—')}</small>` : ''}</td>
-        <td>${isExam ? `Зачёт: <strong>${escapeHtml(data.examStatus || '')}</strong>` : (isCancelled ? '—' : `Опрос: ${escapeHtml(data.pollGrade || '-')} | ДЗ: ${escapeHtml(data.hwGrade || '-')} | Итог: ${escapeHtml(data.totalGrade || '-')}`)}</td>
-        <td>${filledHw.length > 0 ? `${doneHw} из ${filledHw.length}` : 'Без ДЗ'}</td>
-        <td>
+        <td data-label="Дата">${escapeHtml(data.date || '—')}</td>
+        <td data-label="Ученик"><strong>${escapeHtml(data.studentName || '—')}</strong></td>
+        <td data-label="Тип">${typeBadge}</td>
+        <td data-label="Тема">${escapeHtml(data.topic || '—')} ${isExam ? `(${escapeHtml(data.examStatus || '')})` : ''} ${isCancelled ? `<br><small style="color:#6b7280;">${escapeHtml(data.cancelReason || '—')}</small>` : ''}</td>
+        <td data-label="Оценки">${isExam ? `Зачёт: <strong>${escapeHtml(data.examStatus || '')}</strong>` : (isCancelled ? '—' : `Опрос: ${escapeHtml(data.pollGrade || '-')} | ДЗ: ${escapeHtml(data.hwGrade || '-')} | Итог: ${escapeHtml(data.totalGrade || '-')}`)}</td>
+        <td data-label="ДЗ">${filledHw.length > 0 ? `${doneHw} из ${filledHw.length}` : 'Без ДЗ'}</td>
+        <td data-label="Действия">
           <div style="display:flex; gap:5px; flex-wrap:wrap;">
             <button class="btn-action" onclick="generateLessonReport('${data.id}')">Отчёт</button>
             <button class="btn-action" style="background:#fef3c7; color:#d97706;" onclick="openEditHistoryModal('${data.id}')">✏️</button>
@@ -1491,12 +1565,11 @@
   }
 
   window.deleteHistoryLesson = async (historyId) => {
-    if (confirm("Удалить запись?")) {
+    if (confirm("Удалить?")) {
       try { await deleteDoc(doc(db, "history", historyId)); } catch (err) { alert("Ошибка: " + err.message); }
     }
   };
 
-  // ==================== РЕДАКТИРОВАНИЕ ====================
   window.openEditModal = (id) => {
     const data = upcomingMap[id];
     if (!data) return;
@@ -1520,22 +1593,19 @@
         repeatDays: parseInt(document.getElementById('editRepeatInterval').value),
         assignedHw: document.getElementById('editAssignedHw').value
       });
-      // чистим черновик, чтобы не было рассинхрона
       if (draftsMap[id]) await deleteDoc(doc(db, "drafts", id));
       closeEditModal();
     } catch (err) { alert("Ошибка: " + err.message); }
   });
 
-  // ==================== ПЕРЕНОС ====================
   window.openMoveModal = (id) => {
     const data = upcomingMap[id];
     if (!data) return;
     document.getElementById('moveScheduleId').value = id;
-    const d = new Date(data.dateTime);
-    document.getElementById('moveNewDateTime').value = d.toISOString().slice(0, 16);
+    document.getElementById('moveNewDateTime').value = new Date(data.dateTime).toISOString().slice(0, 16);
     document.getElementById('moveReason').value = '';
     document.getElementById('moveNotifyParent').checked = false;
-    document.getElementById('moveLessonInfo').innerText = `${data.studentName} · ${d.toLocaleString('ru-RU')}`;
+    document.getElementById('moveLessonInfo').innerText = `${data.studentName} · ${new Date(data.dateTime).toLocaleString('ru-RU')}`;
     document.getElementById('moveScope').value = data.repeatDays > 0 ? 'series' : 'single';
     document.getElementById('moveModal').classList.add('active');
   };
@@ -1550,22 +1620,14 @@
     const notify = document.getElementById('moveNotifyParent').checked;
     const data = upcomingMap[id];
     if (!data) return;
-
     try {
       const oldDate = new Date(data.dateTime);
       const newDate = new Date(newDateTime);
-
       if (scope === 'single') {
         await updateDoc(doc(db, "schedule", id), { dateTime: newDateTime });
         if (draftsMap[id]) await deleteDoc(doc(db, "drafts", id));
       } else {
-        // Перенос всей серии: сдвигаем все будущие занятия того же ученика с тем же repeatDays
-        const items = Object.entries(upcomingMap).filter(([k, v]) =>
-          v.studentName === data.studentName &&
-          v.repeatDays === data.repeatDays &&
-          v.repeatDays > 0 &&
-          new Date(v.dateTime) >= oldDate
-        );
+        const items = Object.entries(upcomingMap).filter(([k, v]) => v.studentName === data.studentName && v.repeatDays === data.repeatDays && v.repeatDays > 0 && new Date(v.dateTime) >= oldDate);
         const diffMs = newDate.getTime() - oldDate.getTime();
         const batch = writeBatch(db);
         items.forEach(([k, v]) => {
@@ -1574,31 +1636,20 @@
         });
         await batch.commit();
       }
-
-      // Записываем в историю
       const sId = Object.keys(studentsMap).find(k => studentsMap[k].name.toLowerCase() === data.studentName.toLowerCase());
       await addDoc(collection(db, "history"), {
-        userId: currentUserId,
-        studentId: sId || null,
-        studentName: data.studentName,
-        type: 'moved',
-        date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
+        userId: currentUserId, studentId: sId || null, studentName: data.studentName,
+        type: 'moved', date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
         rawDate: new Date().toISOString().slice(0, 16),
         topic: `Перенос: ${oldDate.toLocaleString('ru-RU')} → ${newDate.toLocaleString('ru-RU')}`,
-        comment: reason || '',
-        paidStatus: '—'
+        comment: reason || '', paidStatus: '—'
       });
-
-      if (notify) {
-        notifyParentTelegram(`📅 <b>Перенос занятия</b>\n<b>Ученик:</b> ${escapeHtml(data.studentName)}\n<b>Было:</b> ${oldDate.toLocaleString('ru-RU')}\n<b>Стало:</b> ${newDate.toLocaleString('ru-RU')}${reason ? `\n<b>Причина:</b> ${escapeHtml(reason)}` : ''}`);
-      }
-
+      if (notify) notifyParentTelegram(`📅 <b>Перенос</b>\n<b>Ученик:</b> ${escapeHtml(data.studentName)}\n<b>Было:</b> ${oldDate.toLocaleString('ru-RU')}\n<b>Стало:</b> ${newDate.toLocaleString('ru-RU')}${reason ? `\n<b>Причина:</b> ${escapeHtml(reason)}` : ''}`);
       closeMoveModal();
-      alert('Занятие перенесено! 📅');
-    } catch (err) { alert("Ошибка переноса: " + err.message); }
+      alert('Перенесено! 📅');
+    } catch (err) { alert("Ошибка: " + err.message); }
   });
 
-  // ==================== ОТМЕНА ====================
   window.openCancelModal = (id) => {
     const data = upcomingMap[id];
     if (!data) return;
@@ -1618,61 +1669,38 @@
     const reason = document.getElementById('cancelReason').value.trim();
     const notify = document.getElementById('cancelNotifyParent').checked;
     const data = upcomingMap[id];
-    if (!data || !reason) { alert('Укажите причину отмены!'); return; }
-
+    if (!data || !reason) { alert('Укажите причину!'); return; }
     try {
       const sId = Object.keys(studentsMap).find(k => studentsMap[k].name.toLowerCase() === data.studentName.toLowerCase());
-
       if (scope === 'single') {
         await addDoc(collection(db, "history"), {
-          userId: currentUserId,
-          studentId: sId || null,
-          studentName: data.studentName,
-          type: 'cancelled',
-          date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
-          rawDate: data.dateTime,
-          topic: `Отмена занятия (${new Date(data.dateTime).toLocaleString('ru-RU')})`,
-          cancelReason: reason,
-          paidStatus: '—'
+          userId: currentUserId, studentId: sId || null, studentName: data.studentName,
+          type: 'cancelled', date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
+          rawDate: data.dateTime, topic: `Отмена (${new Date(data.dateTime).toLocaleString('ru-RU')})`,
+          cancelReason: reason, paidStatus: '—'
         });
         await deleteDoc(doc(db, "schedule", id));
         if (draftsMap[id]) await deleteDoc(doc(db, "drafts", id));
       } else {
-        // Отмена всей серии
         const oldDate = new Date(data.dateTime);
-        const items = Object.entries(upcomingMap).filter(([k, v]) =>
-          v.studentName === data.studentName &&
-          v.repeatDays === data.repeatDays &&
-          v.repeatDays > 0 &&
-          new Date(v.dateTime) >= oldDate
-        );
+        const items = Object.entries(upcomingMap).filter(([k, v]) => v.studentName === data.studentName && v.repeatDays === data.repeatDays && v.repeatDays > 0 && new Date(v.dateTime) >= oldDate);
         for (const [k, v] of items) {
           await addDoc(collection(db, "history"), {
-            userId: currentUserId,
-            studentId: sId || null,
-            studentName: v.studentName,
-            type: 'cancelled',
-            date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
-            rawDate: v.dateTime,
-            topic: `Отмена (${new Date(v.dateTime).toLocaleString('ru-RU')})`,
-            cancelReason: reason,
-            paidStatus: '—'
+            userId: currentUserId, studentId: sId || null, studentName: v.studentName,
+            type: 'cancelled', date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
+            rawDate: v.dateTime, topic: `Отмена (${new Date(v.dateTime).toLocaleString('ru-RU')})`,
+            cancelReason: reason, paidStatus: '—'
           });
           await deleteDoc(doc(db, "schedule", k));
           if (draftsMap[k]) await deleteDoc(doc(db, "drafts", k));
         }
       }
-
-      if (notify) {
-        notifyParentTelegram(`❌ <b>Отмена занятия</b>\n<b>Ученик:</b> ${escapeHtml(data.studentName)}\n<b>Дата:</b> ${new Date(data.dateTime).toLocaleString('ru-RU')}\n<b>Причина:</b> ${escapeHtml(reason)}`);
-      }
-
+      if (notify) notifyParentTelegram(`❌ <b>Отмена</b>\n<b>Ученик:</b> ${escapeHtml(data.studentName)}\n<b>Дата:</b> ${new Date(data.dateTime).toLocaleString('ru-RU')}\n<b>Причина:</b> ${escapeHtml(reason)}`);
       closeCancelModal();
-      alert('Занятие отменено ❌');
-    } catch (err) { alert("Ошибка отмены: " + err.message); }
+      alert('Отменено ❌');
+    } catch (err) { alert("Ошибка: " + err.message); }
   });
 
-  // ==================== ЗАВЕРШЕНИЕ УРОКА ====================
   window.updateRowStatus = (selectElement) => {
     const row = selectElement.closest('.hw-item');
     row.classList.remove('not-done', 'done');
@@ -1703,8 +1731,7 @@
         }
       }
       await addDoc(collection(db, "schedule"), {
-        userId: currentUserId,
-        studentName: name,
+        userId: currentUserId, studentName: name,
         dateTime: document.getElementById('nextLessonDate').value,
         repeatDays: parseInt(document.getElementById('repeatInterval').value),
         assignedHw: document.getElementById('addAssignedHw').value || ''
@@ -1725,7 +1752,7 @@
 
   window.toggleCompleteModalFields = (type) => {
     const isExam = type === 'exam';
-    document.getElementById('completeModalTitle').innerText = isExam ? 'Проведение Зачёта' : 'Проведение урока';
+    document.getElementById('completeModalTitle').innerText = isExam ? 'Зачёт' : 'Урок';
     document.getElementById('examFieldsBlock').style.display = isExam ? 'block' : 'none';
     document.getElementById('standardLessonFields').style.display = isExam ? 'none' : 'block';
   };
@@ -1779,9 +1806,7 @@
       document.getElementById('mComment').value = '';
       if (data.assignedHw) {
         const parts = data.assignedHw.split(/,|\n/).map(s => s.trim()).filter(s => s !== '');
-        parts.forEach((partText, idx) => {
-          if (idx < rows.length) rows[idx].querySelector('.hw-text-input').value = partText;
-        });
+        parts.forEach((partText, idx) => { if (idx < rows.length) rows[idx].querySelector('.hw-text-input').value = partText; });
       }
     }
     document.getElementById('completeModal').classList.add('active');
@@ -1799,8 +1824,7 @@
     });
     try {
       await setDoc(doc(db, "drafts", schedId), {
-        userId: currentUserId,
-        type: document.getElementById('mLessonTypeSelect').value,
+        userId: currentUserId, type: document.getElementById('mLessonTypeSelect').value,
         topic: document.getElementById('mTopic').value,
         pollGrade: document.getElementById('mPollGrade').value,
         lessonGrade: document.getElementById('mLessonGrade').value,
@@ -1837,9 +1861,7 @@
       await updateDoc(doc(db, "students", sId), { flasksBalance: Math.max(0, currentBalance + flasksChange) });
     }
     const historyData = {
-      userId: currentUserId,
-      studentId: sId || null,
-      studentName, type: lessonType,
+      userId: currentUserId, studentId: sId || null, studentName, type: lessonType,
       date: formattedDate, rawDate,
       topic: document.getElementById('mTopic').value,
       pollGrade: document.getElementById('mPollGrade').value,
@@ -1860,11 +1882,8 @@
         const nextDate = new Date(rawDate);
         nextDate.setDate(nextDate.getDate() + repeatDays);
         await addDoc(collection(db, "schedule"), {
-          userId: currentUserId,
-          studentName,
-          dateTime: nextDate.toISOString().slice(0, 16),
-          repeatDays,
-          assignedHw: nextHw || ''
+          userId: currentUserId, studentName, dateTime: nextDate.toISOString().slice(0, 16),
+          repeatDays, assignedHw: nextHw || ''
         });
       }
       closeModal();
@@ -1872,7 +1891,6 @@
     } catch(err) { alert("Ошибка: " + err.message); }
   });
 
-  // ==================== ОТЧЁТЫ ====================
   window.generateLessonReport = (historyId) => {
     const item = allHistory.find(l => l.id === historyId);
     if (!item) return;
@@ -1906,7 +1924,7 @@
     const dateFrom = document.getElementById('reportDateFrom').value;
     const dateTo = document.getElementById('reportDateTo').value;
     const comment = document.getElementById('reportTeacherComment').value;
-    if (!student || !dateFrom || !dateTo) { alert("Заполните все поля!"); return; }
+    if (!student || !dateFrom || !dateTo) { alert("Заполните поля!"); return; }
     const filtered = allHistory.filter(h => {
       if (h.studentName !== student) return false;
       const hDate = h.rawDate ? h.rawDate.slice(0, 10) : '';
@@ -1946,15 +1964,11 @@
     if (periodChartInstance) periodChartInstance.destroy();
     periodChartInstance = new Chart(ctx, {
       type: 'line',
-      data: {
-        labels,
-        datasets: [
-          { label: 'Итоговая оценка', data: grades, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', borderWidth: 2, tension: 0.3, yAxisID: 'y' },
-          { label: 'ДЗ (%)', data: hwPercents, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 2, borderDash: [5, 5], tension: 0.3, yAxisID: 'y1' }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
+      data: { labels, datasets: [
+        { label: 'Итоговая', data: grades, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', borderWidth: 2, tension: 0.3, yAxisID: 'y' },
+        { label: 'ДЗ (%)', data: hwPercents, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 2, borderDash: [5, 5], tension: 0.3, yAxisID: 'y1' }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
         scales: {
           y: { type: 'linear', display: true, position: 'left', min: 0, max: 5, title: { display: true, text: 'Оценка' } },
           y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: 'ДЗ (%)' } }
@@ -1963,13 +1977,12 @@
     });
   }
 
-  // ==================== КАРТОЧКА УЧЕНИКА ====================
   window.openStudentCardModal = (studentId = null) => {
     document.getElementById('cardStudentId').value = studentId || '';
     currentCardTemplates = [];
     if (studentId && studentsMap[studentId]) {
       const s = studentsMap[studentId];
-      document.getElementById('studentCardModalTitle').innerText = 'Редактирование ученика';
+      document.getElementById('studentCardModalTitle').innerText = 'Редактирование';
       document.getElementById('cardStudentName').value = s.name || '';
       document.getElementById('cardStudentGrade').value = s.grade || '';
       document.getElementById('cardParentContacts').value = s.parentContacts || '';
@@ -1978,7 +1991,7 @@
       document.getElementById('cardNotes').value = s.notes || '';
       currentCardTemplates = s.hwTemplates || [];
     } else {
-      document.getElementById('studentCardModalTitle').innerText = 'Добавление ученика';
+      document.getElementById('studentCardModalTitle').innerText = 'Новый ученик';
       document.getElementById('studentCardForm').reset();
       document.getElementById('cardFlasksBalance').value = 0;
     }
@@ -2011,8 +2024,7 @@
     e.preventDefault();
     const id = document.getElementById('cardStudentId').value;
     const studentData = {
-      userId: currentUserId,
-      teacherChatId: userSettings.tgChatId || '',
+      userId: currentUserId, teacherChatId: userSettings.tgChatId || '',
       name: document.getElementById('cardStudentName').value,
       grade: document.getElementById('cardStudentGrade').value,
       parentContacts: document.getElementById('cardParentContacts').value,
@@ -2104,7 +2116,6 @@
     } catch (err) { alert("Ошибка: " + err.message); }
   });
 
-  // ==================== ОНБОРДИНГ-ТУР ====================
   window.startTour = (manual = false) => {
     const key = `tourDone_${currentUserId}`;
     if (!manual && localStorage.getItem(key)) return;
@@ -2125,7 +2136,6 @@
     spotlight.style.width = (rect.width + 12) + 'px';
     spotlight.style.height = (rect.height + 12) + 'px';
     spotlight.classList.add('active');
-
     const tooltip = document.getElementById('tourTooltip');
     document.getElementById('tourTitle').innerText = step.title;
     document.getElementById('tourText').innerText = step.text;
@@ -2133,8 +2143,6 @@
     const nextBtn = document.getElementById('tourNextBtn');
     nextBtn.innerText = tourIndex === TOUR_STEPS.length - 1 ? 'Готово ✓' : 'Далее ▶';
     nextBtn.onclick = () => { tourIndex++; if (tourIndex >= TOUR_STEPS.length) endTour(); else showTourStep(); };
-
-    // Позиционируем тултип
     let tLeft = rect.left;
     let tTop = rect.bottom + 12;
     if (tLeft + 320 > window.innerWidth) tLeft = window.innerWidth - 340;
@@ -2150,24 +2158,6 @@
     document.getElementById('tourTooltip').classList.remove('active');
     if (currentUserId) localStorage.setItem(`tourDone_${currentUserId}`, 'true');
   };
-
-  // ==================== СТАРТ ТУРА ПОСЛЕ ПЕРВОГО ВХОДА ====================
-  // Проверка в onAuthStateChanged после загрузки
-  const origApplyTheme = applyThemeUI;
-  applyThemeUI = function(settings) {
-    origApplyTheme(settings);
-  };
-  // (тур запускается из onboardingForm; для существующих — проверим в onAuthStateChanged через setTimeout)
-  // Добавим проверку в initApp
-  const origInitApp = initApp;
-  initApp = function() {
-    origInitApp();
-    setTimeout(() => {
-      const key = `tourDone_${currentUserId}`;
-      if (!localStorage.getItem(key)) startTour(false);
-    }, 1500);
-  };
-
 </script>
 </body>
 </html>
