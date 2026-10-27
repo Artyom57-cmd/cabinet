@@ -133,15 +133,19 @@
     .calendar-week .day-col { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 8px; min-height: 140px; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
     .calendar-week .day-col .day-header { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
     .calendar-week .day-col.today { border-color: var(--primary); background: #eef2ff; }
-    .cal-lesson { background: var(--primary); color: white; border-radius: 6px; padding: 4px 6px; font-size: 11px; cursor: pointer; line-height: 1.2; }
+    .calendar-week .day-col.drag-over { background: #dbeafe; border-color: #2563eb; border-style: dashed; }
+    .cal-lesson { background: var(--primary); color: white; border-radius: 6px; padding: 4px 6px; font-size: 11px; cursor: grab; line-height: 1.2; user-select: none; }
     .cal-lesson:hover { background: var(--primary-dark); }
+    .cal-lesson.dragging { opacity: 0.4; cursor: grabbing; }
     .cal-lesson .cal-time { font-weight: 700; font-size: 10px; opacity: 0.85; }
 
     .calendar-month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-    .calendar-month .month-cell { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 6px; min-height: 90px; padding: 4px; font-size: 11px; }
+    .calendar-month .month-cell { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 6px; min-height: 90px; padding: 4px; font-size: 11px; transition: background 0.15s ease; }
     .calendar-month .month-cell.today { border-color: var(--primary); background: #eef2ff; }
+    .calendar-month .month-cell.drag-over { background: #dbeafe; border-color: #2563eb; border-style: dashed; }
     .calendar-month .month-cell .day-num { font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
-    .cal-lesson-mini { background: var(--primary); color: white; border-radius: 4px; padding: 2px 4px; font-size: 10px; margin-bottom: 2px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-lesson-mini { background: var(--primary); color: white; border-radius: 4px; padding: 2px 4px; font-size: 10px; margin-bottom: 2px; cursor: grab; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none; }
+    .cal-lesson-mini.dragging { opacity: 0.4; cursor: grabbing; }
 
     .history-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }
     .history-filters input, .history-filters select { font-size: 16px; padding: 6px 8px; }
@@ -269,6 +273,42 @@
 
     #loginLogoWrap { display: none; margin-bottom: 12px; }
     #loginLogoWrap img { max-height: 60px; max-width: 180px; object-fit: contain; }
+
+    /* ===== ЗАМЕТКИ ===== */
+    .notes-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .notes-preset-btn {
+      background: #e0e7ff; color: #3730a3; border: none;
+      padding: 6px 10px; font-size: 12px; border-radius: 16px;
+      cursor: pointer; font-weight: 600;
+    }
+    .notes-preset-btn:hover { background: #c7d2fe; }
+
+    .note-item {
+      background: #f9fafb;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      display: flex; justify-content: space-between;
+      gap: 10px; align-items: flex-start;
+    }
+    .note-item .note-body { flex: 1; min-width: 0; }
+    .note-item .note-meta {
+      font-size: 11px; color: var(--text-muted);
+      margin-bottom: 4px; display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .note-item .note-meta .note-student {
+      background: #e0e7ff; color: #3730a3;
+      padding: 1px 6px; border-radius: 4px; font-weight: 700;
+    }
+    .note-item .note-text { font-size: 13px; line-height: 1.4; word-break: break-word; }
+    .note-item .note-delete {
+      background: #fee2e2; color: #dc2626; border: none;
+      padding: 4px 8px; border-radius: 4px;
+      cursor: pointer; font-size: 12px; flex-shrink: 0;
+    }
+    .notes-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px; }
 
     @media (max-width: 768px) {
       body { padding: 12px 8px; }
@@ -404,6 +444,7 @@
         </div>
       </div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <button class="btn-action" style="background:#6366f1; color:white;" onclick="openNotesModal()">📝 Заметка</button>
         <button class="btn-action" style="background:#059669; color:white;" onclick="openCertificateModal()">📜 Сертификат</button>
         <button class="btn-action economy-field" style="background:#10b981; color:white;" onclick="openSettingsModal('shopTab')">🛍️ Магазин</button>
         <button class="btn-action" style="background:#e0e7ff;" onclick="openSettingsModal()" data-tour="settings">⚙️ Настройки</button>
@@ -479,6 +520,20 @@
       <div class="students-grid" id="studentsCardList"></div>
     </div>
 
+    <!-- ЗАМЕТКИ -->
+    <div class="card" data-tour="notes">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3>📋 Мои заметки</h3>
+        <button class="btn-action" style="background:#6366f1; color:white;" onclick="openNotesModal()">+ Заметка</button>
+      </div>
+      <div class="form-group">
+        <select id="notesFilterStudent" onchange="renderNotesPanel()">
+          <option value="">Все ученики</option>
+        </select>
+      </div>
+      <div id="notesPanel" style="max-height: 400px; overflow-y: auto;"></div>
+    </div>
+
     <div class="card" data-tour="schedule">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:8px;">
         <h3>📌 Расписание</h3>
@@ -497,6 +552,9 @@
         <button class="btn-action" onclick="navigateCalendar(1)">▶</button>
         <button class="btn-action" style="background:#f3f4f6;" onclick="navigateCalendar(0)">Сегодня</button>
       </div>
+      <p id="dragHint" style="display:none; font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+        💡 Перетащите занятие в другой день, чтобы перенести
+      </p>
       <div id="scheduleTableView">
         <table>
           <thead><tr><th>Дата</th><th>Ученик</th><th>Повтор</th><th>ДЗ</th><th>Действия</th></tr></thead>
@@ -531,6 +589,42 @@
         <thead><tr><th>Дата</th><th>Ученик</th><th>Тип</th><th>Тема</th><th>Оценки</th><th>ДЗ</th><th>Действия</th></tr></thead>
         <tbody id="historyTable"></tbody>
       </table>
+    </div>
+
+    <!-- МОДАЛКА ЗАМЕТКИ -->
+    <div class="modal" id="notesModal">
+      <div class="modal-content" style="max-width: 500px;">
+        <h3 style="color:var(--primary-dark); margin-bottom:15px;">📝 Заметка себе</h3>
+        <form id="notesForm">
+          <div class="form-group">
+            <label>Быстрые шаблоны</label>
+            <div class="notes-presets">
+              <button type="button" class="notes-preset-btn" onclick="applyNotePreset('✏️ Задать ДЗ: ')">✏️ Задать ДЗ</button>
+              <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📚 Подобрать материал: ')">📚 Материал</button>
+              <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📞 Позвонить родителю: ')">📞 Позвонить</button>
+              <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📝 Написать ученику: ')">📝 Написать</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Ученик (опционально)</label>
+            <select id="noteStudentSelect">
+              <option value="">— Без привязки —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Текст заметки</label>
+            <textarea id="noteText" rows="4" required placeholder="Например: Иванову надо подобрать задачи на pH"></textarea>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="noteSendToTg" checked>
+            <label for="noteSendToTg">Отправить в Telegram-бот</label>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:15px;">
+            <button type="submit" class="btn-primary" style="flex:2; background:#6366f1;">Сохранить 📝</button>
+            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeNotesModal()">Отмена</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <div class="modal" id="dayPrintModal">
@@ -971,7 +1065,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where, setDoc, updateDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where, setDoc, updateDoc, getDoc, writeBatch, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAHxz8YoyHn5QK-ekR9Q1aS9KfatAbe3Go",
@@ -988,28 +1082,16 @@
   const db = getFirestore(app);
 
   // ============================================
-  // 🌟 НАСТРОЙКИ ПЛАТФОРМЫ — МЕНЯЙТЕ ЗДЕСЬ
+  // 🌟 НАСТРОЙКИ ПЛАТФОРМЫ
   // ============================================
   const PLATFORM = {
-    // Ссылка на логотип — файл logo.png в той же папке, что index.html
     logoUrl: "https://artyom57-cmd.github.io/cabinet/logo.png",
-
-    // Подпись — видна у ВСЕХ репетиторов в шапке и подвале
     signature: "Сделано - Репетитор Артемий",
-
-    // Ссылка (Telegram, сайт) — сделает подпись кликабельной. Можно оставить пустой.
     authorUrl: "",
-
-    // Текст в подвале
     footerText: "Кабинет Репетитора",
-
-    // Показывать логотип и подпись в отчётах и сертификатах
     showInReports: true,
-
-    // Водяные знаки на фоне (эмодзи/текст через пробел). Пусто — без знаков.
     watermark: ""
   };
-  // ============================================
 
   const SUBJECT_PRESETS = {
     chemistry: { title: "Химия", icon: "🧪", theme: "theme-chemistry", currency: "Колбы", currencyIcon: "🧪", bgPattern: "🧪 🔬 🧫 🧬 🧪 🔬 🧫 🧬" },
@@ -1036,11 +1118,12 @@
 
   let currentUserId = null;
   let authMode = 'login';
-  let unsubSchedule = null, unsubHistory = null, unsubDrafts = null, unsubStudents = null, unsubSettings = null;
+  let unsubSchedule = null, unsubHistory = null, unsubDrafts = null, unsubStudents = null, unsubSettings = null, unsubNotes = null;
   let allHistory = [];
   let upcomingMap = {};
   let draftsMap = {};
   let studentsMap = {};
+  let notesList = [];
   let currentCardTemplates = [];
   let periodChartInstance = null;
   let scheduleView = 'table';
@@ -1049,9 +1132,10 @@
   const TOUR_STEPS = [
     { selector: '[data-tour="schedule-form"]', title: "📅 Шаг 1: Запланируйте занятие", text: "Здесь создаются уроки. Укажите ученика, дату и повтор." },
     { selector: '[data-tour="students"]', title: "🗂️ Шаг 2: Картотека", text: "Добавьте учеников и шаблоны ДЗ. Кнопка QR — для родителя." },
-    { selector: '[data-tour="schedule"]', title: "📅 Шаг 3: Расписание", text: "Таблица / неделя / месяц. 🖨️ печатает день. 📋 — задвоить занятие." },
-    { selector: '[data-tour="history"]', title: "📜 Шаг 4: История", text: "Поиск и фильтры по ученику, теме, оплате." },
-    { selector: '[data-tour="settings"]', title: "⚙️ Шаг 5: Настройки", text: "Предмет, валюта, Telegram-интеграция." }
+    { selector: '[data-tour="notes"]', title: "📋 Шаг 3: Заметки", text: "Кнопка 📝 в шапке — отправить заметку себе в TG." },
+    { selector: '[data-tour="schedule"]', title: "📅 Шаг 4: Расписание", text: "Таблица / неделя / месяц. В календаре занятия можно перетаскивать (drag & drop)." },
+    { selector: '[data-tour="history"]', title: "📜 Шаг 5: История", text: "Поиск и фильтры по ученику, теме, оплате." },
+    { selector: '[data-tour="settings"]', title: "⚙️ Шаг 6: Настройки", text: "Предмет, валюта, Telegram-интеграция." }
   ];
   let tourIndex = 0;
 
@@ -1062,69 +1146,47 @@
   function applyPlatformBrandingUI() {
     const p = PLATFORM;
 
-    // Логотип на экране входа
     const loginWrap = document.getElementById('loginLogoWrap');
     const loginImg = document.getElementById('loginLogoImg');
-    if (loginWrap && loginImg) {
-      if (p.logoUrl) {
-        loginImg.src = p.logoUrl;
-        loginWrap.style.display = 'block';
-        const badge = document.getElementById('appLogoIcon');
-        if (badge) badge.style.display = 'none';
-      }
+    if (loginWrap && loginImg && p.logoUrl) {
+      loginImg.src = p.logoUrl;
+      loginWrap.style.display = 'block';
+      const badge = document.getElementById('appLogoIcon');
+      if (badge) badge.style.display = 'none';
     }
 
-    // Логотип в шапке
     const logoWrap = document.getElementById('headerPlatformLogo');
     const logoImg = document.getElementById('headerPlatformLogoImg');
     if (logoWrap && logoImg) {
-      if (p.logoUrl) {
-        logoImg.src = p.logoUrl;
-        logoWrap.classList.add('active');
-      } else {
-        logoWrap.classList.remove('active');
-      }
+      if (p.logoUrl) { logoImg.src = p.logoUrl; logoWrap.classList.add('active'); }
+      else { logoWrap.classList.remove('active'); }
     }
 
-    // Подпись в шапке
     const sigEl = document.getElementById('platformSignature');
     const sigName = document.getElementById('platformSignatureName');
     if (sigEl && sigName) {
       if (p.signature) {
         sigEl.classList.add('active');
-        if (p.authorUrl) {
-          sigName.innerHTML = `<a href="${escapeHtml(p.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(p.signature)}</a>`;
-        } else {
-          sigName.textContent = p.signature;
-        }
-      } else {
-        sigEl.classList.remove('active');
-      }
+        if (p.authorUrl) sigName.innerHTML = `<a href="${escapeHtml(p.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(p.signature)}</a>`;
+        else sigName.textContent = p.signature;
+      } else sigEl.classList.remove('active');
     }
 
-    // Подвал
     const footer = document.getElementById('appFooter');
     const footerLogo = document.getElementById('footerLogoWrap');
     const footerText = document.getElementById('footerText');
     if (footer && footerLogo && footerText) {
       if (p.signature || p.logoUrl) {
         footer.style.display = 'block';
-        footerLogo.innerHTML = p.logoUrl
-          ? `<img src="${escapeHtml(p.logoUrl)}" class="footer-logo" alt="logo">`
-          : '';
-        const sigHtml = p.signature
-          ? (p.authorUrl
-              ? `<a href="${escapeHtml(p.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(p.signature)}</a>`
-              : escapeHtml(p.signature))
-          : '';
+        footerLogo.innerHTML = p.logoUrl ? `<img src="${escapeHtml(p.logoUrl)}" class="footer-logo" alt="logo">` : '';
+        const sigHtml = p.signature ? (p.authorUrl
+          ? `<a href="${escapeHtml(p.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(p.signature)}</a>`
+          : escapeHtml(p.signature)) : '';
         const fText = p.footerText ? `<strong>${escapeHtml(p.footerText)}</strong>` : 'Кабинет Репетитора';
         footerText.innerHTML = sigHtml ? `${sigHtml} · ${fText}` : fText;
-      } else {
-        footer.style.display = 'none';
-      }
+      } else footer.style.display = 'none';
     }
 
-    // Отпечаток в отчётах и сертификате
     const marks = [
       { wrap: 'lessonReportPlatform', img: 'lessonReportPlatformImg', txt: 'lessonReportPlatformText' },
       { wrap: 'periodReportPlatform', img: 'periodReportPlatformImg', txt: 'periodReportPlatformText' },
@@ -1138,15 +1200,10 @@
         const imgEl = document.getElementById(img);
         if (p.logoUrl) imgEl.src = p.logoUrl;
         else imgEl.style.display = 'none';
-        document.getElementById(txt).textContent = p.signature
-          ? `Сделано: ${p.signature}`
-          : (p.footerText || 'Кабинет Репетитора');
-      } else {
-        w.classList.remove('active');
-      }
+        document.getElementById(txt).textContent = p.signature ? `Сделано: ${p.signature}` : (p.footerText || 'Кабинет Репетитора');
+      } else w.classList.remove('active');
     });
 
-    // Водяные знаки
     const wm = document.getElementById('platformWatermark');
     if (wm) {
       wm.innerHTML = '';
@@ -1162,9 +1219,7 @@
           span.style.fontSize = (40 + (seed % 40)) + 'px';
           wm.appendChild(span);
         }
-      } else {
-        wm.classList.remove('active');
-      }
+      } else wm.classList.remove('active');
     }
   }
 
@@ -1173,11 +1228,12 @@
   });
 
   function notifyParentTelegram(text) {
-    if (!userSettings.tgEnabled || !userSettings.tgBotToken || !userSettings.tgChatId) return;
+    if (!userSettings.tgEnabled || !userSettings.tgBotToken || !userSettings.tgChatId) return false;
     fetch(`https://api.telegram.org/bot${userSettings.tgBotToken}/sendMessage`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: userSettings.tgChatId, text, parse_mode: 'HTML' })
     }).catch(e => console.error(e));
+    return true;
   }
 
   async function sendElementAsPhotoToTelegram(elementId, captionText) {
@@ -1205,48 +1261,175 @@
   window.sendPeriodReportToTelegram = () => sendElementAsPhotoToTelegram('periodReportCard', `📊 Период: ${document.getElementById('pRepStudent').innerText}`);
   window.sendCertificateToTelegram = () => sendElementAsPhotoToTelegram('certificateDisplayCard', `📜 Сертификат: ${document.getElementById('certRenderName').innerText}`);
 
-  window.openDayPrintModal = () => {
-    document.getElementById('dayPrintDate').value = new Date().toISOString().slice(0, 10);
-    renderDayPrintCard();
-    document.getElementById('dayPrintModal').classList.add('active');
+  window.openNotesModal = () => {
+    document.getElementById('noteText').value = '';
+    document.getElementById('noteSendToTg').checked = userSettings.tgEnabled && !!userSettings.tgBotToken && !!userSettings.tgChatId;
+    document.getElementById('noteSendToTg').parentElement.style.display = userSettings.tgEnabled ? 'flex' : 'none';
+    const sel = document.getElementById('noteStudentSelect');
+    sel.innerHTML = '<option value="">— Без привязки —</option>';
+    Object.keys(studentsMap).forEach(sId => {
+      const opt = document.createElement('option');
+      opt.value = studentsMap[sId].name;
+      opt.innerText = studentsMap[sId].name;
+      sel.appendChild(opt);
+    });
+    document.getElementById('notesModal').classList.add('active');
+    setTimeout(() => document.getElementById('noteText').focus(), 100);
   };
-  window.closeDayPrintModal = () => document.getElementById('dayPrintModal').classList.remove('active');
+  window.closeNotesModal = () => document.getElementById('notesModal').classList.remove('active');
 
-  window.renderDayPrintCard = () => {
-    const dateVal = document.getElementById('dayPrintDate').value;
-    if (!dateVal) return;
-    const target = new Date(dateVal);
-    const targetStr = target.toDateString();
-    const lessons = getScheduleItems().filter(item => new Date(item.data.dateTime).toDateString() === targetStr);
-    const monthNames = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const dayNames = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
-    const todayStr = new Date().toDateString();
-    document.getElementById('dayPrintTitle').innerText = targetStr === todayStr ? '📌 Расписание на сегодня' : '📌 Расписание';
-    document.getElementById('dayPrintSubtitle').innerText = `${dayNames[target.getDay()]}, ${target.getDate()} ${monthNames[target.getMonth()]} ${target.getFullYear()}`;
-    const list = document.getElementById('dayPrintList');
-    list.innerHTML = '';
-    if (lessons.length === 0) {
-      list.innerHTML = '<div class="day-print-empty">Занятий нет 🎉</div>';
+  window.applyNotePreset = (text) => {
+    const ta = document.getElementById('noteText');
+    ta.value = text + (ta.value ? ' ' + ta.value : '');
+    ta.focus();
+  };
+
+  document.getElementById('notesForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('noteText').value.trim();
+    const student = document.getElementById('noteStudentSelect').value;
+    const sendTg = document.getElementById('noteSendToTg').checked;
+    if (!text) { alert('Введите текст заметки!'); return; }
+    try {
+      await addDoc(collection(db, "notes"), {
+        userId: currentUserId,
+        studentName: student || '',
+        text: text,
+        createdAt: new Date().toISOString(),
+        sentToTg: sendTg
+      });
+      if (sendTg) {
+        const sent = notifyParentTelegram(
+          `📝 <b>Заметка${student ? ' — ' + escapeHtml(student) : ''}</b>\n${escapeHtml(text)}`
+        );
+        if (!sent) alert('Сохранено локально. Настройте Telegram в настройках, чтобы получать в бот.');
+        else alert('Заметка отправлена в Telegram и сохранена! 📝');
+      } else {
+        alert('Заметка сохранена! 📝');
+      }
+      closeNotesModal();
+    } catch (err) { alert('Ошибка: ' + err.message); }
+  });
+
+  window.deleteNote = async (id) => {
+    if (!confirm('Удалить заметку?')) return;
+    try { await deleteDoc(doc(db, "notes", id)); } catch (err) { alert('Ошибка: ' + err.message); }
+  };
+
+  function renderNotesPanel() {
+    const panel = document.getElementById('notesPanel');
+    if (!panel) return;
+    const filter = document.getElementById('notesFilterStudent').value;
+    panel.innerHTML = '';
+    const filtered = filter ? notesList.filter(n => n.studentName === filter) : notesList;
+    if (filtered.length === 0) {
+      panel.innerHTML = '<div class="notes-empty">Заметок пока нет. Нажмите 📝 в шапке, чтобы создать.</div>';
       return;
     }
-    lessons.sort((a, b) => new Date(a.data.dateTime) - new Date(b.data.dateTime));
-    lessons.forEach(item => {
-      const t = new Date(item.data.dateTime);
-      const time = t.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-      const hw = item.data.assignedHw || '—';
+    const sorted = [...filtered].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    sorted.forEach(n => {
+      const dateStr = n.createdAt ? new Date(n.createdAt).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }) : '—';
       const div = document.createElement('div');
-      div.className = 'day-print-item';
+      div.className = 'note-item';
       div.innerHTML = `
-        <div class="time">${time}</div>
-        <div class="info">
-          <div class="name">${escapeHtml(item.data.studentName)}</div>
-          <div class="hw"><strong>Проверить ДЗ:</strong> ${escapeHtml(hw)}</div>
+        <div class="note-body">
+          <div class="note-meta">
+            <span>${dateStr}</span>
+            ${n.studentName ? `<span class="note-student">${escapeHtml(n.studentName)}</span>` : ''}
+            ${n.sentToTg ? '<span title="Отправлено в TG">✈️</span>' : ''}
+          </div>
+          <div class="note-text">${escapeHtml(n.text)}</div>
         </div>
+        <button class="note-delete" onclick="deleteNote('${n.id}')">🗑️</button>
       `;
-      list.appendChild(div);
+      panel.appendChild(div);
     });
+  }
+
+  function updateNotesFilter() {
+    const sel = document.getElementById('notesFilterStudent');
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">Все ученики</option>';
+    const names = new Set();
+    notesList.forEach(n => { if (n.studentName) names.add(n.studentName); });
+    Array.from(names).sort().forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name; opt.innerText = name;
+      sel.appendChild(opt);
+    });
+    if (current && names.has(current)) sel.value = current;
+  }
+
+  // ==================== DRAG & DROP ====================
+  window.handleDragStart = (e, scheduleId) => {
+    e.dataTransfer.setData('text/plain', scheduleId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.target.classList.add('dragging');
   };
 
+  window.handleDragEnd = (e) => {
+    document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+  };
+
+  window.handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('drag-over');
+  };
+
+  window.handleDragLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+  };
+
+  window.handleDrop = async (e) => {
+    e.preventDefault();
+    const target = e.currentTarget;
+    target.classList.remove('drag-over');
+    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+
+    const scheduleId = e.dataTransfer.getData('text/plain');
+    if (!scheduleId) return;
+    const data = upcomingMap[scheduleId];
+    if (!data) return;
+
+    const newDateStr = target.dataset.date;
+    if (!newDateStr) return;
+
+    const oldDate = new Date(data.dateTime);
+    const newDate = new Date(newDateStr + 'T00:00:00');
+    newDate.setHours(oldDate.getHours(), oldDate.getMinutes(), 0, 0);
+
+    const oldStr = oldDate.toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+    const newStr = newDate.toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+
+    if (newDate.toDateString() === oldDate.toDateString()) return;
+
+    const confirmMove = confirm(`Перенести занятие "${data.studentName}"?\n\nБыло: ${oldStr}\nСтанет: ${newStr}`);
+    if (!confirmMove) return;
+
+    try {
+      await updateDoc(doc(db, "schedule", scheduleId), {
+        dateTime: newDate.toISOString().slice(0, 16)
+      });
+      if (draftsMap[scheduleId]) await deleteDoc(doc(db, "drafts", scheduleId));
+
+      const sId = Object.keys(studentsMap).find(k => studentsMap[k].name.toLowerCase() === data.studentName.toLowerCase());
+      await addDoc(collection(db, "history"), {
+        userId: currentUserId, studentId: sId || null, studentName: data.studentName,
+        type: 'moved',
+        date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
+        rawDate: new Date().toISOString().slice(0, 16),
+        topic: `Перенос (drag): ${oldStr} → ${newStr}`,
+        comment: '', paidStatus: '—'
+      });
+    } catch (err) { alert('Ошибка переноса: ' + err.message); }
+  };
+
+  // ==================== AUTH ====================
   window.switchAuthMode = (mode) => {
     authMode = mode;
     const btnLogin = document.getElementById('toggleLogin');
@@ -1285,6 +1468,7 @@
       if (unsubDrafts) unsubDrafts();
       if (unsubStudents) unsubStudents();
       if (unsubSettings) unsubSettings();
+      if (unsubNotes) unsubNotes();
     }
   });
 
@@ -1513,6 +1697,7 @@
     const qHistory = query(collection(db, "history"), where("userId", "==", currentUserId));
     const qDrafts = query(collection(db, "drafts"), where("userId", "==", currentUserId));
     const qStudents = query(collection(db, "students"), where("userId", "==", currentUserId));
+    const qNotes = query(collection(db, "notes"), where("userId", "==", currentUserId));
 
     unsubStudents = onSnapshot(qStudents, (snapshot) => {
       studentsMap = {};
@@ -1529,6 +1714,17 @@
       });
       renderStudentsCards();
       updateHwTemplatesDropdowns();
+    });
+
+    unsubNotes = onSnapshot(qNotes, (snapshot) => {
+      notesList = [];
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        data.id = docSnap.id;
+        notesList.push(data);
+      });
+      updateNotesFilter();
+      renderNotesPanel();
     });
 
     unsubDrafts = onSnapshot(qDrafts, (snapshot) => {
@@ -1639,6 +1835,7 @@
     document.getElementById('scheduleTableView').style.display = view === 'table' ? 'block' : 'none';
     document.getElementById('scheduleCalendarView').style.display = view === 'table' ? 'none' : 'block';
     document.getElementById('calendarNav').style.display = view === 'table' ? 'none' : 'flex';
+    document.getElementById('dragHint').style.display = view === 'table' ? 'none' : 'block';
     renderScheduleView();
   };
 
@@ -1706,10 +1903,12 @@
       d.setDate(monday.getDate() + i);
       const dayLessons = items.filter(item => new Date(item.data.dateTime).toDateString() === d.toDateString());
       const isToday = d.toDateString() === todayStr;
-      html += `<div class="day-col ${isToday ? 'today' : ''}"><div class="day-header">${dayNames[i]} ${d.getDate()}.${(d.getMonth() + 1).toString().padStart(2, '0')}</div>`;
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      html += `<div class="day-col ${isToday ? 'today' : ''}" data-date="${dateStr}" ondragover="window.handleDragOver(event)" ondragleave="window.handleDragLeave(event)" ondrop="window.handleDrop(event)">
+        <div class="day-header">${dayNames[i]} ${d.getDate()}.${(d.getMonth() + 1).toString().padStart(2, '0')}</div>`;
       dayLessons.forEach(item => {
         const time = new Date(item.data.dateTime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        html += `<div class="cal-lesson" onclick="openCompleteModal('${item.id}')"><div class="cal-time">${time}</div><div>${escapeHtml(item.data.studentName).slice(0, 18)}</div></div>`;
+        html += `<div class="cal-lesson" draggable="true" ondragstart="window.handleDragStart(event, '${item.id}')" ondragend="window.handleDragEnd(event)" onclick="openCompleteModal('${item.id}')"><div class="cal-time">${time}</div><div>${escapeHtml(item.data.studentName).slice(0, 18)}</div></div>`;
       });
       html += `</div>`;
     }
@@ -1737,10 +1936,11 @@
       const d = new Date(year, month, day);
       const isToday = d.toDateString() === todayStr;
       const dayLessons = items.filter(item => new Date(item.data.dateTime).toDateString() === d.toDateString());
-      html += `<div class="month-cell ${isToday ? 'today' : ''}"><div class="day-num">${day}</div>`;
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      html += `<div class="month-cell ${isToday ? 'today' : ''}" data-date="${dateStr}" ondragover="window.handleDragOver(event)" ondragleave="window.handleDragLeave(event)" ondrop="window.handleDrop(event)"><div class="day-num">${day}</div>`;
       dayLessons.forEach(item => {
         const time = new Date(item.data.dateTime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        html += `<div class="cal-lesson-mini" title="${escapeHtml(item.data.studentName)} ${time}" onclick="openCompleteModal('${item.id}')">${time} ${escapeHtml(item.data.studentName).slice(0, 12)}</div>`;
+        html += `<div class="cal-lesson-mini" draggable="true" ondragstart="window.handleDragStart(event, '${item.id}')" ondragend="window.handleDragEnd(event)" title="${escapeHtml(item.data.studentName)} ${time}" onclick="openCompleteModal('${item.id}')">${time} ${escapeHtml(item.data.studentName).slice(0, 12)}</div>`;
       });
       html += `</div>`;
     }
