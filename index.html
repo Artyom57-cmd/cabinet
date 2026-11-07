@@ -92,12 +92,6 @@
     .modal.active { display: flex; }
     .modal-content { background: white; padding: 24px; border-radius: 12px; max-width: 650px; width: 100%; max-height: 92vh; overflow-y: auto; }
 
-    .report-card { background: #ffffff; width: 100%; max-width: 650px; border: 2px solid var(--primary); border-radius: 10px; padding: 25px; color: var(--primary-dark); margin: 30px auto; display: none; }
-    .report-card.active { display: block; }
-    .report-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 20px; }
-    .report-section { margin-bottom: 18px; }
-    .report-section-title { font-size: 13px; font-weight: bold; text-transform: uppercase; background-color: var(--primary); color: #ffffff; padding: 4px 8px; border-radius: 4px; margin-bottom: 8px; display: inline-block; }
-    .stat-box { background: #f0f4f8; border: 1px solid var(--primary); border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px; }
     .chart-container { position: relative; width: 100%; height: 250px; margin-top: 10px; }
     .flask-badge { background: #e0e7ff; color: var(--primary-dark); font-weight: 700; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px; }
     .toggle-switch { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; font-weight: 600; }
@@ -310,6 +304,145 @@
     }
     .notes-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px; }
 
+    /* ============================================
+       🎨 НОВЫЙ СТИЛЬ ОТЧЁТОВ (как в Telegram)
+       ============================================ */
+    .report-card {
+      background: #f3e8ff;
+      border: none;
+      border-radius: 16px;
+      padding: 20px 22px;
+      margin: 30px auto;
+      max-width: 650px;
+      display: none;
+      box-shadow: 0 8px 30px rgba(124, 58, 237, 0.15);
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      color: #1f2937;
+    }
+    .report-card.active { display: block; }
+
+    .report-title-spaced {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 14px;
+      color: transparent;
+      -webkit-text-stroke: 1.5px #b972e8;
+      text-stroke: 1.5px #b972e8;
+      text-transform: uppercase;
+      margin: 0 0 18px 0;
+      user-select: none;
+    }
+    .report-title-spaced::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: #b972e8;
+      margin: 10px auto 0;
+      border-radius: 2px;
+    }
+
+    .report-line {
+      display: flex;
+      gap: 10px;
+      font-size: 15px;
+      line-height: 1.45;
+      margin-bottom: 10px;
+      color: #1f2937;
+    }
+    .report-line .marker {
+      font-size: 20px;
+      flex-shrink: 0;
+      line-height: 1.2;
+      color: #a855f7;
+      transform: rotate(-15deg);
+    }
+    .report-line .text { flex: 1; word-break: break-word; }
+    .report-line strong { color: #7c3aed; font-weight: 700; }
+
+    .report-block {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 10px 0;
+      border-left: 3px solid #c084fc;
+      font-size: 14px;
+    }
+    .report-block .report-line { margin-bottom: 6px; }
+    .report-block .report-line:last-child { margin-bottom: 0; }
+
+    .report-important {
+      display: inline-block;
+      border: 2px solid #b972e8;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 14px;
+      letter-spacing: 4px;
+      color: transparent;
+      -webkit-text-stroke: 1px #b972e8;
+      text-stroke: 1px #b972e8;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-top: 10px;
+    }
+
+    .report-time {
+      text-align: right;
+      font-size: 12px;
+      color: #a78bfa;
+      margin-top: 8px;
+      user-select: none;
+    }
+    .report-time .check {
+      color: #a855f7;
+      font-weight: 700;
+    }
+
+    .report-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .report-actions button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .report-actions .btn-print {
+      background: white;
+      color: #7c3aed;
+      border: 1.5px solid #c084fc;
+    }
+    .report-actions .btn-tg {
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      color: white;
+    }
+
+    /* Сертификат - адаптация под фиолетовый стиль */
+    .certificate-card {
+      background: #fffaf0 !important;
+      border: 12px double #b972e8 !important;
+      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.25) !important;
+    }
+    .certificate-header {
+      color: transparent !important;
+      -webkit-text-stroke: 2px #b972e8 !important;
+      text-stroke: 2px #b972e8 !important;
+      letter-spacing: 8px !important;
+    }
+    .certificate-sub { color: #7c3aed !important; }
+    .certificate-topic { color: #7c3aed !important; }
+    .certificate-stamp {
+      border-color: #b972e8 !important;
+      color: #b972e8 !important;
+      background: rgba(243, 232, 255, 0.6) !important;
+    }
+
     @media (max-width: 768px) {
       body { padding: 12px 8px; }
       .container { max-width: 100%; }
@@ -374,8 +507,9 @@
       input, select, textarea { font-size: 16px; padding: 9px 10px; }
 
       .report-card { padding: 15px; margin: 15px 0; }
-      .report-header h2 { font-size: 18px; }
       .chart-container { height: 200px; }
+      
+      .report-title-spaced { font-size: 22px; letter-spacing: 10px; }
 
       .certificate-card { padding: 25px 15px; border-width: 6px; }
       .certificate-header { font-size: 22px; letter-spacing: 2px; }
@@ -965,68 +1099,137 @@
       </div>
     </div>
 
+    <!-- ОТЧЁТ УРОКА (НОВЫЙ СТИЛЬ) -->
     <div class="report-card" id="lessonReportCard">
-      <div class="report-header"><h2>Отчёт родителю</h2></div>
-      <div class="report-section">
-        <p><strong>Ученик:</strong> <span id="repStudent"></span></p>
-        <p><strong>Дата:</strong> <span id="repDate"></span></p>
-        <p><strong>Тема:</strong> <span id="repTopic"></span></p>
+      <div class="report-title-spaced" id="repTitleLesson">ОТЧЁТ</div>
+
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Ученик:</strong> <span id="repStudent"></span></span>
       </div>
-      <div class="report-section">
-        <div class="report-section-title">1. Работа и опрос</div>
-        <p><strong>Опрос:</strong> <span id="repPoll"></span></p>
-        <p><strong>Работа:</strong> <span id="repWork"></span></p>
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Дата:</strong> <span id="repDate"></span></span>
       </div>
-      <div class="report-section">
-        <div class="report-section-title">2. ДЗ</div>
-        <p><strong>Оценка:</strong> <span id="repHwGrade" style="font-weight:bold;"></span></p>
-        <div class="hw-list" id="repHwDisplay"></div>
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Тема:</strong> <span id="repTopic"></span></span>
       </div>
-      <div class="report-section" style="border-top:2px solid var(--primary); padding-top:10px;">
-        <p><strong>Итоговая:</strong> <span id="repTotalGrade" style="font-weight:bold; font-size:18px;"></span></p>
-        <p style="margin-top:5px;"><strong>Комментарий:</strong></p>
-        <p id="repComment" style="font-style:italic; background:#f0f4f8; padding:8px; border-radius:4px; margin-top:4px;"></p>
-        <p style="margin-top:8px; font-size:12px; color:var(--text-muted);">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></p>
+
+      <div class="report-block">
+        <div class="report-line">
+          <span class="marker">📣</span>
+          <span class="text"><strong>Опрос:</strong> <span id="repPoll"></span></span>
+        </div>
+        <div class="report-line">
+          <span class="marker">📣</span>
+          <span class="text"><strong>Работа на уроке:</strong> <span id="repWork"></span></span>
+        </div>
       </div>
+
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Оценка за ДЗ:</strong> <span id="repHwGrade" style="font-weight:700; color:#7c3aed;"></span></span>
+      </div>
+
+      <div class="hw-list" id="repHwDisplay" style="margin: 8px 0 12px 0;"></div>
+
+      <div class="report-block">
+        <div class="report-line">
+          <span class="marker">📣</span>
+          <span class="text"><strong>Итоговая оценка:</strong> <span id="repTotalGrade" style="font-weight:800; color:#7c3aed; font-size:16px;"></span></span>
+        </div>
+      </div>
+
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Комментарий:</strong> <span id="repComment" style="font-style:italic;"></span></span>
+      </div>
+
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></span>
+      </div>
+
       <div class="report-platform-mark" id="lessonReportPlatform">
         <img id="lessonReportPlatformImg" alt="logo">
         <span id="lessonReportPlatformText"></span>
       </div>
-      <div style="display: flex; gap: 10px; margin-top: 10px;">
-        <button class="btn-action" style="flex:1;" onclick="window.print()">🖨️ Печать</button>
-        <button class="btn-action tg-btn" style="flex:1; background:#0088cc; color:white;" onclick="sendLessonReportToTelegram()">✈️ В TG</button>
+
+      <div class="report-time">
+        <span class="check">✓✓</span> <span id="repTime"></span>
+      </div>
+
+      <div class="report-actions">
+        <button class="btn-print" onclick="window.print()">🖨️ Печать</button>
+        <button class="btn-tg" onclick="sendLessonReportToTelegram()">✈️ В TG</button>
       </div>
     </div>
 
+    <!-- ОТЧЁТ ЗА ПЕРИОД (НОВЫЙ СТИЛЬ) -->
     <div class="report-card" id="periodReportCard">
-      <div class="report-header">
-        <h2>Отчёт за период</h2>
-        <p id="pRepStudent" style="font-weight:700; font-size:16px; margin-top:4px;"></p>
-        <p id="pRepDates" style="font-size:12px; color:#6b7280;"></p>
+      <div class="report-title-spaced" id="repTitlePeriod">ПЕРИОД</div>
+
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Ученик:</strong> <span id="pRepStudent"></span></span>
       </div>
-      <div class="report-section">
-        <div class="report-section-title">Сводка</div>
-        <div class="stat-box"><span>Занятий:</span><strong id="pRepLessonsCount">0</strong></div>
-        <div class="stat-box"><span>ДЗ:</span><strong id="pRepHwPercent">0%</strong></div>
-        <div class="stat-box"><span>Оценки за ДЗ:</span><strong id="pRepHwGradesList">-</strong></div>
-        <div class="stat-box"><span>Итоговые:</span><strong id="pRepGradesList">-</strong></div>
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Период:</strong> <span id="pRepDates"></span></span>
       </div>
-      <div class="report-section">
-        <div class="report-section-title">Динамика</div>
-        <div class="chart-container"><canvas id="periodReportChart"></canvas></div>
+
+      <div class="report-block">
+        <div class="report-line">
+          <span class="marker">📣</span>
+          <span class="text"><strong>Проведено занятий:</strong> <span id="pRepLessonsCount">0</span></span>
+        </div>
+        <div class="report-line">
+          <span class="marker">📣</span>
+          <span class="text"><strong>Выполнение ДЗ:</strong> <span id="pRepHwPercent">0%</span></span>
+        </div>
+        <div class="report-line">
+          <span class="marker">📣</span>
+          <span class="text"><strong>Оценки за ДЗ:</strong> <span id="pRepHwGradesList">-</span></span>
+        </div>
+        <div class="report-line">
+          <span class="marker">📣</span>
+          <span class="text"><strong>Итоговые оценки:</strong> <span id="pRepGradesList">-</span></span>
+        </div>
       </div>
-      <div class="report-section">
-        <div class="report-section-title">Комментарий</div>
-        <p id="pRepComment" style="background:#f0f4f8; padding:10px; border-radius:4px; font-style:italic;"></p>
-        <p style="margin-top:8px; font-size:12px; color:var(--text-muted);">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></p>
+
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Динамика успеваемости:</strong></span>
       </div>
+      <div class="chart-container"><canvas id="periodReportChart"></canvas></div>
+
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text"><strong>Комментарий:</strong> <span id="pRepComment" style="font-style:italic;"></span></span>
+      </div>
+
+      <div class="report-line">
+        <span class="marker">📎</span>
+        <span class="text">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></span>
+      </div>
+
       <div class="report-platform-mark" id="periodReportPlatform">
         <img id="periodReportPlatformImg" alt="logo">
         <span id="periodReportPlatformText"></span>
       </div>
-      <div style="display: flex; gap: 10px; margin-top: 10px;">
-        <button class="btn-action" style="flex:1;" onclick="window.print()">🖨️ Печать</button>
-        <button class="btn-action tg-btn" style="flex:1; background:#0088cc; color:white;" onclick="sendPeriodReportToTelegram()">✈️ В TG</button>
+
+      <div style="text-align: center; margin-top: 14px;">
+        <span class="report-important">ВАЖНО</span>
+      </div>
+
+      <div class="report-time">
+        <span class="check">✓✓</span> <span id="pRepTime"></span>
+      </div>
+
+      <div class="report-actions">
+        <button class="btn-print" onclick="window.print()">🖨️ Печать</button>
+        <button class="btn-tg" onclick="sendPeriodReportToTelegram()">✈️ В TG</button>
       </div>
     </div>
 
@@ -2411,6 +2614,11 @@
     } else {
       hwDisplay.innerHTML = '<p style="font-size:13px; color:#6b7280;">ДЗ не задано.</p>';
     }
+    
+    // Добавляем текущее время для отчета
+    const now = new Date();
+    document.getElementById('repTime').innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
     const card = document.getElementById('lessonReportCard');
     card.classList.add('active');
     card.scrollIntoView({ behavior: 'smooth' });
@@ -2451,6 +2659,11 @@
     document.getElementById('pRepGradesList').innerText = totalGrades.length > 0 ? totalGrades.join(', ') : '—';
     document.getElementById('pRepComment').innerText = comment || 'Замечаний нет.';
     renderPeriodChart(chartLabels, chartGradesData, chartHwPercentData);
+    
+    // Добавляем текущее время для отчета за период
+    const now = new Date();
+    document.getElementById('pRepTime').innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
     const card = document.getElementById('periodReportCard');
     card.classList.add('active');
     card.scrollIntoView({ behavior: 'smooth' });
