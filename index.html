@@ -69,6 +69,7 @@
     button.btn-action { background-color: #e0e7ff; color: var(--primary-dark); font-size: 12px; padding: 5px 10px; }
     button.btn-logout { background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
     button.btn-duplicate { background: #ede9fe; color: #6d28d9; font-size: 12px; padding: 5px 10px; }
+    button.btn-finance { background: #10b981; color: white; font-weight: bold; box-shadow: 0 2px 8px rgba(16,185,129,0.3); }
 
     table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 20px; }
     th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
@@ -305,143 +306,87 @@
     .notes-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px; }
 
     /* ============================================
-       🎨 НОВЫЙ СТИЛЬ ОТЧЁТОВ (как в Telegram)
+       🎨 СТИЛЬ ОТЧЁТОВ (как в Telegram)
        ============================================ */
     .report-card {
-      background: #f3e8ff;
-      border: none;
-      border-radius: 16px;
-      padding: 20px 22px;
-      margin: 30px auto;
-      max-width: 650px;
-      display: none;
+      background: #f3e8ff; border: none; border-radius: 16px; padding: 20px 22px;
+      margin: 30px auto; max-width: 650px; display: none;
       box-shadow: 0 8px 30px rgba(124, 58, 237, 0.15);
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      color: #1f2937;
+      font-family: 'Segoe UI', Tahoma, sans-serif; color: #1f2937;
     }
     .report-card.active { display: block; }
 
     .report-title-spaced {
-      text-align: center;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 14px;
-      color: transparent;
-      -webkit-text-stroke: 1.5px #b972e8;
-      text-stroke: 1.5px #b972e8;
-      text-transform: uppercase;
-      margin: 0 0 18px 0;
-      user-select: none;
+      text-align: center; font-size: 26px; font-weight: 800; letter-spacing: 14px;
+      color: transparent; -webkit-text-stroke: 1.5px #b972e8; text-stroke: 1.5px #b972e8;
+      text-transform: uppercase; margin: 0 0 18px 0; user-select: none;
     }
     .report-title-spaced::after {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 2px;
-      background: #b972e8;
-      margin: 10px auto 0;
-      border-radius: 2px;
+      content: ''; display: block; width: 40px; height: 2px;
+      background: #b972e8; margin: 10px auto 0; border-radius: 2px;
     }
 
     .report-line {
-      display: flex;
-      gap: 10px;
-      font-size: 15px;
-      line-height: 1.45;
-      margin-bottom: 10px;
-      color: #1f2937;
+      display: flex; gap: 10px; font-size: 15px; line-height: 1.45; margin-bottom: 10px; color: #1f2937;
     }
     .report-line .marker {
-      font-size: 20px;
-      flex-shrink: 0;
-      line-height: 1.2;
-      color: #a855f7;
-      transform: rotate(-15deg);
+      font-size: 20px; flex-shrink: 0; line-height: 1.2; color: #a855f7; transform: rotate(-15deg);
     }
     .report-line .text { flex: 1; word-break: break-word; }
     .report-line strong { color: #7c3aed; font-weight: 700; }
 
     .report-block {
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin: 10px 0;
-      border-left: 3px solid #c084fc;
-      font-size: 14px;
+      background: rgba(255, 255, 255, 0.6); border-radius: 10px; padding: 10px 12px;
+      margin: 10px 0; border-left: 3px solid #c084fc; font-size: 14px;
     }
     .report-block .report-line { margin-bottom: 6px; }
     .report-block .report-line:last-child { margin-bottom: 0; }
 
     .report-important {
-      display: inline-block;
-      border: 2px solid #b972e8;
-      border-radius: 20px;
-      padding: 4px 14px;
-      font-size: 14px;
-      letter-spacing: 4px;
-      color: transparent;
-      -webkit-text-stroke: 1px #b972e8;
-      text-stroke: 1px #b972e8;
-      text-transform: uppercase;
-      font-weight: 800;
-      margin-top: 10px;
+      display: inline-block; border: 2px solid #b972e8; border-radius: 20px;
+      padding: 4px 14px; font-size: 14px; letter-spacing: 4px; color: transparent;
+      -webkit-text-stroke: 1px #b972e8; text-stroke: 1px #b972e8;
+      text-transform: uppercase; font-weight: 800; margin-top: 10px;
     }
 
     .report-time {
-      text-align: right;
-      font-size: 12px;
-      color: #a78bfa;
-      margin-top: 8px;
-      user-select: none;
+      text-align: right; font-size: 12px; color: #a78bfa; margin-top: 8px; user-select: none;
     }
-    .report-time .check {
-      color: #a855f7;
-      font-weight: 700;
-    }
+    .report-time .check { color: #a855f7; font-weight: 700; }
 
-    .report-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-    }
-    .report-actions button {
-      flex: 1;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-    }
-    .report-actions .btn-print {
-      background: white;
-      color: #7c3aed;
-      border: 1.5px solid #c084fc;
-    }
-    .report-actions .btn-tg {
-      background: linear-gradient(135deg, #a855f7, #7c3aed);
-      color: white;
-    }
+    .report-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .report-actions button { flex: 1; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+    .report-actions .btn-print { background: white; color: #7c3aed; border: 1.5px solid #c084fc; }
+    .report-actions .btn-tg { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; }
 
     /* Сертификат - адаптация под фиолетовый стиль */
     .certificate-card {
-      background: #fffaf0 !important;
-      border: 12px double #b972e8 !important;
+      background: #fffaf0 !important; border: 12px double #b972e8 !important;
       box-shadow: 0 20px 50px rgba(124, 58, 237, 0.25) !important;
     }
     .certificate-header {
-      color: transparent !important;
-      -webkit-text-stroke: 2px #b972e8 !important;
-      text-stroke: 2px #b972e8 !important;
-      letter-spacing: 8px !important;
+      color: transparent !important; -webkit-text-stroke: 2px #b972e8 !important;
+      text-stroke: 2px #b972e8 !important; letter-spacing: 8px !important;
     }
     .certificate-sub { color: #7c3aed !important; }
     .certificate-topic { color: #7c3aed !important; }
-    .certificate-stamp {
-      border-color: #b972e8 !important;
-      color: #b972e8 !important;
-      background: rgba(243, 232, 255, 0.6) !important;
-    }
+    .certificate-stamp { border-color: #b972e8 !important; color: #b972e8 !important; background: rgba(243, 232, 255, 0.6) !important; }
+
+    /* ============================================
+       💰 ФИНАНСОВЫЙ ДАШБОРД
+       ============================================ */
+    .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+    .finance-card { background: #ecfdf5; border: 1px solid #10b981; border-radius: 10px; padding: 12px; text-align: center; }
+    .finance-card.month { background: #eff6ff; border-color: #3b82f6; }
+    .finance-card h4 { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+    .finance-card .val { font-size: 22px; font-weight: 800; color: #059669; }
+    .finance-card.month .val { color: #2563eb; }
+
+    .debt-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .debt-item { background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; }
+    .debt-item .debt-name { font-weight: 700; color: #b91c1c; font-size: 14px; }
+    .debt-item .debt-sum { font-weight: 800; color: #dc2626; font-size: 16px; }
+    .debt-item .debt-info { font-size: 11px; color: #7f1d1d; margin-top: 2px; }
 
     @media (max-width: 768px) {
       body { padding: 12px 8px; }
@@ -465,29 +410,14 @@
       table, thead, tbody, th, td, tr { display: block; }
       table { border: none; background: transparent; }
       thead { display: none; }
-      tbody tr {
-        background: white; border: 1px solid var(--border-color);
-        border-radius: 10px; margin-bottom: 10px; padding: 10px 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-      }
-      tbody td {
-        border: none; padding: 4px 0; font-size: 13px;
-        display: flex; justify-content: space-between; gap: 10px;
-        text-align: right;
-      }
-      tbody td::before {
-        content: attr(data-label);
-        font-weight: 700; color: var(--text-muted); font-size: 11px;
-        text-transform: uppercase; text-align: left; flex-shrink: 0;
-      }
+      tbody tr { background: white; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 10px 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+      tbody td { border: none; padding: 4px 0; font-size: 13px; display: flex; justify-content: space-between; gap: 10px; text-align: right; }
+      tbody td::before { content: attr(data-label); font-weight: 700; color: var(--text-muted); font-size: 11px; text-transform: uppercase; text-align: left; flex-shrink: 0; }
       tbody td:last-child { padding-top: 8px; border-top: 1px solid var(--border-color); margin-top: 6px; justify-content: flex-end; }
       tbody td:last-child::before { content: ''; }
       tbody td button { font-size: 12px; padding: 6px 8px; }
 
-      .calendar-week, .calendar-month {
-        display: flex; overflow-x: auto; gap: 6px;
-        -webkit-overflow-scrolling: touch; padding-bottom: 6px;
-      }
+      .calendar-week, .calendar-month { display: flex; overflow-x: auto; gap: 6px; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
       .calendar-week .day-col { min-width: 130px; min-height: 160px; flex-shrink: 0; }
       .calendar-month .month-cell { min-width: 90px; min-height: 100px; flex-shrink: 0; }
 
@@ -497,10 +427,7 @@
       .history-filters { grid-template-columns: 1fr 1fr; }
 
       .modal { padding: 0; align-items: flex-end; }
-      .modal-content {
-        width: 100%; max-width: 100%; max-height: 94vh;
-        border-radius: 16px 16px 0 0; padding: 18px 14px;
-      }
+      .modal-content { width: 100%; max-width: 100%; max-height: 94vh; border-radius: 16px 16px 0 0; padding: 18px 14px; }
       .modal-content h3 { font-size: 16px; }
 
       .form-group label { font-size: 11px; }
@@ -508,7 +435,6 @@
 
       .report-card { padding: 15px; margin: 15px 0; }
       .chart-container { height: 200px; }
-      
       .report-title-spaced { font-size: 22px; letter-spacing: 10px; }
 
       .certificate-card { padding: 25px 15px; border-width: 6px; }
@@ -526,6 +452,8 @@
       .platform-logo-wrap { width: 34px; height: 34px; }
       .app-footer { font-size: 11px; padding: 16px 8px 8px; }
       .platform-watermark span { font-size: 40px; }
+      
+      .finance-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 400px) {
@@ -578,6 +506,7 @@
         </div>
       </div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <button class="btn-action btn-finance" onclick="openFinanceModal()">💰 Финансы</button>
         <button class="btn-action" style="background:#6366f1; color:white;" onclick="openNotesModal()">📝 Заметка</button>
         <button class="btn-action" style="background:#059669; color:white;" onclick="openCertificateModal()">📜 Сертификат</button>
         <button class="btn-action economy-field" style="background:#10b981; color:white;" onclick="openSettingsModal('shopTab')">🛍️ Магазин</button>
@@ -720,9 +649,36 @@
         <button class="btn-action" onclick="resetHistoryFilters()">Сброс</button>
       </div>
       <table>
-        <thead><tr><th>Дата</th><th>Ученик</th><th>Тип</th><th>Тема</th><th>Оценки</th><th>ДЗ</th><th>Действия</th></tr></thead>
+        <thead><tr><th>Дата</th><th>Ученик</th><th>Тип</th><th>Тема</th><th>Оценки</th><th>ДЗ</th><th>Оплата</th><th>Действия</th></tr></thead>
         <tbody id="historyTable"></tbody>
       </table>
+    </div>
+
+    <!-- МОДАЛКА ФИНАНСЫ -->
+    <div class="modal" id="financeModal">
+      <div class="modal-content" style="max-width: 500px;">
+        <h3 style="color:#059669; margin-bottom:15px;">💰 Финансовый отчёт</h3>
+        
+        <div class="finance-grid">
+          <div class="finance-card">
+            <h4>За эту неделю</h4>
+            <div class="val" id="finWeekVal">0 ₽</div>
+          </div>
+          <div class="finance-card month">
+            <h4>За этот месяц</h4>
+            <div class="val" id="finMonthVal">0 ₽</div>
+          </div>
+        </div>
+
+        <h4 style="font-size:14px; color:#b91c1c; margin-bottom:8px; border-bottom:1px solid #fca5a5; padding-bottom:5px;">Должники</h4>
+        <div class="debt-list" id="debtList">
+          <div style="text-align:center; font-size:13px; color:var(--text-muted); padding:10px;">Все долги закрыты! 🎉</div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:20px;">
+          <button class="btn-primary" style="flex:1; background:#f3f4f6; color:var(--text-dark);" onclick="closeFinanceModal()">Закрыть</button>
+        </div>
+      </div>
     </div>
 
     <!-- МОДАЛКА ЗАМЕТКИ -->
@@ -874,9 +830,12 @@
           </div>
           <div class="form-grid">
             <div class="form-group"><label>Контакты родителя</label><input type="text" id="cardParentContacts"></div>
-            <div class="form-group economy-field"><label>Баланс <span class="currency-icon">🧪</span></label><input type="number" id="cardFlasksBalance" value="0"></div>
+            <div class="form-group"><label>Ставка за урок (₽)</label><input type="number" id="cardLessonRate" value="0" min="0"></div>
           </div>
-          <div class="form-group"><label>Цель</label><input type="text" id="cardGoal"></div>
+          <div class="form-grid">
+            <div class="form-group economy-field"><label>Игровой баланс <span class="currency-icon">🧪</span></label><input type="number" id="cardFlasksBalance" value="0"></div>
+            <div class="form-group"><label>Цель</label><input type="text" id="cardGoal"></div>
+          </div>
           <div class="form-group"><label>Заметки</label><textarea id="cardNotes" rows="2"></textarea></div>
           <hr style="margin: 15px 0;">
           <h4 style="font-size: 14px; margin-bottom: 8px;">📚 Шаблоны ДЗ</h4>
@@ -1022,8 +981,21 @@
                 <div class="form-group"><label>Итоговая</label><input type="text" id="mTotalGrade" style="font-weight:bold; text-align:center;"></div>
               </div>
             </div>
-            <div class="form-group"><label>Оплата</label>
-              <select id="mPaidStatus"><option value="Оплачено">Оплачено ✅</option><option value="Не оплачено">Долг ❌</option></select>
+            <div style="background: #ecfdf5; padding: 10px; border-radius: 6px; border: 1px solid #10b981;">
+              <label style="font-weight:bold; color:#059669;">💰 Финансы:</label>
+              <div class="form-grid" style="margin-top:5px;">
+                <div class="form-group" style="margin:0;">
+                  <label style="color:#059669;">Оплата</label>
+                  <select id="mPaidStatus" onchange="toggleAmountInput()">
+                    <option value="Оплачено">Оплачено ✅</option>
+                    <option value="Не оплачено">Долг ❌</option>
+                  </select>
+                </div>
+                <div class="form-group" style="margin:0;">
+                  <label style="color:#059669;">Сумма (₽)</label>
+                  <input type="number" id="mPaidAmount" value="0" min="0" placeholder="0">
+                </div>
+              </div>
             </div>
             <div class="form-group" style="background: #eef2f7; padding: 10px; border-radius: 6px; border: 1px dashed var(--primary-dark);">
               <label style="color:var(--primary-dark); font-weight:bold;">📝 ДЗ на след. урок:</label>
@@ -1061,7 +1033,12 @@
           <div class="form-grid">
             <div class="form-group"><label>Оценка ДЗ</label><input type="text" id="ehHwGrade" style="font-weight:bold; text-align:center;"></div>
             <div class="form-group"><label>Итоговая</label><input type="text" id="ehTotalGrade" style="font-weight:bold; text-align:center;"></div>
-            <div class="form-group"><label>Оплата</label><select id="ehPaidStatus"><option value="Оплачено">Оплачено</option><option value="Не оплачено">Долг</option></select></div>
+          </div>
+          <div style="background: #ecfdf5; padding: 10px; border-radius: 6px; border: 1px solid #10b981; margin-bottom: 10px;">
+            <div class="form-grid">
+              <div class="form-group"><label style="color:#059669;">Оплата</label><select id="ehPaidStatus"><option value="Оплачено">Оплачено</option><option value="Не оплачено">Долг</option></select></div>
+              <div class="form-group"><label style="color:#059669;">Сумма (₽)</label><input type="number" id="ehPaidAmount" value="0" min="0"></div>
+            </div>
           </div>
           <div class="form-group"><label>Комментарий</label><textarea id="ehComment" rows="2"></textarea></div>
           <div style="display:flex; gap:8px; margin-top:10px;">
@@ -1464,172 +1441,67 @@
   window.sendPeriodReportToTelegram = () => sendElementAsPhotoToTelegram('periodReportCard', `📊 Период: ${document.getElementById('pRepStudent').innerText}`);
   window.sendCertificateToTelegram = () => sendElementAsPhotoToTelegram('certificateDisplayCard', `📜 Сертификат: ${document.getElementById('certRenderName').innerText}`);
 
-  window.openNotesModal = () => {
-    document.getElementById('noteText').value = '';
-    document.getElementById('noteSendToTg').checked = userSettings.tgEnabled && !!userSettings.tgBotToken && !!userSettings.tgChatId;
-    document.getElementById('noteSendToTg').parentElement.style.display = userSettings.tgEnabled ? 'flex' : 'none';
-    const sel = document.getElementById('noteStudentSelect');
-    sel.innerHTML = '<option value="">— Без привязки —</option>';
-    Object.keys(studentsMap).forEach(sId => {
-      const opt = document.createElement('option');
-      opt.value = studentsMap[sId].name;
-      opt.innerText = studentsMap[sId].name;
-      sel.appendChild(opt);
-    });
-    document.getElementById('notesModal').classList.add('active');
-    setTimeout(() => document.getElementById('noteText').focus(), 100);
-  };
-  window.closeNotesModal = () => document.getElementById('notesModal').classList.remove('active');
+  // ==================== ФИНАНСЫ ====================
+  window.openFinanceModal = () => {
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+    startOfWeek.setHours(0,0,0,0);
+    
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  window.applyNotePreset = (text) => {
-    const ta = document.getElementById('noteText');
-    ta.value = text + (ta.value ? ' ' + ta.value : '');
-    ta.focus();
-  };
+    let weekSum = 0;
+    let monthSum = 0;
+    const debts = {};
 
-  document.getElementById('notesForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const text = document.getElementById('noteText').value.trim();
-    const student = document.getElementById('noteStudentSelect').value;
-    const sendTg = document.getElementById('noteSendToTg').checked;
-    if (!text) { alert('Введите текст заметки!'); return; }
-    try {
-      await addDoc(collection(db, "notes"), {
-        userId: currentUserId,
-        studentName: student || '',
-        text: text,
-        createdAt: new Date().toISOString(),
-        sentToTg: sendTg
-      });
-      if (sendTg) {
-        const sent = notifyParentTelegram(
-          `📝 <b>Заметка${student ? ' — ' + escapeHtml(student) : ''}</b>\n${escapeHtml(text)}`
-        );
-        if (!sent) alert('Сохранено локально. Настройте Telegram в настройках, чтобы получать в бот.');
-        else alert('Заметка отправлена в Telegram и сохранена! 📝');
-      } else {
-        alert('Заметка сохранена! 📝');
+    allHistory.forEach(h => {
+      if (h.paidStatus === 'Оплачено' && h.paidAmount) {
+        const hDate = new Date(h.rawDate || h.date);
+        if (hDate >= startOfWeek) weekSum += Number(h.paidAmount);
+        if (hDate >= startOfMonth) monthSum += Number(h.paidAmount);
+      } else if (h.paidStatus === 'Не оплачено' && h.paidAmount) {
+        if (!debts[h.studentName]) debts[h.studentName] = { sum: 0, count: 0 };
+        debts[h.studentName].sum += Number(h.paidAmount);
+        debts[h.studentName].count += 1;
       }
-      closeNotesModal();
-    } catch (err) { alert('Ошибка: ' + err.message); }
-  });
+    });
 
-  window.deleteNote = async (id) => {
-    if (!confirm('Удалить заметку?')) return;
-    try { await deleteDoc(doc(db, "notes", id)); } catch (err) { alert('Ошибка: ' + err.message); }
-  };
+    document.getElementById('finWeekVal').innerText = weekSum.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('finMonthVal').innerText = monthSum.toLocaleString('ru-RU') + ' ₽';
 
-  function renderNotesPanel() {
-    const panel = document.getElementById('notesPanel');
-    if (!panel) return;
-    const filter = document.getElementById('notesFilterStudent').value;
-    panel.innerHTML = '';
-    const filtered = filter ? notesList.filter(n => n.studentName === filter) : notesList;
-    if (filtered.length === 0) {
-      panel.innerHTML = '<div class="notes-empty">Заметок пока нет. Нажмите 📝 в шапке, чтобы создать.</div>';
-      return;
-    }
-    const sorted = [...filtered].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-    sorted.forEach(n => {
-      const dateStr = n.createdAt ? new Date(n.createdAt).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }) : '—';
-      const div = document.createElement('div');
-      div.className = 'note-item';
-      div.innerHTML = `
-        <div class="note-body">
-          <div class="note-meta">
-            <span>${dateStr}</span>
-            ${n.studentName ? `<span class="note-student">${escapeHtml(n.studentName)}</span>` : ''}
-            ${n.sentToTg ? '<span title="Отправлено в TG">✈️</span>' : ''}
+    const debtList = document.getElementById('debtList');
+    debtList.innerHTML = '';
+    const debtKeys = Object.keys(debts).sort((a,b) => debts[b].sum - debts[a].sum);
+
+    if (debtKeys.length === 0) {
+      debtList.innerHTML = '<div style="text-align:center; font-size:13px; color:var(--text-muted); padding:10px;">Все долги закрыты! 🎉</div>';
+    } else {
+      debtKeys.forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'debt-item';
+        div.innerHTML = `
+          <div>
+            <div class="debt-name">${escapeHtml(name)}</div>
+            <div class="debt-info">Уроков: ${debts[name].count}</div>
           </div>
-          <div class="note-text">${escapeHtml(n.text)}</div>
-        </div>
-        <button class="note-delete" onclick="deleteNote('${n.id}')">🗑️</button>
-      `;
-      panel.appendChild(div);
-    });
-  }
-
-  function updateNotesFilter() {
-    const sel = document.getElementById('notesFilterStudent');
-    if (!sel) return;
-    const current = sel.value;
-    sel.innerHTML = '<option value="">Все ученики</option>';
-    const names = new Set();
-    notesList.forEach(n => { if (n.studentName) names.add(n.studentName); });
-    Array.from(names).sort().forEach(name => {
-      const opt = document.createElement('option');
-      opt.value = name; opt.innerText = name;
-      sel.appendChild(opt);
-    });
-    if (current && names.has(current)) sel.value = current;
-  }
-
-  // ==================== DRAG & DROP ====================
-  window.handleDragStart = (e, scheduleId) => {
-    e.dataTransfer.setData('text/plain', scheduleId);
-    e.dataTransfer.effectAllowed = 'move';
-    e.target.classList.add('dragging');
-  };
-
-  window.handleDragEnd = (e) => {
-    document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
-    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
-  };
-
-  window.handleDragOver = (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    e.currentTarget.classList.add('drag-over');
-  };
-
-  window.handleDragLeave = (e) => {
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      e.currentTarget.classList.remove('drag-over');
+          <div class="debt-sum">${debts[name].sum.toLocaleString('ru-RU')} ₽</div>
+        `;
+        debtList.appendChild(div);
+      });
     }
+
+    document.getElementById('financeModal').classList.add('active');
   };
+  window.closeFinanceModal = () => document.getElementById('financeModal').classList.remove('active');
 
-  window.handleDrop = async (e) => {
-    e.preventDefault();
-    const target = e.currentTarget;
-    target.classList.remove('drag-over');
-    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
-
-    const scheduleId = e.dataTransfer.getData('text/plain');
-    if (!scheduleId) return;
-    const data = upcomingMap[scheduleId];
-    if (!data) return;
-
-    const newDateStr = target.dataset.date;
-    if (!newDateStr) return;
-
-    const oldDate = new Date(data.dateTime);
-    const newDate = new Date(newDateStr + 'T00:00:00');
-    newDate.setHours(oldDate.getHours(), oldDate.getMinutes(), 0, 0);
-
-    const oldStr = oldDate.toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
-    const newStr = newDate.toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
-
-    if (newDate.toDateString() === oldDate.toDateString()) return;
-
-    const confirmMove = confirm(`Перенести занятие "${data.studentName}"?\n\nБыло: ${oldStr}\nСтанет: ${newStr}`);
-    if (!confirmMove) return;
-
-    try {
-      await updateDoc(doc(db, "schedule", scheduleId), {
-        dateTime: newDate.toISOString().slice(0, 16)
-      });
-      if (draftsMap[scheduleId]) await deleteDoc(doc(db, "drafts", scheduleId));
-
-      const sId = Object.keys(studentsMap).find(k => studentsMap[k].name.toLowerCase() === data.studentName.toLowerCase());
-      await addDoc(collection(db, "history"), {
-        userId: currentUserId, studentId: sId || null, studentName: data.studentName,
-        type: 'moved',
-        date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
-        rawDate: new Date().toISOString().slice(0, 16),
-        topic: `Перенос (drag): ${oldStr} → ${newStr}`,
-        comment: '', paidStatus: '—'
-      });
-    } catch (err) { alert('Ошибка переноса: ' + err.message); }
+  window.toggleAmountInput = () => {
+    const status = document.getElementById('mPaidStatus').value;
+    const input = document.getElementById('mPaidAmount');
+    if (status === 'Оплачено') {
+      input.style.borderColor = '#10b981';
+    } else {
+      input.style.borderColor = '#ef4444';
+    }
   };
 
   // ==================== AUTH ====================
@@ -2187,6 +2059,11 @@
       if (isCancelled) typeBadge = '<span class="badge-type" style="background:#fee2e2; color:#dc2626;">❌ Отменён</span>';
       if (data.type === 'duplicated') typeBadge = '<span class="badge-type" style="background:#ede9fe; color:#6d28d9;">📋 Дубликат</span>';
       if (data.type === 'moved') typeBadge = '<span class="badge-type" style="background:#dbeafe; color:#2563eb;">📅 Перенос</span>';
+      
+      let payHtml = '—';
+      if (data.paidStatus === 'Оплачено') payHtml = `<span style="color:#059669; font-weight:bold;">+${data.paidAmount || 0} ₽</span>`;
+      else if (data.paidStatus === 'Не оплачено') payHtml = `<span style="color:#dc2626; font-weight:bold;">Долг ${data.paidAmount || 0} ₽</span>`;
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td data-label="Дата">${escapeHtml(data.date || '—')}</td>
@@ -2195,6 +2072,7 @@
         <td data-label="Тема">${escapeHtml(data.topic || '—')} ${isExam ? `(${escapeHtml(data.examStatus || '')})` : ''} ${isCancelled ? `<br><small style="color:#6b7280;">${escapeHtml(data.cancelReason || '—')}</small>` : ''}</td>
         <td data-label="Оценки">${isExam ? `Зачёт: <strong>${escapeHtml(data.examStatus || '')}</strong>` : (isCancelled ? '—' : `Опрос: ${escapeHtml(data.pollGrade || '-')} | ДЗ: ${escapeHtml(data.hwGrade || '-')} | Итог: ${escapeHtml(data.totalGrade || '-')}`)}</td>
         <td data-label="ДЗ">${filledHw.length > 0 ? `${doneHw} из ${filledHw.length}` : 'Без ДЗ'}</td>
+        <td data-label="Оплата">${payHtml}</td>
         <td data-label="Действия">
           <div style="display:flex; gap:5px; flex-wrap:wrap;">
             <button class="btn-action" onclick="generateLessonReport('${data.id}')">Отчёт</button>
@@ -2466,6 +2344,14 @@
     document.getElementById('mRepeat').value = data.repeatDays;
     document.getElementById('mStudentName').innerText = data.studentName;
     document.getElementById('mFlasksChange').value = '';
+    
+    // Автозаполнение ставки из карточки ученика
+    const sId = Object.keys(studentsMap).find(k => studentsMap[k].name.toLowerCase() === data.studentName.toLowerCase());
+    const rate = sId ? (studentsMap[sId].lessonRate || 0) : 0;
+    document.getElementById('mPaidAmount').value = rate;
+    document.getElementById('mPaidStatus').value = 'Оплачено';
+    toggleAmountInput();
+
     const draft = draftsMap[id];
     const initialType = draft ? (draft.type || 'lesson') : 'lesson';
     document.getElementById('mLessonTypeSelect').value = initialType;
@@ -2483,6 +2369,8 @@
       document.getElementById('mHwGrade').value = draft.hwGrade || '';
       document.getElementById('mTotalGrade').value = draft.totalGrade || '';
       document.getElementById('mPaidStatus').value = draft.paidStatus || 'Оплачено';
+      document.getElementById('mPaidAmount').value = draft.paidAmount || rate;
+      toggleAmountInput();
       document.getElementById('mNextHw').value = draft.nextHw || '';
       document.getElementById('mComment').value = draft.comment || '';
       document.getElementById('mExamStatus').value = draft.examStatus || 'Сдал';
@@ -2531,6 +2419,7 @@
         hwGrade: document.getElementById('mHwGrade').value,
         totalGrade: document.getElementById('mTotalGrade').value,
         paidStatus: document.getElementById('mPaidStatus').value,
+        paidAmount: parseInt(document.getElementById('mPaidAmount').value) || 0,
         nextHw: document.getElementById('mNextHw').value,
         comment: document.getElementById('mComment').value,
         examStatus: document.getElementById('mExamStatus').value,
@@ -2560,6 +2449,9 @@
       const currentBalance = studentsMap[sId].flasksBalance || 0;
       await updateDoc(doc(db, "students", sId), { flasksBalance: Math.max(0, currentBalance + flasksChange) });
     }
+
+    const paidAmount = parseInt(document.getElementById('mPaidAmount').value) || 0;
+
     const historyData = {
       userId: currentUserId, studentId: sId || null, studentName, type: lessonType,
       date: formattedDate, rawDate,
@@ -2569,6 +2461,7 @@
       hwGrade: document.getElementById('mHwGrade').value,
       totalGrade: document.getElementById('mTotalGrade').value,
       paidStatus: document.getElementById('mPaidStatus').value,
+      paidAmount: paidAmount,
       comment: document.getElementById('mComment').value,
       examStatus: document.getElementById('mExamStatus').value,
       hwItems
@@ -2697,6 +2590,7 @@
       document.getElementById('cardStudentGrade').value = s.grade || '';
       document.getElementById('cardParentContacts').value = s.parentContacts || '';
       document.getElementById('cardFlasksBalance').value = s.flasksBalance || 0;
+      document.getElementById('cardLessonRate').value = s.lessonRate || 0;
       document.getElementById('cardGoal').value = s.goal || '';
       document.getElementById('cardNotes').value = s.notes || '';
       currentCardTemplates = s.hwTemplates || [];
@@ -2704,6 +2598,7 @@
       document.getElementById('studentCardModalTitle').innerText = 'Новый ученик';
       document.getElementById('studentCardForm').reset();
       document.getElementById('cardFlasksBalance').value = 0;
+      document.getElementById('cardLessonRate').value = 0;
     }
     renderCardTemplates();
     document.getElementById('studentCardModal').classList.add('active');
@@ -2739,6 +2634,7 @@
       grade: document.getElementById('cardStudentGrade').value,
       parentContacts: document.getElementById('cardParentContacts').value,
       flasksBalance: parseInt(document.getElementById('cardFlasksBalance').value) || 0,
+      lessonRate: parseInt(document.getElementById('cardLessonRate').value) || 0,
       goal: document.getElementById('cardGoal').value,
       notes: document.getElementById('cardNotes').value,
       hwTemplates: currentCardTemplates
@@ -2779,6 +2675,7 @@
     document.getElementById('ehHwGrade').value = item.hwGrade || '';
     document.getElementById('ehTotalGrade').value = item.totalGrade || '';
     document.getElementById('ehPaidStatus').value = item.paidStatus || 'Оплачено';
+    document.getElementById('ehPaidAmount').value = item.paidAmount || 0;
     document.getElementById('ehComment').value = item.comment || '';
     const rows = document.querySelectorAll('#editHistoryHwList .hw-item');
     rows.forEach(row => {
@@ -2818,6 +2715,7 @@
         hwGrade: document.getElementById('ehHwGrade').value,
         totalGrade: document.getElementById('ehTotalGrade').value,
         paidStatus: document.getElementById('ehPaidStatus').value,
+        paidAmount: parseInt(document.getElementById('ehPaidAmount').value) || 0,
         comment: document.getElementById('ehComment').value,
         hwItems
       });
