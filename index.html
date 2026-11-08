@@ -79,6 +79,7 @@
     .student-card { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; }
     .student-card h4 { font-size: 16px; color: var(--primary-dark); margin-bottom: 6px; }
     .student-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+    .student-hw-preview { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 8px; border-radius: 4px; margin: 8px 0; font-size: 12px; color: #92400e; word-break: break-word; }
 
     .hw-list { display: flex; flex-direction: column; gap: 6px; }
     .hw-item { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 4px; }
@@ -163,6 +164,7 @@
     .qr-modal-content img { width: 260px; height: 260px; margin: 15px auto; border-radius: 10px; border: 1px solid var(--border-color); background: white; max-width: 100%; }
     .qr-link-box { background: #f3f4f6; border-radius: 6px; padding: 8px; font-size: 11px; word-break: break-all; margin: 10px 0; }
 
+    /* ИСПРАВЛЕНА ПЕЧАТЬ НА ДЕНЬ */
     .day-print-card {
       background: white; border: 2px dashed var(--primary); border-radius: 12px;
       padding: 16px; max-width: 400px; margin: 0 auto;
@@ -1856,6 +1858,20 @@
       const avgHwGrade = hwGradesCount > 0 ? (hwGradesSum / hwGradesCount).toFixed(1) : '—';
       const parentLink = `https://artyom57-cmd.github.io/cabinet/parent.html?id=${sId}`;
 
+      // Ищем ближайшее ДЗ
+      const now = new Date();
+      const upcomingForStudent = Object.values(upcomingMap)
+        .filter(item => item.studentName === s.name || item.studentName.includes(s.name))
+        .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
+      
+      let upcomingHwText = '';
+      if (upcomingForStudent.length > 0) {
+        const nextLesson = upcomingForStudent[0];
+        if (nextLesson.assignedHw) {
+          upcomingHwText = nextLesson.assignedHw;
+        }
+      }
+
       const card = document.createElement('div');
       card.className = 'student-card';
       card.innerHTML = `
@@ -1865,13 +1881,15 @@
         </div>
         <p><strong>🎯 Цель:</strong> ${escapeHtml(s.goal || '—')}</p>
         <p><strong>📞 Контакты:</strong> ${escapeHtml(s.parentContacts || '—')}</p>
-        <p><strong>📝 Заметки:</strong> ${escapeHtml(s.notes || '—')}</p>
-        <p><strong>🔗 Ссылка родителя:</strong>
-           <input type="text" readonly value="${escapeHtml(parentLink)}" onclick="this.select(); document.execCommand('copy'); alert('Скопировано!');" style="font-size:11px; cursor:pointer;">
-        </p>
+        
+        ${upcomingHwText ? `<div class="student-hw-preview"><strong>📝 Ближайшее ДЗ:</strong><br>${escapeHtml(upcomingHwText)}</div>` : ''}
+
         <div style="background: #ffffff; border-radius: 6px; padding: 6px; margin: 8px 0; font-size: 12px; border: 1px solid #e5e7eb;">
           📊 Уроков: <strong>${totalLessons}</strong> | ДЗ: <strong>${hwPercent}%</strong> | Ср. оценка: <strong>${avgHwGrade}</strong>
         </div>
+        <p style="margin-bottom: 8px;"><strong>🔗 Ссылка родителя:</strong>
+           <input type="text" readonly value="${escapeHtml(parentLink)}" onclick="this.select(); document.execCommand('copy'); alert('Скопировано!');" style="font-size:11px; cursor:pointer;">
+        </p>
         <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:8px;">
           <button class="btn-action" onclick="openStudentCardModal('${sId}')">✏️</button>
           <button class="btn-action" style="background:#10b981; color:white;" onclick="openQrModal('${sId}', '${escapeHtml(s.name)}')">📱 QR</button>
@@ -2304,7 +2322,7 @@
         if (!existingStudentId) {
           await addDoc(collection(db, "students"), {
             userId: currentUserId, teacherChatId: userSettings.tgChatId || '',
-            name, grade: '', parentContacts: '', goal: '', notes: '', flasksBalance: 0, hwTemplates: []
+            name, grade: '', parentContacts: '', goal: '', notes: '', flasksBalance: 0, lessonRate: 0, hwTemplates: []
           });
         }
       }
