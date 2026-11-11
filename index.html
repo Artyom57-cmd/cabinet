@@ -3,524 +3,331 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#6366f1">
   <title>SaaS Кабинет Репетитора</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-dark: #3730a3;
-      --bg-main: #f3f4f6;
-      --card-bg: #ffffff;
-      --text-dark: #1f2937;
-      --text-muted: #6b7280;
-      --border-color: #e5e7eb;
+      --primary: #6366f1; --primary-hover: #4f46e5; --primary-light: #e0e7ff; --primary-dark: #3730a3;
+      --bg-body: #f4f6f9; --bg-card: #ffffff; --bg-hover: #f1f5f9;
+      --text-dark: #0f172a; --text-muted: #64748b; --border-color: #e2e8f0;
+      --success: #10b981; --success-bg: #ecfdf5;
+      --danger: #ef4444; --danger-bg: #fef2f2;
+      --warning: #f59e0b; --warning-bg: #fffbeb;
+      --info: #3b82f6; --info-bg: #eff6ff;
+      --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 40px -4px rgba(0,0,0,0.08);
+      --font-main: 'Inter', system-ui, -apple-system, sans-serif;
     }
-    body.theme-chemistry { --primary: #4f46e5; --primary-dark: #3730a3; }
-    body.theme-biology { --primary: #059669; --primary-dark: #047857; }
-    body.theme-math { --primary: #2563eb; --primary-dark: #1d4ed8; }
-    body.theme-english { --primary: #dc2626; --primary-dark: #b91c1c; }
-    body.theme-physics { --primary: #d97706; --primary-dark: #b45309; }
-    body.theme-russian { --primary: #7c3aed; --primary-dark: #6d28d9; }
+    body.theme-chemistry { --primary: #6366f1; --primary-hover: #4f46e5; }
+    body.theme-biology { --primary: #059669; --primary-hover: #047857; }
+    body.theme-math { --primary: #2563eb; --primary-hover: #1d4ed8; }
+    body.theme-english { --primary: #dc2626; --primary-hover: #b91c1c; }
+    body.theme-physics { --primary: #d97706; --primary-hover: #b45309; }
+    body.theme-russian { --primary: #7c3aed; --primary-hover: #6d28d9; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-main); color: var(--text-dark); padding: 25px 15px; transition: background-color 0.3s ease; -webkit-text-size-adjust: 100%; }
-    .container { max-width: 1100px; margin: 0 auto; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-body); color: var(--text-dark); font-family: var(--font-main); -webkit-font-smoothing: antialiased; display: flex; min-height: 100vh; overflow-x: hidden; }
 
-    #auth-screen {
-      display: flex; justify-content: center; align-items: center; min-height: 85vh;
-      background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 50%, #e0e7ff 100%); border-radius: 20px;
-    }
-    .login-card {
-      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 40px 35px;
-      border-radius: 20px; box-shadow: 0 20px 40px rgba(79, 70, 229, 0.12); width: 100%; max-width: 420px;
-    }
-    .login-header { text-align: center; margin-bottom: 24px; }
-    .login-header .icon-badge {
-      width: 60px; height: 60px; background: #e0e7ff; color: var(--primary);
-      font-size: 28px; display: flex; align-items: center; justify-content: center;
-      border-radius: 16px; margin: 0 auto 15px auto;
-    }
-    .auth-toggle { display: flex; background: #e0e7ff; border-radius: 10px; padding: 4px; margin-bottom: 20px; }
-    .auth-toggle button { flex: 1; padding: 8px; border: none; background: transparent; color: #4338ca; font-weight: 600; font-size: 13px; cursor: pointer; border-radius: 8px; }
-    .auth-toggle button.active { background: white; color: var(--primary); }
-    .input-wrapper { margin-bottom: 16px; }
-    .input-wrapper label { display: block; font-size: 11px; font-weight: 700; color: #374151; margin-bottom: 4px; text-transform: uppercase; }
-    .input-wrapper input, .input-wrapper select { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 10px; font-size: 16px; background: #f9fafb; outline: none; }
-    .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
-    .error-msg { background: #fee2e2; color: #dc2626; font-size: 13px; padding: 10px; border-radius: 8px; margin-top: 15px; display: none; text-align: center; }
+    /* ===== САЙДБАР ===== */
+    .sidebar { width: 88px; background: var(--bg-card); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; padding: 24px 0; position: fixed; height: 100vh; left: 0; top: 0; z-index: 100; }
+    .sidebar-logo { width: 48px; height: 48px; background: var(--primary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; margin-bottom: 32px; cursor: pointer; box-shadow: var(--shadow-glow); }
+    .nav-item { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 20px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s ease; position: relative; gap: 2px; }
+    .nav-item span.label { font-size: 10px; font-weight: 600; opacity: 0.8; }
+    .nav-item:hover { background: var(--bg-hover); color: var(--primary); }
+    .nav-item.active { background: var(--primary-light); color: var(--primary); }
+    .nav-item.active .label { opacity: 1; }
 
-    #app-screen { display: none; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
-    header h1 { font-size: 24px; font-weight: 800; color: var(--primary-dark); }
+    /* ===== КОНТЕНТ ===== */
+    .main-wrapper { margin-left: 88px; flex: 1; padding: 32px 40px; max-width: 1200px; width: calc(100% - 88px); min-height: 100vh; }
+    .screen { display: none; animation: fadeIn 0.3s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 20px; }
-    @media(min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+    header.top-bar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+    .header-title h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.8px; color: var(--text-dark); display: flex; align-items: center; gap: 12px; }
+    .header-title p { font-size: 14px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+    .header-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 
-    .card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-    .card h3 { color: var(--primary-dark); font-size: 17px; margin-bottom: 14px; }
-    .form-group { margin-bottom: 10px; }
-    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
-    input, select, textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 16px; outline: none; }
-    button { padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; touch-action: manipulation; }
-    button.btn-primary { background: var(--primary); color: white; }
-    button.btn-action { background-color: #e0e7ff; color: var(--primary-dark); font-size: 12px; padding: 5px 10px; }
-    button.btn-logout { background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-    button.btn-duplicate { background: #ede9fe; color: #6d28d9; font-size: 12px; padding: 5px 10px; }
-    button.btn-finance { background: #10b981; color: white; font-weight: bold; box-shadow: 0 2px 8px rgba(16,185,129,0.3); }
+    /* ===== КНОПКИ ===== */
+    button, .btn { padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; font-family: var(--font-main); }
+    button:active { transform: scale(0.97); }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+    .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35); transform: translateY(-1px); }
+    .btn-secondary { background: var(--bg-card); color: var(--text-dark); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+    .btn-secondary:hover { background: var(--bg-hover); border-color: #cbd5e1; }
+    .btn-action { background: var(--bg-hover); color: var(--text-dark); padding: 8px 12px; font-size: 13px; }
+    .btn-action:hover { background: #e2e8f0; }
+    .btn-success { background: var(--success-bg); color: var(--success); }
+    .btn-success:hover { background: #d1fae5; }
+    .btn-danger { background: var(--danger-bg); color: var(--danger); }
+    .btn-danger:hover { background: #fee2e2; }
+    .btn-finance { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+    .btn-finance:hover { box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4); transform: translateY(-1px); }
 
-    table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 20px; }
-    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
-    th { background-color: #f8fafc; color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; }
+    /* ===== СЕТКА ===== */
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
+    @media(min-width: 900px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+    .card { background: var(--bg-card); border-radius: var(--radius-lg); padding: 28px; border: 1px solid var(--border-color); box-shadow: var(--shadow-md); margin-bottom: 24px; }
+    .card h3 { color: var(--text-dark); font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
 
-    .students-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 10px; }
-    .student-card { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; }
-    .student-card h4 { font-size: 16px; color: var(--primary-dark); margin-bottom: 6px; }
-    .student-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
-    .student-hw-preview { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 8px; border-radius: 4px; margin: 8px 0; font-size: 12px; color: #92400e; word-break: break-word; }
+    /* ===== ФОРМЫ ===== */
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    input, select, textarea { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-size: 15px; background: var(--bg-card); color: var(--text-dark); transition: all 0.2s; font-family: var(--font-main); }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
 
-    .hw-list { display: flex; flex-direction: column; gap: 6px; }
-    .hw-item { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 4px; }
-    .hw-item.not-done { background-color: rgba(255, 0, 0, 0.12); }
-    .hw-item.done { background-color: rgba(0, 128, 0, 0.08); }
-    .status-select { border: 1px solid #000080; background: #ffffff; color: #000080; font-size: 14px; border-radius: 4px; padding: 2px 4px; cursor: pointer; font-weight: bold; }
+    /* ===== ТАБЛИЦЫ ===== */
+    table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: var(--radius-md); overflow: hidden; }
+    th, td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+    th { background-color: var(--bg-body); color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    tbody tr { transition: background 0.15s; }
+    tbody tr:hover { background-color: var(--bg-body); }
+    tbody tr:last-child td { border-bottom: none; }
 
-    .badge-draft { background-color: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 6px; }
-    .badge-type { background-color: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+    /* ===== КАРТОЧКИ УЧЕНИКОВ ===== */
+    .students-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .student-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; position: relative; overflow: hidden; }
+    .student-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary), #a855f7); opacity: 0; transition: opacity 0.3s; }
+    .student-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .student-card:hover::before { opacity: 1; }
+    .student-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .student-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; flex-shrink: 0; }
+    .student-title h4 { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 4px; }
+    .student-title p { font-size: 13px; color: var(--text-muted); }
+    .student-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: var(--bg-body); border-radius: var(--radius-sm); padding: 12px; margin: 16px 0; }
+    .stat-item { text-align: center; }
+    .stat-item .val { font-size: 18px; font-weight: 800; color: var(--text-dark); }
+    .stat-item .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-top: 2px; }
+    .student-hw-preview { background: var(--warning-bg); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: var(--radius-sm); margin: 16px 0; font-size: 13px; color: #92400e; word-break: break-word; line-height: 1.4; }
+    .student-hw-preview strong { font-weight: 700; color: #b45309; }
+    .student-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .student-actions button { flex: 1; padding: 10px; font-size: 13px; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
-    .modal.active { display: flex; }
-    .modal-content { background: white; padding: 24px; border-radius: 12px; max-width: 650px; width: 100%; max-height: 92vh; overflow-y: auto; }
+    /* ===== РАСПИСАНИЕ ===== */
+    .schedule-list { display: flex; flex-direction: column; gap: 12px; }
+    .schedule-card { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); transition: all 0.2s; }
+    .schedule-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); }
+    .schedule-time { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--primary-light); color: var(--primary); border-radius: var(--radius-sm); padding: 8px 12px; min-width: 70px; font-weight: 700; }
+    .schedule-time .day { font-size: 12px; text-transform: uppercase; opacity: 0.8; }
+    .schedule-time .time { font-size: 18px; font-weight: 800; }
+    .schedule-info { flex: 1; }
+    .schedule-info h4 { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+    .schedule-info p { font-size: 13px; color: var(--text-muted); }
+    .schedule-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 
-    .chart-container { position: relative; width: 100%; height: 250px; margin-top: 10px; }
-    .flask-badge { background: #e0e7ff; color: var(--primary-dark); font-weight: 700; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px; }
-    .toggle-switch { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; font-weight: 600; }
-    .toggle-switch input { width: auto; }
-    .shop-edit-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-    .shop-edit-row { display: flex; gap: 8px; align-items: center; }
-    .shop-edit-row input[type="text"] { flex: 3; }
-    .shop-edit-row input[type="number"] { flex: 1; }
-    .shop-edit-row button { background: #fee2e2; color: #dc2626; border: none; padding: 8px 10px; }
+    /* ===== МОДАЛЬНЫЕ ОКНА ===== */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+    .modal.active { display: flex; animation: fadeIn 0.2s; }
+    .modal-content { background: var(--bg-card); padding: 32px; border-radius: var(--radius-xl); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+    .modal-content h3 { color: var(--text-dark); font-size: 22px; margin-bottom: 24px; font-weight: 800; }
 
-    .certificate-card {
-      background: #ffffff; border: 12px double #d97706; border-radius: 20px; padding: 45px 35px;
-      text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.18);
-      margin: 30px auto; max-width: 720px; display: none; overflow: hidden; box-sizing: border-box;
-    }
-    .certificate-card.active { display: block; }
-    .cert-bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.05; font-size: 48px; display: flex; flex-wrap: wrap; justify-content: space-around; align-content: space-around; pointer-events: none; user-select: none; }
-    .certificate-header { font-size: 32px; font-weight: 900; color: #b45309; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; position: relative; }
-    .certificate-sub { font-size: 13px; color: #92400e; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 25px; }
-    .cert-icon-center { font-size: 42px; margin: 10px 0; display: inline-block; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-    .certificate-recipient { font-size: 26px; font-weight: 800; color: var(--primary-dark); border-bottom: 2px dashed #b45309; display: inline-block; padding: 0 30px 5px; margin: 10px 0 15px; }
-    .certificate-body { font-size: 15px; color: #451a03; margin: 15px 0 25px; line-height: 1.7; position: relative; }
-    .certificate-topic { font-size: 20px; font-weight: 800; color: var(--primary); display: block; margin-top: 5px; }
-    .certificate-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 35px; padding: 0 15px; position: relative; }
-    .certificate-stamp { border: 3px double #b45309; border-radius: 50%; width: 90px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; color: #b45309; transform: rotate(-10deg); font-size: 10px; text-transform: uppercase; background: rgba(254, 243, 199, 0.4); box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1); }
-
-    .schedule-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
-    .view-tabs { display: inline-flex; background: #e0e7ff; border-radius: 8px; padding: 3px; }
-    .view-tabs button { background: transparent; color: var(--primary-dark); padding: 6px 12px; font-size: 12px; border-radius: 6px; }
-    .view-tabs button.active { background: white; color: var(--primary); font-weight: 700; }
-
-    .calendar-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-    .calendar-week .day-col { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 8px; min-height: 140px; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
-    .calendar-week .day-col .day-header { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-    .calendar-week .day-col.today { border-color: var(--primary); background: #eef2ff; }
-    .calendar-week .day-col.drag-over { background: #dbeafe; border-color: #2563eb; border-style: dashed; }
-    .cal-lesson { background: var(--primary); color: white; border-radius: 6px; padding: 4px 6px; font-size: 11px; cursor: grab; line-height: 1.2; user-select: none; }
-    .cal-lesson:hover { background: var(--primary-dark); }
-    .cal-lesson.dragging { opacity: 0.4; cursor: grabbing; }
-    .cal-lesson .cal-time { font-weight: 700; font-size: 10px; opacity: 0.85; }
-
-    .calendar-month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-    .calendar-month .month-cell { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 6px; min-height: 90px; padding: 4px; font-size: 11px; transition: background 0.15s ease; }
-    .calendar-month .month-cell.today { border-color: var(--primary); background: #eef2ff; }
-    .calendar-month .month-cell.drag-over { background: #dbeafe; border-color: #2563eb; border-style: dashed; }
-    .calendar-month .month-cell .day-num { font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
-    .cal-lesson-mini { background: var(--primary); color: white; border-radius: 4px; padding: 2px 4px; font-size: 10px; margin-bottom: 2px; cursor: grab; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none; }
-    .cal-lesson-mini.dragging { opacity: 0.4; cursor: grabbing; }
-
-    .history-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }
-    .history-filters input, .history-filters select { font-size: 16px; padding: 6px 8px; }
-
-    .tour-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 5000; }
-    .tour-overlay.active { display: block; }
-    .tour-tooltip {
-      position: fixed; background: white; border-radius: 12px; padding: 18px 20px; max-width: 320px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3); z-index: 5001; display: none;
-    }
-    .tour-tooltip.active { display: block; }
-    .tour-tooltip h4 { color: var(--primary-dark); margin-bottom: 8px; font-size: 15px; }
-    .tour-tooltip p { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
-    .tour-tooltip .tour-actions { display: flex; justify-content: space-between; gap: 8px; }
-    .tour-tooltip .tour-step { font-size: 11px; color: var(--text-muted); align-self: center; }
-    .tour-spotlight { position: fixed; box-shadow: 0 0 0 9999px rgba(15,23,42,0.55); border-radius: 8px; z-index: 5000; pointer-events: none; transition: all 0.3s ease; display: none; }
-    .tour-spotlight.active { display: block; }
-
-    .qr-modal-content { text-align: center; }
-    .qr-modal-content img { width: 260px; height: 260px; margin: 15px auto; border-radius: 10px; border: 1px solid var(--border-color); background: white; max-width: 100%; }
-    .qr-link-box { background: #f3f4f6; border-radius: 6px; padding: 8px; font-size: 11px; word-break: break-all; margin: 10px 0; }
-
-    /* ИСПРАВЛЕНА ПЕЧАТЬ НА ДЕНЬ */
-    .day-print-card {
-      background: white; border: 2px dashed var(--primary); border-radius: 12px;
-      padding: 16px; max-width: 400px; margin: 0 auto;
-    }
-    .day-print-header {
-      text-align: center; border-bottom: 2px solid var(--primary);
-      padding-bottom: 8px; margin-bottom: 12px;
-    }
-    .day-print-header h3 { color: var(--primary-dark); font-size: 16px; margin-bottom: 2px; }
-    .day-print-header p { color: var(--text-muted); font-size: 11px; }
-    .day-print-list { display: flex; flex-direction: column; gap: 8px; }
-    .day-print-item {
-      border: 1px solid var(--border-color); border-radius: 8px;
-      padding: 8px 10px; display: grid; grid-template-columns: 60px 1fr;
-      gap: 8px; align-items: start;
-    }
-    .day-print-item .time {
-      font-weight: 800; color: var(--primary); font-size: 15px;
-      text-align: center; border-right: 2px solid var(--border-color); padding-right: 8px;
-    }
-    .day-print-item .info .name { font-weight: 700; font-size: 14px; color: var(--text-dark); }
-    .day-print-item .info .hw { font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
-    .day-print-item .info .hw strong { color: #d97706; }
-    .day-print-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px; }
-
-    @media print {
-      body * { visibility: hidden; }
-      #dayPrintCard, #dayPrintCard * { visibility: visible; }
-      #dayPrintCard {
-        position: absolute; left: 0; top: 0; width: 100%; max-width: none;
-        border: none; padding: 0; margin: 0;
-      }
-      .day-print-item { break-inside: avoid; }
-      .no-print { display: none !important; }
-    }
-
-    /* ===== ПЛАТФОРМЕННЫЙ БРЕНДИНГ ===== */
-    .platform-logo-wrap {
-      display: none;
-      width: 42px; height: 42px;
-      border-radius: 10px; overflow: hidden;
-      flex-shrink: 0;
-      border: 2px solid var(--primary);
-      background: white;
-      align-items: center; justify-content: center;
-    }
-    .platform-logo-wrap.active { display: inline-flex; }
-    .platform-logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
-
-    .platform-signature {
-      font-size: 11px; color: var(--text-muted);
-      margin-top: 4px; display: none;
-    }
-    .platform-signature.active { display: block; }
-    .platform-signature strong { color: var(--primary-dark); }
-    .platform-signature a { color: var(--primary); text-decoration: none; }
-
-    .app-footer {
-      text-align: center;
-      padding: 20px 10px 10px;
-      font-size: 12px; color: var(--text-muted);
-      margin-top: 20px;
-      border-top: 1px dashed var(--border-color);
-    }
-    .app-footer .footer-logo {
-      display: inline-block;
-      width: 24px; height: 24px;
-      vertical-align: middle;
-      border-radius: 4px; margin-right: 6px;
-      object-fit: contain;
-    }
-    .app-footer strong { color: var(--primary-dark); }
-    .app-footer a { color: var(--primary); text-decoration: none; }
-
-    .report-platform-mark {
-      display: none;
-      align-items: center; justify-content: center;
-      gap: 8px; margin-top: 12px;
-      padding-top: 8px;
-      border-top: 1px dashed var(--border-color);
-      font-size: 11px; color: var(--text-muted);
-    }
-    .report-platform-mark.active { display: flex; }
-    .report-platform-mark img {
-      width: 28px; height: 28px;
-      border-radius: 4px; object-fit: contain;
-    }
-
-    .platform-watermark {
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 0;
-      display: none; overflow: hidden;
-    }
-    .platform-watermark.active { display: block; }
-    .platform-watermark span {
-      position: absolute;
-      font-size: 60px; font-weight: 900;
-      color: var(--primary);
-      opacity: 0.04;
-      transform: rotate(-25deg);
-      user-select: none; white-space: nowrap;
-    }
-
-    #loginLogoWrap { display: none; margin-bottom: 12px; }
-    #loginLogoWrap img { max-height: 60px; max-width: 180px; object-fit: contain; }
-
-    /* ===== ЗАМЕТКИ ===== */
-    .notes-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .notes-preset-btn {
-      background: #e0e7ff; color: #3730a3; border: none;
-      padding: 6px 10px; font-size: 12px; border-radius: 16px;
-      cursor: pointer; font-weight: 600;
-    }
-    .notes-preset-btn:hover { background: #c7d2fe; }
-
-    .note-item {
-      background: #f9fafb;
-      border: 1px solid var(--border-color);
-      border-left: 4px solid var(--primary);
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      display: flex; justify-content: space-between;
-      gap: 10px; align-items: flex-start;
-    }
-    .note-item .note-body { flex: 1; min-width: 0; }
-    .note-item .note-meta {
-      font-size: 11px; color: var(--text-muted);
-      margin-bottom: 4px; display: flex; gap: 8px; flex-wrap: wrap;
-    }
-    .note-item .note-meta .note-student {
-      background: #e0e7ff; color: #3730a3;
-      padding: 1px 6px; border-radius: 4px; font-weight: 700;
-    }
-    .note-item .note-text { font-size: 13px; line-height: 1.4; word-break: break-word; }
-    .note-item .note-delete {
-      background: #fee2e2; color: #dc2626; border: none;
-      padding: 4px 8px; border-radius: 4px;
-      cursor: pointer; font-size: 12px; flex-shrink: 0;
-    }
-    .notes-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px; }
-
-    /* ============================================
-       🎨 СТИЛЬ ОТЧЁТОВ (как в Telegram)
-       ============================================ */
-    .report-card {
-      background: #f3e8ff; border: none; border-radius: 16px; padding: 20px 22px;
-      margin: 30px auto; max-width: 650px; display: none;
-      box-shadow: 0 8px 30px rgba(124, 58, 237, 0.15);
-      font-family: 'Segoe UI', Tahoma, sans-serif; color: #1f2937;
-    }
+    /* ===== ОТЧЁТЫ ===== */
+    .report-card { background: #f3e8ff; border: none; border-radius: var(--radius-lg); padding: 24px; margin: 30px auto; max-width: 650px; display: none; box-shadow: var(--shadow-lg); font-family: 'Segoe UI', Tahoma, sans-serif; color: #1f2937; }
     .report-card.active { display: block; }
-
-    .report-title-spaced {
-      text-align: center; font-size: 26px; font-weight: 800; letter-spacing: 14px;
-      color: transparent; -webkit-text-stroke: 1.5px #b972e8; text-stroke: 1.5px #b972e8;
-      text-transform: uppercase; margin: 0 0 18px 0; user-select: none;
-    }
-    .report-title-spaced::after {
-      content: ''; display: block; width: 40px; height: 2px;
-      background: #b972e8; margin: 10px auto 0; border-radius: 2px;
-    }
-
-    .report-line {
-      display: flex; gap: 10px; font-size: 15px; line-height: 1.45; margin-bottom: 10px; color: #1f2937;
-    }
-    .report-line .marker {
-      font-size: 20px; flex-shrink: 0; line-height: 1.2; color: #a855f7; transform: rotate(-15deg);
-    }
+    .report-title-spaced { text-align: center; font-size: 26px; font-weight: 800; letter-spacing: 14px; color: transparent; -webkit-text-stroke: 1.5px #b972e8; text-stroke: 1.5px #b972e8; text-transform: uppercase; margin: 0 0 18px 0; user-select: none; }
+    .report-title-spaced::after { content: ''; display: block; width: 40px; height: 2px; background: #b972e8; margin: 10px auto 0; border-radius: 2px; }
+    .report-line { display: flex; gap: 12px; font-size: 15px; line-height: 1.45; margin-bottom: 12px; color: #1f2937; }
+    .report-line .marker { font-size: 20px; flex-shrink: 0; line-height: 1.2; color: #a855f7; transform: rotate(-15deg); }
     .report-line .text { flex: 1; word-break: break-word; }
     .report-line strong { color: #7c3aed; font-weight: 700; }
-
-    .report-block {
-      background: rgba(255, 255, 255, 0.6); border-radius: 10px; padding: 10px 12px;
-      margin: 10px 0; border-left: 3px solid #c084fc; font-size: 14px;
-    }
-    .report-block .report-line { margin-bottom: 6px; }
+    .report-block { background: rgba(255, 255, 255, 0.6); border-radius: var(--radius-sm); padding: 12px; margin: 12px 0; border-left: 3px solid #c084fc; font-size: 14px; }
+    .report-block .report-line { margin-bottom: 8px; }
     .report-block .report-line:last-child { margin-bottom: 0; }
-
-    .report-important {
-      display: inline-block; border: 2px solid #b972e8; border-radius: 20px;
-      padding: 4px 14px; font-size: 14px; letter-spacing: 4px; color: transparent;
-      -webkit-text-stroke: 1px #b972e8; text-stroke: 1px #b972e8;
-      text-transform: uppercase; font-weight: 800; margin-top: 10px;
-    }
-
-    .report-time {
-      text-align: right; font-size: 12px; color: #a78bfa; margin-top: 8px; user-select: none;
-    }
+    .report-important { display: inline-block; border: 2px solid #b972e8; border-radius: 20px; padding: 4px 14px; font-size: 14px; letter-spacing: 4px; color: transparent; -webkit-text-stroke: 1px #b972e8; text-stroke: 1px #b972e8; text-transform: uppercase; font-weight: 800; margin-top: 10px; }
+    .report-time { text-align: right; font-size: 12px; color: #a78bfa; margin-top: 10px; user-select: none; }
     .report-time .check { color: #a855f7; font-weight: 700; }
-
-    .report-actions { display: flex; gap: 8px; margin-top: 14px; }
-    .report-actions button { flex: 1; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+    .report-actions { display: flex; gap: 12px; margin-top: 16px; }
+    .report-actions button { flex: 1; padding: 12px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
     .report-actions .btn-print { background: white; color: #7c3aed; border: 1.5px solid #c084fc; }
+    .report-actions .btn-print:hover { background: #faf5ff; }
     .report-actions .btn-tg { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; }
+    .report-actions .btn-tg:hover { opacity: 0.9; }
 
-    /* Сертификат - адаптация под фиолетовый стиль */
-    .certificate-card {
-      background: #fffaf0 !important; border: 12px double #b972e8 !important;
-      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.25) !important;
-    }
-    .certificate-header {
-      color: transparent !important; -webkit-text-stroke: 2px #b972e8 !important;
-      text-stroke: 2px #b972e8 !important; letter-spacing: 8px !important;
-    }
-    .certificate-sub { color: #7c3aed !important; }
-    .certificate-topic { color: #7c3aed !important; }
-    .certificate-stamp { border-color: #b972e8 !important; color: #b972e8 !important; background: rgba(243, 232, 255, 0.6) !important; }
+    /* ===== ФИНАНСЫ ===== */
+    .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .finance-card { background: var(--success-bg); border: 1px solid var(--success); border-radius: var(--radius-md); padding: 20px; text-align: center; }
+    .finance-card.month { background: var(--info-bg); border-color: var(--info); }
+    .finance-card h4 { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px; }
+    .finance-card .val { font-size: 28px; font-weight: 800; color: var(--success); }
+    .finance-card.month .val { color: var(--info); }
+    .debt-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .debt-item { background: var(--danger-bg); border: 1px solid #fca5a5; border-radius: var(--radius-sm); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
+    .debt-item .debt-name { font-weight: 700; color: #b91c1c; font-size: 15px; }
+    .debt-item .debt-sum { font-weight: 800; color: var(--danger); font-size: 18px; }
+    .debt-item .debt-info { font-size: 12px; color: #7f1d1d; margin-top: 2px; }
 
-    /* ============================================
-       💰 ФИНАНСОВЫЙ ДАШБОРД
-       ============================================ */
-    .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-    .finance-card { background: #ecfdf5; border: 1px solid #10b981; border-radius: 10px; padding: 12px; text-align: center; }
-    .finance-card.month { background: #eff6ff; border-color: #3b82f6; }
-    .finance-card h4 { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-    .finance-card .val { font-size: 22px; font-weight: 800; color: #059669; }
-    .finance-card.month .val { color: #2563eb; }
+    /* ===== ЗАМЕТКИ ===== */
+    .notes-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .notes-preset-btn { background: var(--bg-body); color: var(--text-dark); border: 1px solid var(--border-color); padding: 8px 14px; font-size: 13px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    .notes-preset-btn:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+    .note-item { background: var(--bg-body); border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: var(--radius-sm); padding: 16px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .note-item .note-body { flex: 1; min-width: 0; }
+    .note-item .note-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .note-item .note-meta .note-student { background: var(--primary-light); color: var(--primary-dark); padding: 2px 10px; border-radius: 12px; font-weight: 700; }
+    .note-item .note-text { font-size: 14px; line-height: 1.5; word-break: break-word; }
+    .note-item .note-delete { background: var(--danger-bg); color: var(--danger); border: none; padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; flex-shrink: 0; transition: background 0.2s; }
+    .note-item .note-delete:hover { background: #fee2e2; }
+    .notes-empty { text-align: center; color: var(--text-muted); font-size: 14px; padding: 40px; }
 
-    .debt-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-    .debt-item { background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; }
-    .debt-item .debt-name { font-weight: 700; color: #b91c1c; font-size: 14px; }
-    .debt-item .debt-sum { font-weight: 800; color: #dc2626; font-size: 16px; }
-    .debt-item .debt-info { font-size: 11px; color: #7f1d1d; margin-top: 2px; }
-
+    /* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
     @media (max-width: 768px) {
-      body { padding: 12px 8px; }
-      .container { max-width: 100%; }
-      #auth-screen { min-height: 70vh; border-radius: 12px; padding: 0 4px; }
-      .login-card { padding: 28px 20px; border-radius: 16px; }
-
-      header { margin-bottom: 16px; }
-      header h1 { font-size: 18px; }
-      #userWelcomeText { font-size: 12px; }
-      header > div:last-child { width: 100%; }
-      header button { flex: 1 1 auto; font-size: 11px; padding: 7px 8px; }
-
-      .card { padding: 14px; border-radius: 10px; margin-bottom: 14px; }
-      .card h3 { font-size: 15px; margin-bottom: 10px; }
-      .form-grid { grid-template-columns: 1fr; gap: 8px; }
-      .grid-2 { gap: 14px; }
-
-      .students-grid { grid-template-columns: 1fr; gap: 10px; }
-
+      body { flex-direction: column; padding-bottom: 80px; }
+      .sidebar { display: none; }
+      .main-wrapper { margin-left: 0; width: 100%; padding: 20px 16px; }
+      .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-card); border-top: 1px solid var(--border-color); box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 100; justify-content: space-around; padding: 10px 0 14px; }
+      .mobile-nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); cursor: pointer; padding: 6px; flex: 1; transition: all 0.2s; gap: 4px; }
+      .mobile-nav-item .icon { font-size: 22px; }
+      .mobile-nav-item.active { color: var(--primary); font-weight: 600; }
+      .mobile-nav-item.active .icon { transform: translateY(-2px); }
+      header.top-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .header-title h1 { font-size: 24px; }
+      .header-actions { width: 100%; overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
+      .header-actions button { flex-shrink: 0; }
+      .grid-2 { gap: 16px; margin-bottom: 16px; }
+      .card { padding: 20px; border-radius: var(--radius-md); margin-bottom: 16px; }
+      .students-grid { grid-template-columns: 1fr; gap: 16px; }
+      .student-stats { gap: 6px; }
+      .stat-item .val { font-size: 16px; }
       table, thead, tbody, th, td, tr { display: block; }
       table { border: none; background: transparent; }
       thead { display: none; }
-      tbody tr { background: white; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 10px 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-      tbody td { border: none; padding: 4px 0; font-size: 13px; display: flex; justify-content: space-between; gap: 10px; text-align: right; }
-      tbody td::before { content: attr(data-label); font-weight: 700; color: var(--text-muted); font-size: 11px; text-transform: uppercase; text-align: left; flex-shrink: 0; }
-      tbody td:last-child { padding-top: 8px; border-top: 1px solid var(--border-color); margin-top: 6px; justify-content: flex-end; }
+      tbody tr { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 16px; padding: 20px; box-shadow: var(--shadow-sm); }
+      tbody td { border: none; padding: 8px 0; font-size: 14px; display: flex; justify-content: space-between; gap: 16px; text-align: right; }
+      tbody td::before { content: attr(data-label); font-weight: 700; color: var(--text-muted); font-size: 12px; text-transform: uppercase; text-align: left; flex-shrink: 0; }
+      tbody td:last-child { padding-top: 16px; border-top: 1px solid var(--border-color); margin-top: 12px; justify-content: flex-end; }
       tbody td:last-child::before { content: ''; }
-      tbody td button { font-size: 12px; padding: 6px 8px; }
-
-      .calendar-week, .calendar-month { display: flex; overflow-x: auto; gap: 6px; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
-      .calendar-week .day-col { min-width: 130px; min-height: 160px; flex-shrink: 0; }
-      .calendar-month .month-cell { min-width: 90px; min-height: 100px; flex-shrink: 0; }
-
-      .view-tabs button { padding: 6px 9px; font-size: 11px; }
-      .schedule-toolbar button { font-size: 11px; padding: 6px 8px; }
-
-      .history-filters { grid-template-columns: 1fr 1fr; }
-
+      tbody td button { font-size: 13px; padding: 8px 14px; }
       .modal { padding: 0; align-items: flex-end; }
-      .modal-content { width: 100%; max-width: 100%; max-height: 94vh; border-radius: 16px 16px 0 0; padding: 18px 14px; }
-      .modal-content h3 { font-size: 16px; }
-
-      .form-group label { font-size: 11px; }
-      input, select, textarea { font-size: 16px; padding: 9px 10px; }
-
-      .report-card { padding: 15px; margin: 15px 0; }
-      .chart-container { height: 200px; }
-      .report-title-spaced { font-size: 22px; letter-spacing: 10px; }
-
-      .certificate-card { padding: 25px 15px; border-width: 6px; }
-      .certificate-header { font-size: 22px; letter-spacing: 2px; }
-      .certificate-recipient { font-size: 19px; padding: 0 15px 4px; }
-      .certificate-topic { font-size: 16px; }
-      .certificate-stamp { width: 70px; height: 70px; font-size: 8px; }
-      .cert-bg-overlay { font-size: 32px; }
-
-      .qr-modal-content img { width: 220px; height: 220px; }
-
-      .tour-tooltip { max-width: calc(100vw - 20px); }
-      .tour-tooltip .tour-actions { flex-wrap: wrap; }
-
-      .platform-logo-wrap { width: 34px; height: 34px; }
-      .app-footer { font-size: 11px; padding: 16px 8px 8px; }
-      .platform-watermark span { font-size: 40px; }
-      
+      .modal-content { width: 100%; max-width: 100%; max-height: 92vh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: 24px 20px; }
       .finance-grid { grid-template-columns: 1fr; }
+      .report-card { padding: 20px 16px; margin: 20px 0; }
+      .report-title-spaced { font-size: 22px; letter-spacing: 10px; }
+      .schedule-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .schedule-actions { width: 100%; justify-content: flex-start; }
+    }
+    @media (min-width: 769px) { .mobile-nav { display: none; } }
+
+    /* Утилиты */
+    .hidden { display: none !important; }
+    .text-center { text-align: center; }
+    .mt-2 { margin-top: 8px; }
+    .mb-2 { margin-bottom: 8px; }
+    .w-full { width: 100%; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .gap-2 { gap: 8px; }
+    .flex-wrap { flex-wrap: wrap; }
+
+    /* Сертификат */
+    .certificate-card { display: none; background: #fffaf0; border: 12px double #b972e8; border-radius: 20px; padding: 45px 35px; text-align: center; position: relative; box-shadow: 0 20px 50px rgba(124, 58, 237, 0.25); margin: 30px auto; max-width: 720px; overflow: hidden; box-sizing: border-box; }
+    .certificate-card.active { display: block; }
+    .cert-bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.05; font-size: 48px; display: flex; flex-wrap: wrap; justify-content: space-around; align-content: space-around; pointer-events: none; user-select: none; }
+    .certificate-header { font-size: 32px; font-weight: 900; color: transparent; -webkit-text-stroke: 2px #b972e8; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 5px; position: relative; }
+    .certificate-sub { font-size: 13px; color: #7c3aed; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 25px; }
+    .cert-icon-center { font-size: 42px; margin: 10px 0; display: inline-block; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+    .certificate-recipient { font-size: 26px; font-weight: 800; color: var(--primary-dark); border-bottom: 2px dashed #b45309; display: inline-block; padding: 0 30px 5px; margin: 10px 0 15px; }
+    .certificate-body { font-size: 15px; color: #451a03; margin: 15px 0 25px; line-height: 1.7; position: relative; }
+    .certificate-topic { font-size: 20px; font-weight: 800; color: #7c3aed; display: block; margin-top: 5px; }
+    .certificate-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 35px; padding: 0 15px; position: relative; }
+    .certificate-stamp { border: 3px double #b972e8; border-radius: 50%; width: 90px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; color: #b972e8; transform: rotate(-10deg); font-size: 10px; text-transform: uppercase; background: rgba(243, 232, 255, 0.6); box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1); }
+    .report-platform-mark { display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; padding-top: 12px; border-top: 1px dashed #c084fc; font-size: 11px; color: var(--text-muted); }
+    .report-platform-mark.active { display: flex; }
+    .report-platform-mark img { width: 28px; height: 28px; border-radius: 4px; object-fit: contain; }
+    .no-print { display: none !important; }
+    @media print {
+      body * { visibility: hidden; }
+      #dayPrintCard, #dayPrintCard * { visibility: visible; }
+      #dayPrintCard { position: absolute; left: 0; top: 0; width: 100%; max-width: none; border: none; padding: 0; margin: 0; }
+      .day-print-item { break-inside: avoid; }
     }
 
-    @media (max-width: 400px) {
-      header button { font-size: 10px; padding: 6px; }
-      .view-tabs button { padding: 5px 7px; font-size: 10px; }
-      .history-filters { grid-template-columns: 1fr; }
-      .day-print-item { grid-template-columns: 50px 1fr; }
-    }
+    /* Календарь */
+    .calendar-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .calendar-week .day-col { background: var(--bg-body); border: 1px solid var(--border-color); border-radius: var(--radius-sm); min-height: 160px; padding: 12px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s; }
+    .calendar-week .day-col.today { border-color: var(--primary); background: var(--primary-light); }
+    .calendar-week .day-col.drag-over { background: #dbeafe; border-color: #2563eb; border-style: dashed; }
+    .cal-lesson { background: var(--primary); color: white; border-radius: 6px; padding: 8px; font-size: 12px; cursor: grab; line-height: 1.3; user-select: none; transition: transform 0.1s; }
+    .cal-lesson:hover { transform: scale(1.02); }
+    .cal-lesson.dragging { opacity: 0.4; cursor: grabbing; }
+    .calendar-month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .calendar-month .month-cell { background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 6px; min-height: 100px; padding: 8px; font-size: 12px; }
+    .calendar-month .month-cell.today { border-color: var(--primary); background: var(--primary-light); }
+    .calendar-month .month-cell.drag-over { background: #dbeafe; border-color: #2563eb; border-style: dashed; }
+    .calendar-month .month-cell .day-num { font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+    .cal-lesson-mini { background: var(--primary); color: white; border-radius: 4px; padding: 4px 6px; font-size: 11px; margin-bottom: 4px; cursor: grab; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none; }
+    .cal-lesson-mini.dragging { opacity: 0.4; cursor: grabbing; }
+    
+    #auth-screen { display: flex; position: fixed; inset: 0; background: var(--bg-body); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+    #auth-screen.hidden { display: none; }
   </style>
 </head>
 <body class="theme-chemistry">
 
-<div class="platform-watermark" id="platformWatermark"></div>
-
-<div class="container">
-
-  <div id="auth-screen">
-    <div class="login-card">
-      <div class="login-header">
-        <div id="loginLogoWrap">
-          <img id="loginLogoImg" alt="logo">
-        </div>
-        <div class="icon-badge" id="appLogoIcon">🎓</div>
-        <h2 id="appTitleText">Кабинет Репетитора</h2>
-        <p>Мультипредметный SaaS-сервис</p>
-      </div>
-      <div class="auth-toggle">
-        <button id="toggleLogin" class="active" onclick="switchAuthMode('login')">Вход</button>
-        <button id="toggleRegister" onclick="switchAuthMode('register')">Регистрация</button>
-      </div>
-      <form id="authForm">
-        <div class="input-wrapper"><label>Email</label><input type="email" id="authEmail" placeholder="teacher@example.com" required></div>
-        <div class="input-wrapper"><label>Пароль</label><input type="password" id="authPassword" placeholder="••••••••" required></div>
-        <button type="submit" id="authSubmitBtn" class="btn-submit">Войти 🚀</button>
-        <div class="error-msg" id="authError"></div>
-      </form>
+<!-- Экран авторизации -->
+<div id="auth-screen">
+  <div class="card" style="max-width: 420px; width: 100%;">
+    <div class="text-center mb-2">
+      <div style="width: 64px; height: 64px; background: var(--primary-light); color: var(--primary); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">🎓</div>
+      <h2 style="font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Кабинет Репетитора</h2>
+      <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">Мультипредметный SaaS-сервис</p>
     </div>
-  </div>
-
-  <div id="app-screen">
-    <header>
-      <div style="display:flex; align-items:center; gap:10px;">
-        <div class="platform-logo-wrap" id="headerPlatformLogo">
-          <img id="headerPlatformLogoImg" alt="logo">
-        </div>
-        <div>
-          <h1><span id="headerSubjectIcon">🧪</span> <span id="headerTitle">Кабинет Репетитора</span></h1>
-          <p id="userWelcomeText">Управление расписанием</p>
-          <p class="platform-signature" id="platformSignature">Платформа: <strong id="platformSignatureName"></strong></p>
-        </div>
+    <div style="display: flex; background: var(--bg-body); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 24px;">
+      <button id="toggleLogin" class="active" onclick="switchAuthMode('login')" style="flex:1; padding: 10px; border: none; background: white; color: var(--primary); font-weight: 600; border-radius: 6px; cursor: pointer; box-shadow: var(--shadow-sm);">Вход</button>
+      <button id="toggleRegister" onclick="switchAuthMode('register')" style="flex:1; padding: 10px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; border-radius: 6px; cursor: pointer;">Регистрация</button>
+    </div>
+    <form id="authForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="authEmail" placeholder="teacher@example.com" required>
       </div>
-      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-        <button class="btn-action btn-finance" onclick="openFinanceModal()">💰 Финансы</button>
-        <button class="btn-action" style="background:#6366f1; color:white;" onclick="openNotesModal()">📝 Заметка</button>
-        <button class="btn-action" style="background:#059669; color:white;" onclick="openCertificateModal()">📜 Сертификат</button>
-        <button class="btn-action economy-field" style="background:#10b981; color:white;" onclick="openSettingsModal('shopTab')">🛍️ Магазин</button>
-        <button class="btn-action" style="background:#e0e7ff;" onclick="openSettingsModal()" data-tour="settings">⚙️ Настройки</button>
-        <button class="btn-action" style="background:#fef3c7; color:#d97706;" onclick="startTour(true)">❓</button>
-        <button class="btn-logout" id="logoutBtn">Выйти 🚪</button>
+      <div class="form-group">
+        <label>Пароль</label>
+        <input type="password" id="authPassword" placeholder="••••••••" required>
+      </div>
+      <button type="submit" id="authSubmitBtn" class="btn-primary w-full" style="padding: 14px; font-size: 16px;">Войти 🚀</button>
+      <div class="error-msg" id="authError" style="display:none; background: var(--danger-bg); color: var(--danger); font-size: 13px; padding: 12px; border-radius: 6px; margin-top: 16px; text-align: center;"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Сайдбар -->
+<div class="sidebar">
+  <div class="sidebar-logo" id="headerPlatformLogo">
+    <img id="headerPlatformLogoImg" alt="logo" style="width:100%; height:100%; object-fit:contain; display:none;">
+    <span id="fallbackLogoIcon">🎓</span>
+  </div>
+  <div class="nav-item active" onclick="showScreen('students')"><span>👥</span><span class="label">Ученики</span></div>
+  <div class="nav-item" onclick="showScreen('schedule')"><span>📅</span><span class="label">Расписание</span></div>
+  <div class="nav-item" onclick="showScreen('history')"><span>📜</span><span class="label">История</span></div>
+  <div class="nav-item" onclick="openFinanceModal()"><span>💰</span><span class="label">Финансы</span></div>
+  <div class="nav-item" onclick="openNotesModal()"><span>📝</span><span class="label">Заметки</span></div>
+  <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span><span class="label">Настройки</span></div>
+  <div class="nav-item" onclick="signOut(auth)" style="margin-top: auto;"><span>🚪</span><span class="label">Выйти</span></div>
+</div>
+
+<!-- Основной контент -->
+<div class="main-wrapper" id="app-screen" style="display:none;">
+  
+  <!-- Экран: Ученики -->
+  <div id="screen-students" class="screen active">
+    <header class="top-bar">
+      <div class="header-title">
+        <h1>Мои ученики</h1>
+        <p>Управление картотекой и прогрессом</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-finance" onclick="openFinanceModal()">💰 Финансы</button>
+        <button class="btn-primary" onclick="openStudentCardModal()">+ Ученик</button>
       </div>
     </header>
-
+    
     <div class="grid-2">
       <div class="card" data-tour="schedule-form">
-        <h3>📅 1. Запланировать занятие</h3>
+        <h3>📅 Запланировать занятие</h3>
         <form id="studentForm">
           <div class="form-group">
             <label>Формат</label>
@@ -551,17 +358,17 @@
           </div>
           <div class="form-group">
             <label>ДЗ</label>
-            <select id="planHwTemplateSelect" style="margin-bottom: 5px;" onchange="applyPlanHwTemplate(this)">
+            <select id="planHwTemplateSelect" style="margin-bottom: 8px;" onchange="applyPlanHwTemplate(this)">
               <option value="">-- Шаблон --</option>
             </select>
             <textarea id="addAssignedHw" rows="2" placeholder="Или вручную..."></textarea>
           </div>
-          <button type="submit" class="btn-primary" style="width: 100%; margin-top:5px;">Записать</button>
+          <button type="submit" class="btn-primary w-full" style="padding: 12px;">Записать</button>
         </form>
       </div>
 
       <div class="card">
-        <h3>📊 2. Отчёт за период</h3>
+        <h3>📊 Отчёт за период</h3>
         <form id="periodReportForm">
           <div class="form-group">
             <label>Ученик</label>
@@ -572,66 +379,62 @@
             <div class="form-group"><label>ПО</label><input type="date" id="reportDateTo" required></div>
           </div>
           <div class="form-group"><label>Комментарий</label><textarea id="reportTeacherComment" rows="2"></textarea></div>
-          <button type="button" class="btn-primary" style="width: 100%; background: #059669;" onclick="generatePeriodReport()">Сформировать</button>
+          <button type="button" class="btn-success w-full" style="padding: 12px;" onclick="generatePeriodReport()">Сформировать</button>
         </form>
       </div>
     </div>
 
     <div class="card" data-tour="students">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3>🗂️ Картотека</h3>
-        <button class="btn-primary" onclick="openStudentCardModal()">+ Ученик</button>
+      <div class="flex-between mb-2">
+        <h3>🗂️ Картотека учеников</h3>
       </div>
       <div class="students-grid" id="studentsCardList"></div>
     </div>
+  </div>
 
-    <!-- ЗАМЕТКИ -->
-    <div class="card" data-tour="notes">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3>📋 Мои заметки</h3>
-        <button class="btn-action" style="background:#6366f1; color:white;" onclick="openNotesModal()">+ Заметка</button>
+  <!-- Экран: Расписание -->
+  <div id="screen-schedule" class="screen">
+    <header class="top-bar">
+      <div class="header-title">
+        <h1>Расписание</h1>
+        <p>Ваши занятия и планы</p>
       </div>
-      <div class="form-group">
-        <select id="notesFilterStudent" onchange="renderNotesPanel()">
-          <option value="">Все ученики</option>
-        </select>
-      </div>
-      <div id="notesPanel" style="max-height: 400px; overflow-y: auto;"></div>
-    </div>
-
-    <div class="card" data-tour="schedule">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:8px;">
-        <h3>📌 Расписание</h3>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <button class="btn-action" style="background:#8b5cf6; color:white;" onclick="openDayPrintModal()">🖨️ Печать на день</button>
-          <div class="view-tabs">
-            <button id="viewTableBtn" class="active" onclick="switchScheduleView('table')">📋 Таблица</button>
-            <button id="viewWeekBtn" onclick="switchScheduleView('week')">📅 Неделя</button>
-            <button id="viewMonthBtn" onclick="switchScheduleView('month')">🗓️ Месяц</button>
-          </div>
+      <div class="header-actions">
+        <button class="btn-secondary" onclick="openDayPrintModal()">🖨️ Печать на день</button>
+        <div class="view-tabs" style="display:inline-flex; background:var(--bg-body); border-radius:var(--radius-sm); padding:4px;">
+          <button id="viewTableBtn" class="active" onclick="switchScheduleView('table')" style="background:white; color:var(--primary); border-radius:6px; padding:6px 12px; font-weight:600; font-size:13px; box-shadow:var(--shadow-sm);">📋 Список</button>
+          <button id="viewWeekBtn" onclick="switchScheduleView('week')" style="background:transparent; color:var(--text-muted); border-radius:6px; padding:6px 12px; font-weight:600; font-size:13px;">📅 Неделя</button>
+          <button id="viewMonthBtn" onclick="switchScheduleView('month')" style="background:transparent; color:var(--text-muted); border-radius:6px; padding:6px 12px; font-weight:600; font-size:13px;">🗓️ Месяц</button>
         </div>
       </div>
-      <div class="schedule-toolbar" id="calendarNav" style="display:none;">
-        <button class="btn-action" onclick="navigateCalendar(-1)">◀</button>
+    </header>
+    
+    <div class="card">
+      <div class="schedule-toolbar" id="calendarNav" style="display:none; margin-bottom: 16px; gap:8px;">
+        <button class="btn-secondary" onclick="navigateCalendar(-1)">◀</button>
         <strong id="calendarLabel" style="flex:1; text-align:center; font-size:14px;"></strong>
-        <button class="btn-action" onclick="navigateCalendar(1)">▶</button>
-        <button class="btn-action" style="background:#f3f4f6;" onclick="navigateCalendar(0)">Сегодня</button>
+        <button class="btn-secondary" onclick="navigateCalendar(1)">▶</button>
+        <button class="btn-secondary" onclick="navigateCalendar(0)">Сегодня</button>
       </div>
-      <p id="dragHint" style="display:none; font-size:12px; color:var(--text-muted); margin-bottom:8px;">
-        💡 Перетащите занятие в другой день, чтобы перенести
-      </p>
+      <p id="dragHint" style="display:none; font-size:13px; color:var(--text-muted); margin-bottom:12px;">💡 Перетащите занятие в другой день, чтобы перенести</p>
+      
       <div id="scheduleTableView">
-        <table>
-          <thead><tr><th>Дата</th><th>Ученик</th><th>Повтор</th><th>ДЗ</th><th>Действия</th></tr></thead>
-          <tbody id="upcomingTable"></tbody>
-        </table>
+        <div class="schedule-list" id="upcomingTable"></div>
       </div>
       <div id="scheduleCalendarView" style="display:none;"></div>
     </div>
+  </div>
 
-    <div class="card" data-tour="history">
-      <h3>📜 История</h3>
-      <div class="history-filters">
+  <!-- Экран: История -->
+  <div id="screen-history" class="screen">
+    <header class="top-bar">
+      <div class="header-title">
+        <h1>История</h1>
+        <p>Проведённые уроки и зачёты</p>
+      </div>
+    </header>
+    <div class="card">
+      <div class="form-grid" style="margin-bottom: 24px;">
         <input type="text" id="histSearch" placeholder="🔍 Поиск" oninput="renderHistoryTable()">
         <select id="histTypeFilter" onchange="renderHistoryTable()">
           <option value="">Все типы</option>
@@ -648,606 +451,539 @@
         </select>
         <input type="date" id="histDateFrom" onchange="renderHistoryTable()">
         <input type="date" id="histDateTo" onchange="renderHistoryTable()">
-        <button class="btn-action" onclick="resetHistoryFilters()">Сброс</button>
+        <button class="btn-secondary" onclick="resetHistoryFilters()">Сброс</button>
       </div>
       <table>
         <thead><tr><th>Дата</th><th>Ученик</th><th>Тип</th><th>Тема</th><th>Оценки</th><th>ДЗ</th><th>Оплата</th><th>Действия</th></tr></thead>
         <tbody id="historyTable"></tbody>
       </table>
     </div>
+  </div>
 
-    <!-- МОДАЛКА ФИНАНСЫ -->
-    <div class="modal" id="financeModal">
-      <div class="modal-content" style="max-width: 500px;">
-        <h3 style="color:#059669; margin-bottom:15px;">💰 Финансовый отчёт</h3>
-        
-        <div class="finance-grid">
-          <div class="finance-card">
-            <h4>За эту неделю</h4>
-            <div class="val" id="finWeekVal">0 ₽</div>
-          </div>
-          <div class="finance-card month">
-            <h4>За этот месяц</h4>
-            <div class="val" id="finMonthVal">0 ₽</div>
-          </div>
-        </div>
-
-        <h4 style="font-size:14px; color:#b91c1c; margin-bottom:8px; border-bottom:1px solid #fca5a5; padding-bottom:5px;">Должники</h4>
-        <div class="debt-list" id="debtList">
-          <div style="text-align:center; font-size:13px; color:var(--text-muted); padding:10px;">Все долги закрыты! 🎉</div>
-        </div>
-
-        <div style="display:flex; gap:8px; margin-top:20px;">
-          <button class="btn-primary" style="flex:1; background:#f3f4f6; color:var(--text-dark);" onclick="closeFinanceModal()">Закрыть</button>
-        </div>
+  <!-- Экран: Заметки -->
+  <div id="screen-notes" class="screen">
+    <header class="top-bar">
+      <div class="header-title">
+        <h1>Мои заметки</h1>
+        <p>Заметки себе в Telegram</p>
       </div>
-    </div>
-
-    <!-- МОДАЛКА ЗАМЕТКИ -->
-    <div class="modal" id="notesModal">
-      <div class="modal-content" style="max-width: 500px;">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;">📝 Заметка себе</h3>
-        <form id="notesForm">
-          <div class="form-group">
-            <label>Быстрые шаблоны</label>
-            <div class="notes-presets">
-              <button type="button" class="notes-preset-btn" onclick="applyNotePreset('✏️ Задать ДЗ: ')">✏️ Задать ДЗ</button>
-              <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📚 Подобрать материал: ')">📚 Материал</button>
-              <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📞 Позвонить родителю: ')">📞 Позвонить</button>
-              <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📝 Написать ученику: ')">📝 Написать</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Ученик (опционально)</label>
-            <select id="noteStudentSelect">
-              <option value="">— Без привязки —</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Текст заметки</label>
-            <textarea id="noteText" rows="4" required placeholder="Например: Иванову надо подобрать задачи на pH"></textarea>
-          </div>
-          <div class="toggle-switch">
-            <input type="checkbox" id="noteSendToTg" checked>
-            <label for="noteSendToTg">Отправить в Telegram-бот</label>
-          </div>
-          <div style="display:flex; gap:8px; margin-top:15px;">
-            <button type="submit" class="btn-primary" style="flex:2; background:#6366f1;">Сохранить 📝</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeNotesModal()">Отмена</button>
-          </div>
-        </form>
+      <div class="header-actions">
+        <button class="btn-primary" onclick="openNotesModal()">+ Заметка</button>
       </div>
-    </div>
-
-    <div class="modal" id="dayPrintModal">
-      <div class="modal-content" style="max-width: 480px;">
-        <h3 style="color:var(--primary-dark); margin-bottom:12px;" class="no-print">🖨️ Распечатка на день</h3>
-        <div class="form-group no-print">
-          <label>Дата</label>
-          <input type="date" id="dayPrintDate" onchange="renderDayPrintCard()">
-        </div>
-        <div id="dayPrintCard" class="day-print-card">
-          <div class="day-print-header">
-            <h3 id="dayPrintTitle">Расписание на сегодня</h3>
-            <p id="dayPrintSubtitle"></p>
-          </div>
-          <div class="day-print-list" id="dayPrintList"></div>
-        </div>
-        <div class="no-print" style="display:flex; gap:8px; margin-top:16px;">
-          <button class="btn-primary" style="flex:2;" onclick="window.print()">🖨️ Печать</button>
-          <button class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeDayPrintModal()">Отмена</button>
-        </div>
+    </header>
+    <div class="card">
+      <div class="form-group" style="max-width: 300px;">
+        <select id="notesFilterStudent" onchange="renderNotesPanel()">
+          <option value="">Все ученики</option>
+        </select>
       </div>
-    </div>
-
-    <div class="modal" id="certificateModal">
-      <div class="modal-content">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;">🎓 Сертификат</h3>
-        <form id="certificateForm">
-          <div class="form-group"><label>Ученик</label><select id="certStudentSelect" required></select></div>
-          <div class="form-group"><label>ФИО преподавателя</label><input type="text" id="certTeacherName" required></div>
-          <div class="form-group"><label>Тема</label><input type="text" id="certTopic" required></div>
-          <div class="form-group"><label>Дата</label><input type="date" id="certDate" required></div>
-          <div style="display:flex; gap:8px; margin-top:20px;">
-            <button type="button" class="btn-primary" style="flex:2;" onclick="generateCertificate()">Сформировать 📜</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeCertificateModal()">Отмена</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="settingsModal">
-      <div class="modal-content">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;">⚙️ Настройки</h3>
-        <form id="settingsForm">
-          <div class="form-group"><label>ФИО преподавателя</label><input type="text" id="setTeacherName" required></div>
-          <div class="form-group">
-            <label>Предмет</label>
-            <select id="setSubject" onchange="onSubjectChange(this.value)">
-              <option value="chemistry">🧪 Химия</option><option value="biology">🔬 Биология</option>
-              <option value="math">🧮 Математика</option><option value="english">🇬🇧 Английский</option>
-              <option value="physics">⚙️ Физика</option><option value="russian">📚 Русский</option>
-            </select>
-          </div>
-          <hr style="margin: 15px 0;">
-          <h4 style="font-size: 14px; margin-bottom: 8px;">✈️ Telegram</h4>
-          <div class="toggle-switch"><input type="checkbox" id="setTgEnabled"><label for="setTgEnabled">Включить</label></div>
-          <div class="form-grid">
-            <div class="form-group"><label>Bot Token</label><input type="text" id="setTgBotToken"></div>
-            <div class="form-group"><label>Chat ID</label><input type="text" id="setTgChatId"></div>
-          </div>
-          <div class="toggle-switch"><input type="checkbox" id="setAutoMonthlyReport"><label for="setAutoMonthlyReport">Авто-отчёт</label></div>
-          <hr style="margin: 15px 0;">
-          <h4 style="font-size: 14px; margin-bottom: 8px;">🎮 Экономика</h4>
-          <div class="toggle-switch"><input type="checkbox" id="setEconomyEnabled"><label for="setEconomyEnabled">Магазин</label></div>
-          <div class="form-grid">
-            <div class="form-group"><label>Валюта</label><input type="text" id="setCurrencyName"></div>
-            <div class="form-group"><label>Эмодзи</label><input type="text" id="setCurrencyIcon"></div>
-          </div>
-          <div id="shopSettingsBlock">
-            <hr style="margin: 15px 0;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <h4 style="font-size: 14px;">🎁 Магазин</h4>
-              <button type="button" class="btn-action" onclick="resetShopItemsToDefault()">Сбросить</button>
-            </div>
-            <div class="shop-edit-list" id="shopEditList"></div>
-            <button type="button" class="btn-action" style="background:#059669; color:white; width:100%; margin-top:10px;" onclick="addShopEditRow()">+ Позиция</button>
-          </div>
-          <div style="display:flex; gap:8px; margin-top:20px;">
-            <button type="submit" class="btn-primary" style="flex:2;">Сохранить 💾</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeSettingsModal()">Отмена</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="onboardingModal">
-      <div class="modal-content" style="max-width: 480px;">
-        <h3 style="color:var(--primary-dark); text-align:center; margin-bottom:10px;">👋 Добро пожаловать!</h3>
-        <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-bottom:20px;">Настройте кабинет:</p>
-        <form id="onboardingForm">
-          <div class="form-group"><label>Ваше ФИО</label><input type="text" id="onboardTeacherName" required style="padding:10px;"></div>
-          <div class="form-group" style="margin-top:10px;">
-            <label>Предмет</label>
-            <select id="onboardSubject" style="padding:10px;">
-              <option value="chemistry">🧪 Химия</option><option value="biology">🔬 Биология</option>
-              <option value="math">🧮 Математика</option><option value="english">🇬🇧 Английский</option>
-              <option value="physics">⚙️ Физика</option><option value="russian">📚 Русский</option>
-            </select>
-          </div>
-          <div class="toggle-switch" style="margin-top:15px;"><input type="checkbox" id="onboardEconomy" checked><label for="onboardEconomy">Валюта?</label></div>
-          <button type="submit" class="btn-primary" style="width:100%; margin-top:20px; padding:12px;">Начать 🚀</button>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="studentCardModal">
-      <div class="modal-content">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;" id="studentCardModalTitle">Ученик</h3>
-        <form id="studentCardForm">
-          <input type="hidden" id="cardStudentId">
-          <div class="form-grid">
-            <div class="form-group"><label>ФИО</label><input type="text" id="cardStudentName" required></div>
-            <div class="form-group"><label>Класс</label><input type="text" id="cardStudentGrade"></div>
-          </div>
-          <div class="form-grid">
-            <div class="form-group"><label>Контакты родителя</label><input type="text" id="cardParentContacts"></div>
-            <div class="form-group"><label>Ставка за урок (₽)</label><input type="number" id="cardLessonRate" value="0" min="0"></div>
-          </div>
-          <div class="form-grid">
-            <div class="form-group economy-field"><label>Игровой баланс <span class="currency-icon">🧪</span></label><input type="number" id="cardFlasksBalance" value="0"></div>
-            <div class="form-group"><label>Цель</label><input type="text" id="cardGoal"></div>
-          </div>
-          <div class="form-group"><label>Заметки</label><textarea id="cardNotes" rows="2"></textarea></div>
-          <hr style="margin: 15px 0;">
-          <h4 style="font-size: 14px; margin-bottom: 8px;">📚 Шаблоны ДЗ</h4>
-          <div id="cardHwTemplatesList" style="margin-bottom: 10px;"></div>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" id="newHwTemplateInput" placeholder="Новый шаблон">
-            <button type="button" class="btn-action" style="background:#059669; color:white;" onclick="addHwTemplate()">+</button>
-          </div>
-          <div style="display:flex; gap:8px; margin-top:20px;">
-            <button type="submit" class="btn-primary" style="flex:2;">Сохранить 💾</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeStudentCardModal()">Отмена</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="editModal">
-      <div class="modal-content">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;">✏️ Редактирование</h3>
-        <form id="editLessonForm">
-          <input type="hidden" id="editScheduleId">
-          <div class="form-group"><label>Ученик</label><input type="text" id="editStudentName" required></div>
-          <div class="form-grid">
-            <div class="form-group"><label>Дата и время</label><input type="datetime-local" id="editLessonDate" required></div>
-            <div class="form-group"><label>Повтор</label>
-              <select id="editRepeatInterval"><option value="7">Каждую неделю</option><option value="14">Каждые 2 недели</option><option value="0">Разовое</option></select>
-            </div>
-          </div>
-          <div class="form-group"><label>ДЗ</label><textarea id="editAssignedHw" rows="3"></textarea></div>
-          <div style="display:flex; gap:8px; margin-top:15px;">
-            <button type="submit" class="btn-primary" style="flex:2;">Сохранить 💾</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeEditModal()">Отмена</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="moveModal">
-      <div class="modal-content" style="max-width: 480px;">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;">📅 Перенос</h3>
-        <form id="moveLessonForm">
-          <input type="hidden" id="moveScheduleId">
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;" id="moveLessonInfo"></p>
-          <div class="form-group"><label>Новая дата и время</label><input type="datetime-local" id="moveNewDateTime" required></div>
-          <div class="form-group"><label>Что переносим?</label>
-            <select id="moveScope"><option value="single">Только это</option><option value="series">Всю серию</option></select>
-          </div>
-          <div class="form-group"><label>Причина</label><textarea id="moveReason" rows="2"></textarea></div>
-          <div class="toggle-switch"><input type="checkbox" id="moveNotifyParent"><label for="moveNotifyParent">Уведомить в TG</label></div>
-          <div style="display:flex; gap:8px; margin-top:15px;">
-            <button type="submit" class="btn-primary" style="flex:2;">Перенести 📅</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeMoveModal()">Отмена</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="cancelModal">
-      <div class="modal-content" style="max-width: 480px;">
-        <h3 style="color:#dc2626; margin-bottom:15px;">❌ Отмена</h3>
-        <form id="cancelLessonForm">
-          <input type="hidden" id="cancelScheduleId">
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;" id="cancelLessonInfo"></p>
-          <div class="form-group"><label>Что отменяем?</label>
-            <select id="cancelScope"><option value="single">Только это</option><option value="series">Всю серию</option></select>
-          </div>
-          <div class="form-group"><label>Причина</label><textarea id="cancelReason" rows="2" required></textarea></div>
-          <div class="toggle-switch"><input type="checkbox" id="cancelNotifyParent" checked><label for="cancelNotifyParent">Уведомить в TG</label></div>
-          <div style="display:flex; gap:8px; margin-top:15px;">
-            <button type="submit" class="btn-primary" style="flex:2; background:#dc2626;">Отменить ❌</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeCancelModal()">Назад</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="duplicateModal">
-      <div class="modal-content" style="max-width: 480px;">
-        <h3 style="color:#6d28d9; margin-bottom:15px;">📋 Задвоить занятие</h3>
-        <form id="duplicateLessonForm">
-          <input type="hidden" id="dupSourceId">
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px; background:#ede9fe; padding:8px; border-radius:6px;" id="dupLessonInfo"></p>
-          <div class="form-group"><label>Новая дата и время</label><input type="datetime-local" id="dupNewDateTime" required></div>
-          <div class="form-group"><label>Повтор нового занятия</label>
-            <select id="dupRepeatInterval">
-              <option value="0">Разовое</option>
-              <option value="7">Каждую неделю</option>
-              <option value="14">Каждые 2 недели</option>
-            </select>
-          </div>
-          <div class="form-group"><label>ДЗ (можно изменить)</label><textarea id="dupAssignedHw" rows="2"></textarea></div>
-          <div class="toggle-switch"><input type="checkbox" id="dupNotifyParent"><label for="dupNotifyParent">Уведомить родителя в TG</label></div>
-          <div style="display:flex; gap:8px; margin-top:15px;">
-            <button type="submit" class="btn-primary" style="flex:2; background:#6d28d9;">Создать 📋</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeDuplicateModal()">Отмена</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="completeModal">
-      <div class="modal-content">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;"><span id="completeModalTitle">Урок</span>: <span id="mStudentName"></span></h3>
-        <form id="completeLessonForm">
-          <input type="hidden" id="mScheduleId"><input type="hidden" id="mStudent"><input type="hidden" id="mDate"><input type="hidden" id="mRepeat">
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            <div class="form-group">
-              <label>Тип</label>
-              <select id="mLessonTypeSelect" onchange="toggleCompleteModalFields(this.value)">
-                <option value="lesson">Урок</option><option value="exam">🎓 Зачёт</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Тема</label><input type="text" id="mTopic" required></div>
-            <div id="examFieldsBlock" style="display:none; background:#fffbe3; padding:10px; border-radius:6px; border:1px solid #f59e0b;">
-              <div class="form-group"><label style="font-weight:bold; color:#b45309;">Результат</label>
-                <select id="mExamStatus"><option value="Сдал">✅ Сдал</option><option value="Не сдал">❌ Не сдал</option></select>
-              </div>
-            </div>
-            <div id="standardLessonFields">
-              <div class="form-grid">
-                <div class="form-group"><label>Опрос</label><input type="text" id="mPollGrade"></div>
-                <div class="form-group"><label>Работа</label><input type="text" id="mLessonGrade"></div>
-              </div>
-              <div class="form-group economy-field" style="background: #e0e7ff; padding: 10px; border-radius: 6px; border: 1px solid var(--primary);">
-                <label style="color:var(--primary-dark); font-weight:bold;"><span class="currency-icon">🧪</span> Баллы:</label>
-                <div style="display:flex; gap: 8px; margin-top: 4px;">
-                  <input type="number" id="mFlasksChange" placeholder="0" style="flex:1;">
-                  <select id="mFlasksReason" style="flex:2;">
-                    <option value="ДЗ (+3)">ДЗ вовремя (+3)</option>
-                    <option value="Идеал (+15)">Идеал (+15)</option>
-                    <option value="Активность (+5)">Активность (+5)</option>
-                    <option value="Просрочка (-10)">Просрочка (-10)</option>
-                    <option value="Свой">Свой</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label style="font-weight:bold; color:var(--primary-dark);">Контроль ДЗ:</label>
-                <div class="hw-list" id="modalHwList"></div>
-              </div>
-              <div class="form-grid">
-                <div class="form-group"><label>Оценка ДЗ</label><input type="text" id="mHwGrade" style="font-weight:bold; text-align:center;"></div>
-                <div class="form-group"><label>Итоговая</label><input type="text" id="mTotalGrade" style="font-weight:bold; text-align:center;"></div>
-              </div>
-            </div>
-            <div style="background: #ecfdf5; padding: 10px; border-radius: 6px; border: 1px solid #10b981;">
-              <label style="font-weight:bold; color:#059669;">💰 Финансы:</label>
-              <div class="form-grid" style="margin-top:5px;">
-                <div class="form-group" style="margin:0;">
-                  <label style="color:#059669;">Оплата</label>
-                  <select id="mPaidStatus" onchange="toggleAmountInput()">
-                    <option value="Оплачено">Оплачено ✅</option>
-                    <option value="Не оплачено">Долг ❌</option>
-                  </select>
-                </div>
-                <div class="form-group" style="margin:0;">
-                  <label style="color:#059669;">Сумма (₽)</label>
-                  <input type="number" id="mPaidAmount" value="0" min="0" placeholder="0">
-                </div>
-              </div>
-            </div>
-            <div class="form-group" style="background: #eef2f7; padding: 10px; border-radius: 6px; border: 1px dashed var(--primary-dark);">
-              <label style="color:var(--primary-dark); font-weight:bold;">📝 ДЗ на след. урок:</label>
-              <select id="completeHwTemplateSelect" style="margin-bottom: 5px;" onchange="applyCompleteHwTemplate(this)"><option value="">-- Шаблон --</option></select>
-              <textarea id="mNextHw" rows="2"></textarea>
-            </div>
-            <div class="form-group"><label>Комментарий</label><textarea id="mComment"></textarea></div>
-            <div style="display:flex; gap:8px; margin-top:10px; flex-wrap: wrap;">
-              <button type="submit" class="btn-primary" style="flex:2;">Завершить ✅</button>
-              <button type="button" class="btn-action" style="flex:2; background:#f59e0b; color:white;" onclick="saveDraft()">Черновик 📝</button>
-              <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeModal()">Отмена</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="editHistoryModal">
-      <div class="modal-content">
-        <h3 style="color:var(--primary-dark); margin-bottom:15px;">✏️ Редактирование</h3>
-        <form id="editHistoryForm">
-          <input type="hidden" id="ehHistoryId"><input type="hidden" id="ehStudentId">
-          <div class="form-grid">
-            <div class="form-group"><label>Ученик</label><input type="text" id="ehStudentName" disabled style="background:#e5e7eb;"></div>
-            <div class="form-group"><label>Дата</label><input type="text" id="ehDate" required></div>
-          </div>
-          <div class="form-group"><label>Тема</label><input type="text" id="ehTopic"></div>
-          <div class="form-grid">
-            <div class="form-group"><label>Опрос</label><input type="text" id="ehPollGrade"></div>
-            <div class="form-group"><label>Работа</label><input type="text" id="ehLessonGrade"></div>
-          </div>
-          <div class="form-group"><label style="font-weight:bold; color:var(--primary-dark);">ДЗ:</label>
-            <div class="hw-list" id="editHistoryHwList"></div>
-          </div>
-          <div class="form-grid">
-            <div class="form-group"><label>Оценка ДЗ</label><input type="text" id="ehHwGrade" style="font-weight:bold; text-align:center;"></div>
-            <div class="form-group"><label>Итоговая</label><input type="text" id="ehTotalGrade" style="font-weight:bold; text-align:center;"></div>
-          </div>
-          <div style="background: #ecfdf5; padding: 10px; border-radius: 6px; border: 1px solid #10b981; margin-bottom: 10px;">
-            <div class="form-grid">
-              <div class="form-group"><label style="color:#059669;">Оплата</label><select id="ehPaidStatus"><option value="Оплачено">Оплачено</option><option value="Не оплачено">Долг</option></select></div>
-              <div class="form-group"><label style="color:#059669;">Сумма (₽)</label><input type="number" id="ehPaidAmount" value="0" min="0"></div>
-            </div>
-          </div>
-          <div class="form-group"><label>Комментарий</label><textarea id="ehComment" rows="2"></textarea></div>
-          <div style="display:flex; gap:8px; margin-top:10px;">
-            <button type="submit" class="btn-primary" style="flex:2;">Сохранить 💾</button>
-            <button type="button" class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeEditHistoryModal()">Отмена</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="qrModal">
-      <div class="modal-content qr-modal-content" style="max-width: 420px;">
-        <h3 style="color:var(--primary-dark); margin-bottom:8px;" id="qrTitle">📱 QR</h3>
-        <p style="font-size:13px; color:var(--text-muted);" id="qrSubtitle"></p>
-        <img id="qrImage" alt="QR" crossorigin="anonymous">
-        <div class="qr-link-box" id="qrLinkBox"></div>
-        <div style="display:flex; gap:8px; margin-top:15px;">
-          <a id="qrDownloadBtn" download="qr.png" class="btn-action" style="flex:1; text-decoration:none; text-align:center; background:#059669; color:white; padding:8px;">⬇️ Скачать</a>
-          <button class="btn-action" style="flex:1; background:#f3f4f6;" onclick="closeQrModal()">Закрыть</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="tour-overlay" id="tourOverlay"></div>
-    <div class="tour-spotlight" id="tourSpotlight"></div>
-    <div class="tour-tooltip" id="tourTooltip">
-      <h4 id="tourTitle"></h4>
-      <p id="tourText"></p>
-      <div class="tour-actions">
-        <span class="tour-step" id="tourStep"></span>
-        <div style="display:flex; gap:6px;">
-          <button class="btn-action" style="background:#f3f4f6;" onclick="endTour()">Пропустить</button>
-          <button class="btn-action" id="tourNextBtn" style="background:var(--primary); color:white;">Далее ▶</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ОТЧЁТ УРОКА (НОВЫЙ СТИЛЬ) -->
-    <div class="report-card" id="lessonReportCard">
-      <div class="report-title-spaced" id="repTitleLesson">ОТЧЁТ</div>
-
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Ученик:</strong> <span id="repStudent"></span></span>
-      </div>
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Дата:</strong> <span id="repDate"></span></span>
-      </div>
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Тема:</strong> <span id="repTopic"></span></span>
-      </div>
-
-      <div class="report-block">
-        <div class="report-line">
-          <span class="marker">📣</span>
-          <span class="text"><strong>Опрос:</strong> <span id="repPoll"></span></span>
-        </div>
-        <div class="report-line">
-          <span class="marker">📣</span>
-          <span class="text"><strong>Работа на уроке:</strong> <span id="repWork"></span></span>
-        </div>
-      </div>
-
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Оценка за ДЗ:</strong> <span id="repHwGrade" style="font-weight:700; color:#7c3aed;"></span></span>
-      </div>
-
-      <div class="hw-list" id="repHwDisplay" style="margin: 8px 0 12px 0;"></div>
-
-      <div class="report-block">
-        <div class="report-line">
-          <span class="marker">📣</span>
-          <span class="text"><strong>Итоговая оценка:</strong> <span id="repTotalGrade" style="font-weight:800; color:#7c3aed; font-size:16px;"></span></span>
-        </div>
-      </div>
-
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Комментарий:</strong> <span id="repComment" style="font-style:italic;"></span></span>
-      </div>
-
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></span>
-      </div>
-
-      <div class="report-platform-mark" id="lessonReportPlatform">
-        <img id="lessonReportPlatformImg" alt="logo">
-        <span id="lessonReportPlatformText"></span>
-      </div>
-
-      <div class="report-time">
-        <span class="check">✓✓</span> <span id="repTime"></span>
-      </div>
-
-      <div class="report-actions">
-        <button class="btn-print" onclick="window.print()">🖨️ Печать</button>
-        <button class="btn-tg" onclick="sendLessonReportToTelegram()">✈️ В TG</button>
-      </div>
-    </div>
-
-    <!-- ОТЧЁТ ЗА ПЕРИОД (НОВЫЙ СТИЛЬ) -->
-    <div class="report-card" id="periodReportCard">
-      <div class="report-title-spaced" id="repTitlePeriod">ПЕРИОД</div>
-
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Ученик:</strong> <span id="pRepStudent"></span></span>
-      </div>
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Период:</strong> <span id="pRepDates"></span></span>
-      </div>
-
-      <div class="report-block">
-        <div class="report-line">
-          <span class="marker">📣</span>
-          <span class="text"><strong>Проведено занятий:</strong> <span id="pRepLessonsCount">0</span></span>
-        </div>
-        <div class="report-line">
-          <span class="marker">📣</span>
-          <span class="text"><strong>Выполнение ДЗ:</strong> <span id="pRepHwPercent">0%</span></span>
-        </div>
-        <div class="report-line">
-          <span class="marker">📣</span>
-          <span class="text"><strong>Оценки за ДЗ:</strong> <span id="pRepHwGradesList">-</span></span>
-        </div>
-        <div class="report-line">
-          <span class="marker">📣</span>
-          <span class="text"><strong>Итоговые оценки:</strong> <span id="pRepGradesList">-</span></span>
-        </div>
-      </div>
-
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Динамика успеваемости:</strong></span>
-      </div>
-      <div class="chart-container"><canvas id="periodReportChart"></canvas></div>
-
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text"><strong>Комментарий:</strong> <span id="pRepComment" style="font-style:italic;"></span></span>
-      </div>
-
-      <div class="report-line">
-        <span class="marker">📎</span>
-        <span class="text">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></span>
-      </div>
-
-      <div class="report-platform-mark" id="periodReportPlatform">
-        <img id="periodReportPlatformImg" alt="logo">
-        <span id="periodReportPlatformText"></span>
-      </div>
-
-      <div style="text-align: center; margin-top: 14px;">
-        <span class="report-important">ВАЖНО</span>
-      </div>
-
-      <div class="report-time">
-        <span class="check">✓✓</span> <span id="pRepTime"></span>
-      </div>
-
-      <div class="report-actions">
-        <button class="btn-print" onclick="window.print()">🖨️ Печать</button>
-        <button class="btn-tg" onclick="sendPeriodReportToTelegram()">✈️ В TG</button>
-      </div>
-    </div>
-
-    <div class="certificate-card" id="certificateDisplayCard">
-      <div class="cert-bg-overlay" id="certBgPattern">🧪 🔬 🧬</div>
-      <div class="certificate-header">СЕРТИФИКАТ</div>
-      <div class="certificate-sub">об успешном прохождении модуля</div>
-      <div class="cert-icon-center" id="certCenterIcon">🧪</div>
-      <p style="font-size: 14px; color: #78350f; margin-top: 10px;">Настоящий сертификат подтверждает, что</p>
-      <div class="certificate-recipient" id="certRenderName">Иван</div>
-      <div class="certificate-body">успешно освоил(а) программу по теме:<br><span class="certificate-topic" id="certRenderTopic">«Тема»</span></div>
-      <div class="certificate-footer">
-        <div style="text-align: left;">
-          <p style="font-size: 12px; color: #78350f;">Дата: <strong id="certRenderDate">01.09.2026</strong></p>
-          <p style="font-size: 13px; color: #78350f; margin-top: 6px;">Преподаватель: <strong id="certRenderTeacher">Репетитор</strong></p>
-        </div>
-        <div class="certificate-stamp" id="certStampText">ПРОВЕРЕНО<br>🧪<br>И СДАНО</div>
-      </div>
-      <div class="report-platform-mark" id="certPlatform" style="border-top-color:#b45309; color:#78350f;">
-        <img id="certPlatformImg" alt="logo">
-        <span id="certPlatformText"></span>
-      </div>
-      <div style="display: flex; gap: 10px; margin-top: 25px; position:relative; z-index:10;">
-        <button class="btn-action" style="flex:1;" onclick="window.print()">🖨️ Печать</button>
-        <button class="btn-action tg-btn" style="flex:1; background:#0088cc; color:white;" onclick="sendCertificateToTelegram()">✈️ В TG</button>
-      </div>
+      <div id="notesPanel" style="max-height: 600px; overflow-y: auto;"></div>
     </div>
   </div>
 
-  <footer class="app-footer" id="appFooter" style="display:none;">
-    <span id="footerLogoWrap"></span>
-    <span id="footerText"></span>
-  </footer>
+  <!-- Экран: Настройки -->
+  <div id="screen-settings" class="screen">
+    <header class="top-bar">
+      <div class="header-title">
+        <h1>Настройки</h1>
+        <p>Профиль и параметры платформы</p>
+      </div>
+    </header>
+    <div class="card" style="max-width: 600px;">
+      <h3>⚙️ Профиль преподавателя</h3>
+      <form id="settingsForm">
+        <div class="form-group"><label>ФИО преподавателя</label><input type="text" id="setTeacherName" required></div>
+        <div class="form-group">
+          <label>Предмет</label>
+          <select id="setSubject" onchange="onSubjectChange(this.value)">
+            <option value="chemistry">🧪 Химия</option><option value="biology">🔬 Биология</option>
+            <option value="math">🧮 Математика</option><option value="english">🇬🇧 Английский</option>
+            <option value="physics">⚙️ Физика</option><option value="russian">📚 Русский</option>
+          </select>
+        </div>
+        <hr style="margin: 16px 0;">
+        <h4 style="font-size: 14px; margin-bottom: 8px;">✈️ Telegram</h4>
+        <div class="toggle-switch" style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><input type="checkbox" id="setTgEnabled" style="width:auto;"><label for="setTgEnabled" style="margin:0;">Включить</label></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Bot Token</label><input type="text" id="setTgBotToken"></div>
+          <div class="form-group"><label>Chat ID</label><input type="text" id="setTgChatId"></div>
+        </div>
+        <div class="toggle-switch" style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><input type="checkbox" id="setAutoMonthlyReport" style="width:auto;"><label for="setAutoMonthlyReport" style="margin:0;">Авто-отчёт</label></div>
+        <hr style="margin: 16px 0;">
+        <h4 style="font-size: 14px; margin-bottom: 8px;">🎮 Экономика</h4>
+        <div class="toggle-switch" style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><input type="checkbox" id="setEconomyEnabled" style="width:auto;"><label for="setEconomyEnabled" style="margin:0;">Магазин</label></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Валюта</label><input type="text" id="setCurrencyName"></div>
+          <div class="form-group"><label>Эмодзи</label><input type="text" id="setCurrencyIcon"></div>
+        </div>
+        <div id="shopSettingsBlock">
+          <hr style="margin: 16px 0;">
+          <div class="flex-between mb-2">
+            <h4 style="font-size: 14px;">🎁 Магазин</h4>
+            <button type="button" class="btn-secondary" onclick="resetShopItemsToDefault()">Сбросить</button>
+          </div>
+          <div class="shop-edit-list" id="shopEditList" style="display:flex; flex-direction:column; gap:8px;"></div>
+          <button type="button" class="btn-secondary w-full mt-2" onclick="addShopEditRow()">+ Позиция</button>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:20px;">
+          <button type="submit" class="btn-primary" style="flex:2;">Сохранить 💾</button>
+          <button type="button" class="btn-secondary" style="flex:1;" onclick="showScreen('students')">Назад</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- Мобильная навигация -->
+<div class="mobile-nav">
+  <div class="mobile-nav-item active" onclick="showScreen('students')"><div class="icon">👥</div>Ученики</div>
+  <div class="mobile-nav-item" onclick="showScreen('schedule')"><div class="icon">📅</div>Расписание</div>
+  <div class="mobile-nav-item" onclick="showScreen('history')"><div class="icon">📜</div>История</div>
+  <div class="mobile-nav-item" onclick="openFinanceModal()"><div class="icon">💰</div>Финансы</div>
+  <div class="mobile-nav-item" onclick="showScreen('settings')"><div class="icon">⚙️</div>Настройки</div>
+</div>
+
+<!-- МОДАЛКИ -->
+<div class="modal" id="financeModal">
+  <div class="modal-content" style="max-width: 500px;">
+    <h3 style="color:var(--success);">💰 Финансовый отчёт</h3>
+    <div class="finance-grid">
+      <div class="finance-card"><h4>За эту неделю</h4><div class="val" id="finWeekVal">0 ₽</div></div>
+      <div class="finance-card month"><h4>За этот месяц</h4><div class="val" id="finMonthVal">0 ₽</div></div>
+    </div>
+    <h4 style="font-size:14px; color:#b91c1c; margin-bottom:8px; border-bottom:1px solid #fca5a5; padding-bottom:8px;">Должники</h4>
+    <div class="debt-list" id="debtList"><div style="text-align:center; font-size:13px; color:var(--text-muted); padding:10px;">Все долги закрыты! 🎉</div></div>
+    <div style="display:flex; gap:8px; margin-top:20px;"><button class="btn-secondary w-full" onclick="closeFinanceModal()">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="modal" id="notesModal">
+  <div class="modal-content" style="max-width: 500px;">
+    <h3>📝 Заметка себе</h3>
+    <form id="notesForm">
+      <div class="form-group">
+        <label>Быстрые шаблоны</label>
+        <div class="notes-presets">
+          <button type="button" class="notes-preset-btn" onclick="applyNotePreset('✏️ Задать ДЗ: ')">✏️ Задать ДЗ</button>
+          <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📚 Подобрать материал: ')">📚 Материал</button>
+          <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📞 Позвонить родителю: ')">📞 Позвонить</button>
+          <button type="button" class="notes-preset-btn" onclick="applyNotePreset('📝 Написать ученику: ')">📝 Написать</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ученик (опционально)</label>
+        <select id="noteStudentSelect"><option value="">— Без привязки —</option></select>
+      </div>
+      <div class="form-group">
+        <label>Текст заметки</label>
+        <textarea id="noteText" rows="4" required placeholder="Например: Иванову надо подобрать задачи на pH"></textarea>
+      </div>
+      <div class="toggle-switch" style="margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
+        <input type="checkbox" id="noteSendToTg" checked style="width:auto;">
+        <label for="noteSendToTg" style="margin:0; font-size:14px; font-weight:600;">Отправить в Telegram-бот</label>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button type="submit" class="btn-primary" style="flex:2;">Сохранить 📝</button>
+        <button type="button" class="btn-secondary" style="flex:1;" onclick="closeNotesModal()">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="dayPrintModal">
+  <div class="modal-content" style="max-width: 480px;">
+    <h3 style="margin-bottom:12px;" class="no-print">🖨️ Распечатка на день</h3>
+    <div class="form-group no-print">
+      <label>Дата</label>
+      <input type="date" id="dayPrintDate" onchange="renderDayPrintCard()">
+    </div>
+    <div id="dayPrintCard" style="background:white; border:2px dashed var(--primary); border-radius:var(--radius-md); padding:16px;">
+      <div style="text-align:center; border-bottom:2px solid var(--primary); padding-bottom:8px; margin-bottom:12px;">
+        <h3 id="dayPrintTitle" style="color:var(--primary-dark); font-size:16px; margin-bottom:2px;">Расписание на сегодня</h3>
+        <p id="dayPrintSubtitle" style="color:var(--text-muted); font-size:11px;"></p>
+      </div>
+      <div id="dayPrintList" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+    <div class="no-print" style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn-primary" style="flex:2;" onclick="window.print()">🖨️ Печать</button>
+      <button class="btn-secondary" style="flex:1;" onclick="closeDayPrintModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="certificateModal">
+  <div class="modal-content">
+    <h3>🎓 Сертификат</h3>
+    <form id="certificateForm">
+      <div class="form-group"><label>Ученик</label><select id="certStudentSelect" required></select></div>
+      <div class="form-group"><label>ФИО преподавателя</label><input type="text" id="certTeacherName" required></div>
+      <div class="form-group"><label>Тема</label><input type="text" id="certTopic" required></div>
+      <div class="form-group"><label>Дата</label><input type="date" id="certDate" required></div>
+      <div style="display:flex; gap:8px; margin-top:20px;">
+        <button type="button" class="btn-primary" style="flex:2;" onclick="generateCertificate()">Сформировать 📜</button>
+        <button type="button" class="btn-secondary" style="flex:1;" onclick="closeCertificateModal()">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="onboardingModal">
+  <div class="modal-content" style="max-width: 480px;">
+    <h3 style="text-align:center;">👋 Добро пожаловать!</h3>
+    <p style="text-align:center; font-size:14px; color:var(--text-muted); margin-bottom:20px;">Настройте кабинет:</p>
+    <form id="onboardingForm">
+      <div class="form-group"><label>Ваше ФИО</label><input type="text" id="onboardTeacherName" required></div>
+      <div class="form-group">
+        <label>Предмет</label>
+        <select id="onboardSubject">
+          <option value="chemistry">🧪 Химия</option><option value="biology">🔬 Биология</option>
+          <option value="math">🧮 Математика</option><option value="english">🇬🇧 Английский</option>
+          <option value="physics">⚙️ Физика</option><option value="russian">📚 Русский</option>
+        </select>
+      </div>
+      <div class="toggle-switch" style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" id="onboardEconomy" checked style="width:auto;"><label for="onboardEconomy" style="margin:0;">Валюта?</label></div>
+      <button type="submit" class="btn-primary w-full" style="padding:12px;">Начать 🚀</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="studentCardModal">
+  <div class="modal-content">
+    <h3 id="studentCardModalTitle">Ученик</h3>
+    <form id="studentCardForm">
+      <input type="hidden" id="cardStudentId">
+      <div class="form-grid">
+        <div class="form-group"><label>ФИО</label><input type="text" id="cardStudentName" required></div>
+        <div class="form-group"><label>Класс</label><input type="text" id="cardStudentGrade"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label>Контакты родителя</label><input type="text" id="cardParentContacts"></div>
+        <div class="form-group"><label>Ставка за урок (₽)</label><input type="number" id="cardLessonRate" value="0" min="0"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group economy-field"><label>Игровой баланс <span class="currency-icon">🧪</span></label><input type="number" id="cardFlasksBalance" value="0"></div>
+        <div class="form-group"><label>Цель</label><input type="text" id="cardGoal"></div>
+      </div>
+      <div class="form-group"><label>Заметки</label><textarea id="cardNotes" rows="2"></textarea></div>
+      <hr style="margin: 16px 0;">
+      <h4 style="font-size: 14px; margin-bottom: 8px;">📚 Шаблоны ДЗ</h4>
+      <div id="cardHwTemplatesList" style="margin-bottom: 10px;"></div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="newHwTemplateInput" placeholder="Новый шаблон">
+        <button type="button" class="btn-secondary" onclick="addHwTemplate()">+</button>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:20px;">
+        <button type="submit" class="btn-primary" style="flex:2;">Сохранить 💾</button>
+        <button type="button" class="btn-secondary" style="flex:1;" onclick="closeStudentCardModal()">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="editModal">
+  <div class="modal-content">
+    <h3>✏️ Редактирование</h3>
+    <form id="editLessonForm">
+      <input type="hidden" id="editScheduleId">
+      <div class="form-group"><label>Ученик</label><input type="text" id="editStudentName" required></div>
+      <div class="form-grid">
+        <div class="form-group"><label>Дата и время</label><input type="datetime-local" id="editLessonDate" required></div>
+        <div class="form-group"><label>Повтор</label>
+          <select id="editRepeatInterval"><option value="7">Каждую неделю</option><option value="14">Каждые 2 недели</option><option value="0">Разовое</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>ДЗ</label><textarea id="editAssignedHw" rows="3"></textarea></div>
+      <div style="display:flex; gap:8px; margin-top:15px;">
+        <button type="submit" class="btn-primary" style="flex:2;">Сохранить 💾</button>
+        <button type="button" class="btn-secondary" style="flex:1;" onclick="closeEditModal()">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="moveModal">
+  <div class="modal-content" style="max-width: 480px;">
+    <h3>📅 Перенос</h3>
+    <form id="moveLessonForm">
+      <input type="hidden" id="moveScheduleId">
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;" id="moveLessonInfo"></p>
+      <div class="form-group"><label>Новая дата и время</label><input type="datetime-local" id="moveNewDateTime" required></div>
+      <div class="form-group"><label>Что переносим?</label>
+        <select id="moveScope"><option value="single">Только это</option><option value="series">Всю серию</option></select>
+      </div>
+      <div class="form-group"><label>Причина</label><textarea id="moveReason" rows="2"></textarea></div>
+      <div class="toggle-switch" style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><input type="checkbox" id="moveNotifyParent" style="width:auto;"><label for="moveNotifyParent" style="margin:0;">Уведомить в TG</label></div>
+      <div style="display:flex; gap:8px; margin-top:15px;">
+        <button type="submit" class="btn-primary" style="flex:2;">Перенести 📅</button>
+        <button type="button" class="btn-secondary" style="flex:1;" onclick="closeMoveModal()">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="cancelModal">
+  <div class="modal-content" style="max-width: 480px;">
+    <h3 style="color:var(--danger);">❌ Отмена</h3>
+    <form id="cancelLessonForm">
+      <input type="hidden" id="cancelScheduleId">
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;" id="cancelLessonInfo"></p>
+      <div class="form-group"><label>Что отменяем?</label>
+        <select id="cancelScope"><option value="single">Только это</option><option value="series">Всю серию</option></select>
+      </div>
+      <div class="form-group"><label>Причина</label><textarea id="cancelReason" rows="2" required></textarea></div>
+      <div class="toggle-switch" style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><input type="checkbox" id="cancelNotifyParent" checked style="width:auto;"><label for="cancelNotifyParent" style="margin:0;">Уведомить в TG</label></div>
+      <div style="display:flex; gap:8px; margin-top:15px;">
+        <button type="submit" class="btn-danger" style="flex:2;">Отменить ❌</button>
+        <button type="button" class="btn-secondary" style="flex:1;" onclick="closeCancelModal()">Назад</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="duplicateModal">
+  <div class="modal-content" style="max-width: 480px;">
+    <h3 style="color:#7c3aed;">📋 Задвоить занятие</h3>
+    <form id="duplicateLessonForm">
+      <input type="hidden" id="dupSourceId">
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px; background:var(--bg-body); padding:10px; border-radius:6px;" id="dupLessonInfo"></p>
+      <div class="form-group"><label>Новая дата и время</label><input type="datetime-local" id="dupNewDateTime" required></div>
+      <div class="form-group"><label>Повтор нового занятия</label>
+        <select id="dupRepeatInterval">
+          <option value="0">Разовое</option>
+          <option value="7">Каждую неделю</option>
+          <option value="14">Каждые 2 недели</option>
+        </select>
+      </div>
+      <div class="form-group"><label>ДЗ (можно изменить)</label><textarea id="dupAssignedHw" rows="2"></textarea></div>
+      <div class="toggle-switch" style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><input type="checkbox" id="dupNotifyParent" style="width:auto;"><label for="dupNotifyParent" style="margin:0;">Уведомить родителя в TG</label></div>
+      <div style="display:flex; gap:8px; margin-top:15px;">
+        <button type="submit" class="btn-primary" style="flex:2; background:#7c3aed;">Создать 📋</button>
+        <button type="button" class="btn-secondary" style="flex:1;" onclick="closeDuplicateModal()">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="completeModal">
+  <div class="modal-content">
+    <h3><span id="completeModalTitle">Урок</span>: <span id="mStudentName"></span></h3>
+    <form id="completeLessonForm">
+      <input type="hidden" id="mScheduleId"><input type="hidden" id="mStudent"><input type="hidden" id="mDate"><input type="hidden" id="mRepeat">
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="form-group">
+          <label>Тип</label>
+          <select id="mLessonTypeSelect" onchange="toggleCompleteModalFields(this.value)">
+            <option value="lesson">Урок</option><option value="exam">🎓 Зачёт</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Тема</label><input type="text" id="mTopic" required></div>
+        <div id="examFieldsBlock" style="display:none; background:#fffbeb; padding:12px; border-radius:6px; border:1px solid #f59e0b;">
+          <div class="form-group" style="margin:0;"><label style="color:#b45309;">Результат</label>
+            <select id="mExamStatus"><option value="Сдал">✅ Сдал</option><option value="Не сдал">❌ Не сдал</option></select>
+          </div>
+        </div>
+        <div id="standardLessonFields">
+          <div class="form-grid">
+            <div class="form-group"><label>Опрос</label><input type="text" id="mPollGrade"></div>
+            <div class="form-group"><label>Работа</label><input type="text" id="mLessonGrade"></div>
+          </div>
+          <div class="form-group economy-field" style="background: var(--primary-light); padding: 12px; border-radius: 6px; border: 1px solid var(--primary);">
+            <label style="color:var(--primary-dark);"><span class="currency-icon">🧪</span> Баллы:</label>
+            <div style="display:flex; gap: 8px; margin-top: 4px;">
+              <input type="number" id="mFlasksChange" placeholder="0" style="flex:1;">
+              <select id="mFlasksReason" style="flex:2;">
+                <option value="ДЗ (+3)">ДЗ вовремя (+3)</option>
+                <option value="Идеал (+15)">Идеал (+15)</option>
+                <option value="Активность (+5)">Активность (+5)</option>
+                <option value="Просрочка (-10)">Просрочка (-10)</option>
+                <option value="Свой">Свой</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Контроль ДЗ:</label>
+            <div id="modalHwList" style="display:flex; flex-direction:column; gap:6px;"></div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group"><label>Оценка ДЗ</label><input type="text" id="mHwGrade"></div>
+            <div class="form-group"><label>Итоговая</label><input type="text" id="mTotalGrade"></div>
+          </div>
+        </div>
+        <div style="background: var(--success-bg); padding: 12px; border-radius: 6px; border: 1px solid var(--success);">
+          <label style="color:var(--success);">💰 Финансы:</label>
+          <div class="form-grid" style="margin-top:5px;">
+            <div class="form-group" style="margin:0;">
+              <label style="color:var(--success);">Оплата</label>
+              <select id="mPaidStatus" onchange="toggleAmountInput()"><option value="Оплачено">Оплачено ✅</option><option value="Не оплачено">Долг ❌</option></select>
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label style="color:var(--success);">Сумма (₽)</label>
+              <input type="number" id="mPaidAmount" value="0" min="0">
+            </div>
+          </div>
+        </div>
+        <div class="form-group" style="background: var(--bg-body); padding: 12px; border-radius: 6px; border: 1px dashed var(--primary-dark);">
+          <label style="color:var(--primary-dark);">📝 ДЗ на след. урок:</label>
+          <select id="completeHwTemplateSelect" style="margin-bottom: 8px;" onchange="applyCompleteHwTemplate(this)"><option value="">-- Шаблон --</option></select>
+          <textarea id="mNextHw" rows="2"></textarea>
+        </div>
+        <div class="form-group"><label>Комментарий</label><textarea id="mComment"></textarea></div>
+        <div style="display:flex; gap:8px; margin-top:10px; flex-wrap: wrap;">
+          <button type="submit" class="btn-primary" style="flex:2;">Завершить ✅</button>
+          <button type="button" class="btn-secondary" style="flex:2; background:#f59e0b; color:white; border:none;" onclick="saveDraft()">Черновик 📝</button>
+          <button type="button" class="btn-secondary" style="flex:1;" onclick="closeModal()">Отмена</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="editHistoryModal">
+  <div class="modal-content">
+    <h3>✏️ Редактирование</h3>
+    <form id="editHistoryForm">
+      <input type="hidden" id="ehHistoryId"><input type="hidden" id="ehStudentId">
+      <div class="form-grid">
+        <div class="form-group"><label>Ученик</label><input type="text" id="ehStudentName" disabled style="background:var(--bg-body);"></div>
+        <div class="form-group"><label>Дата</label><input type="text" id="ehDate" required></div>
+      </div>
+      <div class="form-group"><label>Тема</label><input type="text" id="ehTopic"></div>
+      <div class="form-grid">
+        <div class="form-group"><label>Опрос</label><input type="text" id="ehPollGrade"></div>
+        <div class="form-group"><label>Работа</label><input type="text" id="ehLessonGrade"></div>
+      </div>
+      <div class="form-group"><label style="font-weight:bold; color:var(--primary-dark);">ДЗ:</label>
+        <div id="editHistoryHwList" style="display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label>Оценка ДЗ</label><input type="text" id="ehHwGrade"></div>
+        <div class="form-group"><label>Итоговая</label><input type="text" id="ehTotalGrade"></div>
+      </div>
+      <div style="background: var(--success-bg); padding: 12px; border-radius: 6px; border: 1px solid var(--success); margin-bottom: 12px;">
+        <div class="form-grid">
+          <div class="form-group"><label style="color:var(--success);">Оплата</label><select id="ehPaidStatus"><option value="Оплачено">Оплачено</option><option value="Не оплачено">Долг</option></select></div>
+          <div class="form-group"><label style="color:var(--success);">Сумма (₽)</label><input type="number" id="ehPaidAmount" value="0" min="0"></div>
+        </div>
+      </div>
+      <div class="form-group"><label>Комментарий</label><textarea id="ehComment" rows="2"></textarea></div>
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button type="submit" class="btn-primary" style="flex:2;">Сохранить 💾</button>
+        <button type="button" class="btn-secondary" style="flex:1;" onclick="closeEditHistoryModal()">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="qrModal">
+  <div class="modal-content qr-modal-content" style="max-width: 420px; text-align:center;">
+    <h3 id="qrTitle" style="margin-bottom:8px;">📱 QR</h3>
+    <p style="font-size:14px; color:var(--text-muted);" id="qrSubtitle"></p>
+    <img id="qrImage" alt="QR" crossorigin="anonymous" style="width: 260px; height: 260px; margin: 15px auto; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: white; max-width: 100%;">
+    <div id="qrLinkBox" style="background: var(--bg-body); border-radius: 6px; padding: 8px; font-size: 11px; word-break: break-all; margin: 10px 0;"></div>
+    <div style="display:flex; gap:8px; margin-top:15px;">
+      <a id="qrDownloadBtn" download="qr.png" class="btn-secondary" style="flex:1; text-decoration:none; text-align:center;">⬇️ Скачать</a>
+      <button class="btn-secondary" style="flex:1;" onclick="closeQrModal()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="onboardingModal">
+  <div class="modal-content" style="max-width: 480px;">
+    <h3 style="text-align:center;">👋 Добро пожаловать!</h3>
+    <p style="text-align:center; font-size:14px; color:var(--text-muted); margin-bottom:20px;">Настройте кабинет:</p>
+    <form id="onboardingForm">
+      <div class="form-group"><label>Ваше ФИО</label><input type="text" id="onboardTeacherName" required></div>
+      <div class="form-group">
+        <label>Предмет</label>
+        <select id="onboardSubject">
+          <option value="chemistry">🧪 Химия</option><option value="biology">🔬 Биология</option>
+          <option value="math">🧮 Математика</option><option value="english">🇬🇧 Английский</option>
+          <option value="physics">⚙️ Физика</option><option value="russian">📚 Русский</option>
+        </select>
+      </div>
+      <div class="toggle-switch" style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" id="onboardEconomy" checked style="width:auto;"><label for="onboardEconomy" style="margin:0;">Валюта?</label></div>
+      <button type="submit" class="btn-primary w-full" style="padding:12px;">Начать 🚀</button>
+    </form>
+  </div>
+</div>
+
+<!-- Отчёты -->
+<div class="report-card" id="lessonReportCard">
+  <div class="report-title-spaced" id="repTitleLesson">ОТЧЁТ</div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Ученик:</strong> <span id="repStudent"></span></span></div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Дата:</strong> <span id="repDate"></span></span></div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Тема:</strong> <span id="repTopic"></span></span></div>
+  <div class="report-block">
+    <div class="report-line"><span class="marker">📣</span><span class="text"><strong>Опрос:</strong> <span id="repPoll"></span></span></div>
+    <div class="report-line"><span class="marker">📣</span><span class="text"><strong>Работа:</strong> <span id="repWork"></span></span></div>
+  </div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Оценка за ДЗ:</strong> <span id="repHwGrade" style="font-weight:700; color:#7c3aed;"></span></span></div>
+  <div id="repHwDisplay" style="margin: 8px 0 12px 0; display:flex; flex-direction:column; gap:6px;"></div>
+  <div class="report-block">
+    <div class="report-line"><span class="marker">📣</span><span class="text"><strong>Итоговая:</strong> <span id="repTotalGrade" style="font-weight:800; color:#7c3aed; font-size:16px;"></span></span></div>
+  </div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Комментарий:</strong> <span id="repComment" style="font-style:italic;"></span></span></div>
+  <div class="report-line"><span class="marker">📎</span><span class="text">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></span></div>
+  <div class="report-platform-mark" id="lessonReportPlatform"><img id="lessonReportPlatformImg" alt="logo"><span id="lessonReportPlatformText"></span></div>
+  <div class="report-time"><span class="check">✓✓</span> <span id="repTime"></span></div>
+  <div class="report-actions">
+    <button class="btn-print" onclick="window.print()">🖨️ Печать</button>
+    <button class="btn-tg" onclick="sendLessonReportToTelegram()">✈️ В TG</button>
+  </div>
+</div>
+
+<div class="report-card" id="periodReportCard">
+  <div class="report-title-spaced" id="repTitlePeriod">ПЕРИОД</div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Ученик:</strong> <span id="pRepStudent"></span></span></div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Период:</strong> <span id="pRepDates"></span></span></div>
+  <div class="report-block">
+    <div class="report-line"><span class="marker">📣</span><span class="text"><strong>Проведено:</strong> <span id="pRepLessonsCount">0</span></span></div>
+    <div class="report-line"><span class="marker">📣</span><span class="text"><strong>Выполнение ДЗ:</strong> <span id="pRepHwPercent">0%</span></span></div>
+    <div class="report-line"><span class="marker">📣</span><span class="text"><strong>Оценки за ДЗ:</strong> <span id="pRepHwGradesList">-</span></span></div>
+    <div class="report-line"><span class="marker">📣</span><span class="text"><strong>Итоговые:</strong> <span id="pRepGradesList">-</span></span></div>
+  </div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Динамика:</strong></span></div>
+  <div class="chart-container" style="position:relative; width:100%; height:200px; margin-top:10px;"><canvas id="periodReportChart"></canvas></div>
+  <div class="report-line"><span class="marker">📎</span><span class="text"><strong>Комментарий:</strong> <span id="pRepComment" style="font-style:italic;"></span></span></div>
+  <div class="report-line"><span class="marker">📎</span><span class="text">Преподаватель: <strong class="teacher-fullname-display">Репетитор</strong></span></div>
+  <div class="report-platform-mark" id="periodReportPlatform"><img id="periodReportPlatformImg" alt="logo"><span id="periodReportPlatformText"></span></div>
+  <div style="text-align: center; margin-top: 14px;"><span class="report-important">ВАЖНО</span></div>
+  <div class="report-time"><span class="check">✓✓</span> <span id="pRepTime"></span></div>
+  <div class="report-actions">
+    <button class="btn-print" onclick="window.print()">🖨️ Печать</button>
+    <button class="btn-tg" onclick="sendPeriodReportToTelegram()">✈️ В TG</button>
+  </div>
+</div>
+
+<div class="certificate-card" id="certificateDisplayCard">
+  <div class="cert-bg-overlay" id="certBgPattern">🧪 🔬 🧬</div>
+  <div class="certificate-header">СЕРТИФИКАТ</div>
+  <div class="certificate-sub">об успешном прохождении модуля</div>
+  <div class="cert-icon-center" id="certCenterIcon">🧪</div>
+  <p style="font-size: 14px; color: #78350f; margin-top: 10px;">Настоящий сертификат подтверждает, что</p>
+  <div class="certificate-recipient" id="certRenderName">Иван</div>
+  <div class="certificate-body">успешно освоил(а) программу по теме:<br><span class="certificate-topic" id="certRenderTopic">«Тема»</span></div>
+  <div class="certificate-footer">
+    <div style="text-align: left;">
+      <p style="font-size: 12px; color: #78350f;">Дата: <strong id="certRenderDate">01.09.2026</strong></p>
+      <p style="font-size: 13px; color: #78350f; margin-top: 6px;">Преподаватель: <strong id="certRenderTeacher">Репетитор</strong></p>
+    </div>
+    <div class="certificate-stamp" id="certStampText">ПРОВЕРЕНО<br>🧪<br>И СДАНО</div>
+  </div>
+  <div class="report-platform-mark" id="certPlatform" style="border-top-color:#b45309; color:#78350f;">
+    <img id="certPlatformImg" alt="logo"><span id="certPlatformText"></span>
+  </div>
+  <div style="display: flex; gap: 10px; margin-top: 25px; position:relative; z-index:10;">
+    <button class="btn-secondary" style="flex:1;" onclick="window.print()">🖨️ Печать</button>
+    <button class="btn-primary" style="flex:1;" onclick="sendCertificateToTelegram()">✈️ В TG</button>
+  </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where, setDoc, updateDoc, getDoc, writeBatch, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where, setDoc, updateDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAHxz8YoyHn5QK-ekR9Q1aS9KfatAbe3Go",
@@ -1263,9 +999,6 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ============================================
-  // 🌟 НАСТРОЙКИ ПЛАТФОРМЫ
-  // ============================================
   const PLATFORM = {
     logoUrl: "https://artyom57-cmd.github.io/cabinet/logo.png",
     signature: "Сделано - Репетитор Артемий",
@@ -1311,64 +1044,33 @@
   let scheduleView = 'table';
   let calendarCursor = new Date();
 
-  const TOUR_STEPS = [
-    { selector: '[data-tour="schedule-form"]', title: "📅 Шаг 1: Запланируйте занятие", text: "Здесь создаются уроки. Укажите ученика, дату и повтор." },
-    { selector: '[data-tour="students"]', title: "🗂️ Шаг 2: Картотека", text: "Добавьте учеников и шаблоны ДЗ. Кнопка QR — для родителя." },
-    { selector: '[data-tour="notes"]', title: "📋 Шаг 3: Заметки", text: "Кнопка 📝 в шапке — отправить заметку себе в TG." },
-    { selector: '[data-tour="schedule"]', title: "📅 Шаг 4: Расписание", text: "Таблица / неделя / месяц. В календаре занятия можно перетаскивать (drag & drop)." },
-    { selector: '[data-tour="history"]', title: "📜 Шаг 5: История", text: "Поиск и фильтры по ученику, теме, оплате." },
-    { selector: '[data-tour="settings"]', title: "⚙️ Шаг 6: Настройки", text: "Предмет, валюта, Telegram-интеграция." }
-  ];
-  let tourIndex = 0;
-
   function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
   }
 
+  window.showScreen = (name) => {
+    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(el => {
+      if (el.getAttribute('onclick') && el.getAttribute('onclick').includes(`'${name}'`)) el.classList.add('active');
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   function applyPlatformBrandingUI() {
     const p = PLATFORM;
-
-    const loginWrap = document.getElementById('loginLogoWrap');
-    const loginImg = document.getElementById('loginLogoImg');
-    if (loginWrap && loginImg && p.logoUrl) {
-      loginImg.src = p.logoUrl;
-      loginWrap.style.display = 'block';
-      const badge = document.getElementById('appLogoIcon');
-      if (badge) badge.style.display = 'none';
-    }
-
     const logoWrap = document.getElementById('headerPlatformLogo');
     const logoImg = document.getElementById('headerPlatformLogoImg');
-    if (logoWrap && logoImg) {
-      if (p.logoUrl) { logoImg.src = p.logoUrl; logoWrap.classList.add('active'); }
-      else { logoWrap.classList.remove('active'); }
+    const fallback = document.getElementById('fallbackLogoIcon');
+    if (logoWrap && logoImg && fallback) {
+      if (p.logoUrl) {
+        logoImg.src = p.logoUrl;
+        logoImg.style.display = 'block';
+        fallback.style.display = 'none';
+        logoImg.onerror = () => { logoImg.style.display = 'none'; fallback.style.display = 'block'; };
+      } else { logoImg.style.display = 'none'; fallback.style.display = 'block'; }
     }
-
-    const sigEl = document.getElementById('platformSignature');
-    const sigName = document.getElementById('platformSignatureName');
-    if (sigEl && sigName) {
-      if (p.signature) {
-        sigEl.classList.add('active');
-        if (p.authorUrl) sigName.innerHTML = `<a href="${escapeHtml(p.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(p.signature)}</a>`;
-        else sigName.textContent = p.signature;
-      } else sigEl.classList.remove('active');
-    }
-
-    const footer = document.getElementById('appFooter');
-    const footerLogo = document.getElementById('footerLogoWrap');
-    const footerText = document.getElementById('footerText');
-    if (footer && footerLogo && footerText) {
-      if (p.signature || p.logoUrl) {
-        footer.style.display = 'block';
-        footerLogo.innerHTML = p.logoUrl ? `<img src="${escapeHtml(p.logoUrl)}" class="footer-logo" alt="logo">` : '';
-        const sigHtml = p.signature ? (p.authorUrl
-          ? `<a href="${escapeHtml(p.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(p.signature)}</a>`
-          : escapeHtml(p.signature)) : '';
-        const fText = p.footerText ? `<strong>${escapeHtml(p.footerText)}</strong>` : 'Кабинет Репетитора';
-        footerText.innerHTML = sigHtml ? `${sigHtml} · ${fText}` : fText;
-      } else footer.style.display = 'none';
-    }
-
     const marks = [
       { wrap: 'lessonReportPlatform', img: 'lessonReportPlatformImg', txt: 'lessonReportPlatformText' },
       { wrap: 'periodReportPlatform', img: 'periodReportPlatformImg', txt: 'periodReportPlatformText' },
@@ -1385,29 +1087,9 @@
         document.getElementById(txt).textContent = p.signature ? `Сделано: ${p.signature}` : (p.footerText || 'Кабинет Репетитора');
       } else w.classList.remove('active');
     });
-
-    const wm = document.getElementById('platformWatermark');
-    if (wm) {
-      wm.innerHTML = '';
-      if (p.watermark && p.watermark.trim()) {
-        wm.classList.add('active');
-        const symbols = p.watermark.trim().split(/\s+/);
-        for (let i = 0; i < 40; i++) {
-          const span = document.createElement('span');
-          span.textContent = symbols[i % symbols.length];
-          const seed = i * 137;
-          span.style.left = ((seed * 13) % 95) + '%';
-          span.style.top = ((seed * 17) % 95) + '%';
-          span.style.fontSize = (40 + (seed % 40)) + 'px';
-          wm.appendChild(span);
-        }
-      } else wm.classList.remove('active');
-    }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    applyPlatformBrandingUI();
-  });
+  document.addEventListener('DOMContentLoaded', applyPlatformBrandingUI);
 
   function notifyParentTelegram(text) {
     if (!userSettings.tgEnabled || !userSettings.tgBotToken || !userSettings.tgChatId) return false;
@@ -1449,13 +1131,9 @@
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7));
     startOfWeek.setHours(0,0,0,0);
-    
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    let weekSum = 0;
-    let monthSum = 0;
+    let weekSum = 0, monthSum = 0;
     const debts = {};
-
     allHistory.forEach(h => {
       if (h.paidStatus === 'Оплачено' && h.paidAmount) {
         const hDate = new Date(h.rawDate || h.date);
@@ -1467,43 +1145,27 @@
         debts[h.studentName].count += 1;
       }
     });
-
     document.getElementById('finWeekVal').innerText = weekSum.toLocaleString('ru-RU') + ' ₽';
     document.getElementById('finMonthVal').innerText = monthSum.toLocaleString('ru-RU') + ' ₽';
-
     const debtList = document.getElementById('debtList');
     debtList.innerHTML = '';
     const debtKeys = Object.keys(debts).sort((a,b) => debts[b].sum - debts[a].sum);
-
     if (debtKeys.length === 0) {
       debtList.innerHTML = '<div style="text-align:center; font-size:13px; color:var(--text-muted); padding:10px;">Все долги закрыты! 🎉</div>';
     } else {
       debtKeys.forEach(name => {
         const div = document.createElement('div');
         div.className = 'debt-item';
-        div.innerHTML = `
-          <div>
-            <div class="debt-name">${escapeHtml(name)}</div>
-            <div class="debt-info">Уроков: ${debts[name].count}</div>
-          </div>
-          <div class="debt-sum">${debts[name].sum.toLocaleString('ru-RU')} ₽</div>
-        `;
+        div.innerHTML = `<div><div class="debt-name">${escapeHtml(name)}</div><div class="debt-info">Уроков: ${debts[name].count}</div></div><div class="debt-sum">${debts[name].sum.toLocaleString('ru-RU')} ₽</div>`;
         debtList.appendChild(div);
       });
     }
-
     document.getElementById('financeModal').classList.add('active');
   };
   window.closeFinanceModal = () => document.getElementById('financeModal').classList.remove('active');
-
   window.toggleAmountInput = () => {
     const status = document.getElementById('mPaidStatus').value;
-    const input = document.getElementById('mPaidAmount');
-    if (status === 'Оплачено') {
-      input.style.borderColor = '#10b981';
-    } else {
-      input.style.borderColor = '#ef4444';
-    }
+    document.getElementById('mPaidAmount').style.borderColor = status === 'Оплачено' ? '#10b981' : '#ef4444';
   };
 
   // ==================== AUTH ====================
@@ -1513,18 +1175,23 @@
     const btnReg = document.getElementById('toggleRegister');
     const submitBtn = document.getElementById('authSubmitBtn');
     document.getElementById('authError').style.display = 'none';
-    if (mode === 'login') { btnLogin.classList.add('active'); btnReg.classList.remove('active'); submitBtn.innerText = 'Войти 🚀'; }
-    else { btnReg.classList.add('active'); btnLogin.classList.remove('active'); submitBtn.innerText = 'Зарегистрироваться ✨'; }
+    if (mode === 'login') { 
+      btnLogin.style.background = 'white'; btnLogin.style.color = 'var(--primary)'; btnLogin.style.boxShadow = 'var(--shadow-sm)';
+      btnReg.style.background = 'transparent'; btnReg.style.color = 'var(--text-muted)'; btnReg.style.boxShadow = 'none';
+      submitBtn.innerText = 'Войти 🚀'; 
+    } else { 
+      btnReg.style.background = 'white'; btnReg.style.color = 'var(--primary)'; btnReg.style.boxShadow = 'var(--shadow-sm)';
+      btnLogin.style.background = 'transparent'; btnLogin.style.color = 'var(--text-muted)'; btnLogin.style.boxShadow = 'none';
+      submitBtn.innerText = 'Зарегистрироваться ✨'; 
+    }
   };
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUserId = user.uid;
-      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('auth-screen').classList.add('hidden');
       document.getElementById('app-screen').style.display = 'block';
-      document.getElementById('userWelcomeText').innerText = `Пользователь: ${user.email}`;
-      const docRef = doc(db, "users", currentUserId);
-      const docSnap = await getDoc(docRef);
+      const docSnap = await getDoc(doc(db, "users", currentUserId));
       if (docSnap.exists()) {
         const fetchedData = docSnap.data();
         if (!fetchedData.shopItems) fetchedData.shopItems = defaultShopItems;
@@ -1535,10 +1202,9 @@
       }
       listenUserSettings();
       initApp();
-      checkAndSendMonthlyReports();
     } else {
       currentUserId = null;
-      document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('auth-screen').classList.remove('hidden');
       document.getElementById('app-screen').style.display = 'none';
       if (unsubSchedule) unsubSchedule();
       if (unsubHistory) unsubHistory();
@@ -1548,35 +1214,6 @@
       if (unsubNotes) unsubNotes();
     }
   });
-
-  async function checkAndSendMonthlyReports() {
-    const today = new Date();
-    if (today.getDate() !== 1 || !userSettings.autoMonthlyReport || !userSettings.tgEnabled) return;
-    const lastReportKey = `lastMonthlyReport_${currentUserId}_${today.getFullYear()}_${today.getMonth()}`;
-    if (localStorage.getItem(lastReportKey)) return;
-    const firstDayLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1).toISOString().slice(0, 10);
-    const lastDayLastMonth = new Date(today.getFullYear(), today.getMonth(), 0).toISOString().slice(0, 10);
-    for (let sId in studentsMap) {
-      const student = studentsMap[sId];
-      const filtered = allHistory.filter(h => {
-        if (h.studentName !== student.name && h.studentId !== sId) return false;
-        const hDate = h.rawDate ? h.rawDate.slice(0, 10) : '';
-        return hDate >= firstDayLastMonth && hDate <= lastDayLastMonth;
-      });
-      if (filtered.length > 0) {
-        let totalHw = 0, doneHw = 0;
-        filtered.forEach(h => { if (h.hwItems) h.hwItems.forEach(i => { totalHw++; if (i.status === 'done') doneHw++; }); });
-        const hwPercent = totalHw > 0 ? Math.round((doneHw / totalHw) * 100) : 100;
-        try {
-          await fetch(`https://api.telegram.org/bot${userSettings.tgBotToken}/sendMessage`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: userSettings.tgChatId, text: `📅 <b>Отчёт</b>\n<b>Ученик:</b> ${escapeHtml(student.name)}\n<b>Уроков:</b> ${filtered.length}\n<b>ДЗ:</b> ${hwPercent}%`, parse_mode: 'HTML' })
-          });
-        } catch(e) { console.error(e); }
-      }
-    }
-    localStorage.setItem(lastReportKey, 'true');
-  }
 
   document.getElementById('authForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1594,7 +1231,10 @@
     }
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+  // Кнопка выхода
+  document.querySelectorAll('.nav-item').forEach(el => {
+    if (el.innerText.includes('Выйти')) el.addEventListener('click', () => signOut(auth));
+  });
 
   function listenUserSettings() {
     unsubSettings = onSnapshot(doc(db, "users", currentUserId), (docSnap) => {
@@ -1610,12 +1250,6 @@
   function applyThemeUI(settings) {
     const preset = SUBJECT_PRESETS[settings.subject] || SUBJECT_PRESETS.chemistry;
     document.body.className = preset.theme;
-    document.getElementById('headerSubjectIcon').innerText = settings.currencyIcon || preset.icon;
-    document.getElementById('headerTitle').innerText = `Кабинет (${preset.title})`;
-    document.querySelectorAll('.currency-icon').forEach(el => el.innerText = settings.currencyIcon || preset.currencyIcon);
-    document.querySelectorAll('.currency-name').forEach(el => el.innerText = settings.currencyName || preset.currency);
-    document.querySelectorAll('.economy-field').forEach(el => el.style.display = settings.economyEnabled ? '' : 'none');
-    document.querySelectorAll('.tg-btn').forEach(el => el.style.display = settings.tgEnabled ? '' : 'none');
     const tName = settings.teacherName || "Репетитор";
     document.querySelectorAll('.teacher-fullname-display').forEach(el => el.innerText = tName);
     const certIcon = document.getElementById('certCenterIcon');
@@ -1640,10 +1274,14 @@
       shopItems: defaultShopItems
     });
     document.getElementById('onboardingModal').classList.remove('active');
-    setTimeout(() => startTour(false), 500);
   });
 
-  window.openSettingsModal = (scrollTo = null) => {
+  window.onSubjectChange = (val) => {
+    const preset = SUBJECT_PRESETS[val];
+    if (preset) { document.getElementById('setCurrencyName').value = preset.currency; document.getElementById('setCurrencyIcon').value = preset.currencyIcon; }
+  };
+
+  window.openSettingsModal = () => {
     document.getElementById('setTeacherName').value = userSettings.teacherName || '';
     document.getElementById('setSubject').value = userSettings.subject || 'chemistry';
     document.getElementById('setTgEnabled').checked = userSettings.tgEnabled;
@@ -1654,24 +1292,17 @@
     document.getElementById('setCurrencyName').value = userSettings.currencyName || '';
     document.getElementById('setCurrencyIcon').value = userSettings.currencyIcon || '';
     renderShopEditRows(userSettings.shopItems || defaultShopItems);
-    document.getElementById('settingsModal').classList.add('active');
-    if (scrollTo === 'shopTab') setTimeout(() => {
-      const block = document.getElementById('shopSettingsBlock');
-      if (block) block.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    showScreen('settings');
   };
-  window.closeSettingsModal = () => document.getElementById('settingsModal').classList.remove('active');
-  window.onSubjectChange = (val) => {
-    const preset = SUBJECT_PRESETS[val];
-    if (preset) { document.getElementById('setCurrencyName').value = preset.currency; document.getElementById('setCurrencyIcon').value = preset.currencyIcon; }
-  };
+
   function renderShopEditRows(items) {
     const list = document.getElementById('shopEditList');
     list.innerHTML = '';
     items.forEach(item => {
       const row = document.createElement('div');
       row.className = 'shop-edit-row';
-      row.innerHTML = `<input type="text" class="shop-item-title" value="${escapeHtml(item.title)}" placeholder="Название" required><input type="number" class="shop-item-price" value="${item.price}" placeholder="Цена" min="0" required><button type="button" onclick="removeShopEditRow(this)">🗑️</button>`;
+      row.style.cssText = 'display:flex; gap:8px; align-items:center;';
+      row.innerHTML = `<input type="text" class="shop-item-title" value="${escapeHtml(item.title)}" placeholder="Название" required style="flex:2;"><input type="number" class="shop-item-price" value="${item.price}" placeholder="Цена" min="0" required style="flex:1;"><button type="button" class="btn-danger" onclick="removeShopEditRow(this)" style="padding:8px 10px;">🗑️</button>`;
       list.appendChild(row);
     });
   }
@@ -1679,15 +1310,16 @@
     const list = document.getElementById('shopEditList');
     const row = document.createElement('div');
     row.className = 'shop-edit-row';
-    row.innerHTML = `<input type="text" class="shop-item-title" placeholder="Новая" required><input type="number" class="shop-item-price" value="50" min="0" required><button type="button" onclick="removeShopEditRow(this)">🗑️</button>`;
+    row.style.cssText = 'display:flex; gap:8px; align-items:center;';
+    row.innerHTML = `<input type="text" class="shop-item-title" placeholder="Новая" required style="flex:2;"><input type="number" class="shop-item-price" value="50" min="0" required style="flex:1;"><button type="button" class="btn-danger" onclick="removeShopEditRow(this)" style="padding:8px 10px;">🗑️</button>`;
     list.appendChild(row);
   };
-  window.removeShopEditRow = (btn) => { const row = btn.closest('.shop-edit-row'); if (row) row.remove(); };
+  window.removeShopEditRow = (btn) => { const row = btn.parentElement; if (row) row.remove(); };
   window.resetShopItemsToDefault = () => { if (confirm("Сбросить?")) renderShopEditRows(defaultShopItems); };
 
   document.getElementById('settingsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const shopRows = document.querySelectorAll('#shopEditList .shop-edit-row');
+    const shopRows = document.querySelectorAll('#shopEditList > div');
     const updatedShopItems = [];
     shopRows.forEach(row => {
       const title = row.querySelector('.shop-item-title').value.trim();
@@ -1707,7 +1339,7 @@
         currencyIcon: document.getElementById('setCurrencyIcon').value.trim(),
         shopItems: updatedShopItems
       }, { merge: true });
-      closeSettingsModal();
+      showScreen('students');
       alert("Сохранено! 💾");
     } catch (err) { alert("Ошибка: " + err.message); }
   });
@@ -1723,6 +1355,7 @@
     }
   };
 
+  // ==================== СЕРТИФИКАТ ====================
   window.openCertificateModal = () => {
     const select = document.getElementById('certStudentSelect');
     select.innerHTML = '';
@@ -1752,13 +1385,143 @@
     card.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // ==================== ЗАМЕТКИ ====================
+  window.openNotesModal = () => {
+    document.getElementById('noteText').value = '';
+    document.getElementById('noteSendToTg').checked = userSettings.tgEnabled && !!userSettings.tgBotToken && !!userSettings.tgChatId;
+    const tgWrapper = document.getElementById('noteSendToTg').parentElement;
+    if (tgWrapper) tgWrapper.style.display = userSettings.tgEnabled ? 'flex' : 'none';
+    const sel = document.getElementById('noteStudentSelect');
+    sel.innerHTML = '<option value="">— Без привязки —</option>';
+    Object.keys(studentsMap).forEach(sId => {
+      const opt = document.createElement('option');
+      opt.value = studentsMap[sId].name;
+      opt.innerText = studentsMap[sId].name;
+      sel.appendChild(opt);
+    });
+    document.getElementById('notesModal').classList.add('active');
+    setTimeout(() => document.getElementById('noteText').focus(), 100);
+  };
+  window.closeNotesModal = () => document.getElementById('notesModal').classList.remove('active');
+  window.applyNotePreset = (text) => { const ta = document.getElementById('noteText'); ta.value = text + (ta.value ? ' ' + ta.value : ''); ta.focus(); };
+
+  document.getElementById('notesForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('noteText').value.trim();
+    const student = document.getElementById('noteStudentSelect').value;
+    const sendTg = document.getElementById('noteSendToTg').checked;
+    if (!text) { alert('Введите текст заметки!'); return; }
+    try {
+      await addDoc(collection(db, "notes"), {
+        userId: currentUserId, studentName: student || '', text: text, createdAt: new Date().toISOString(), sentToTg: sendTg
+      });
+      if (sendTg) {
+        const sent = notifyParentTelegram(`📝 <b>Заметка${student ? ' — ' + escapeHtml(student) : ''}</b>\n${escapeHtml(text)}`);
+        if (!sent) alert('Сохранено локально. Настройте Telegram.');
+        else alert('Заметка отправлена в Telegram и сохранена! 📝');
+      } else { alert('Заметка сохранена! 📝'); }
+      closeNotesModal();
+    } catch (err) { alert('Ошибка: ' + err.message); }
+  });
+
+  window.deleteNote = async (id) => {
+    if (!confirm('Удалить заметку?')) return;
+    try { await deleteDoc(doc(db, "notes", id)); } catch (err) { alert('Ошибка: ' + err.message); }
+  };
+
+  function renderNotesPanel() {
+    const panel = document.getElementById('notesPanel');
+    if (!panel) return;
+    const filter = document.getElementById('notesFilterStudent')?.value || '';
+    panel.innerHTML = '';
+    const filtered = filter ? notesList.filter(n => n.studentName === filter) : notesList;
+    if (filtered.length === 0) {
+      panel.innerHTML = '<div class="notes-empty">Заметок пока нет. Нажмите 📝 в шапке, чтобы создать.</div>';
+      return;
+    }
+    const sorted = [...filtered].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    sorted.forEach(n => {
+      const dateStr = n.createdAt ? new Date(n.createdAt).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+      const div = document.createElement('div');
+      div.className = 'note-item';
+      div.innerHTML = `
+        <div class="note-body">
+          <div class="note-meta">
+            <span>${dateStr}</span>
+            ${n.studentName ? `<span class="note-student">${escapeHtml(n.studentName)}</span>` : ''}
+            ${n.sentToTg ? '<span title="Отправлено в TG">✈️</span>' : ''}
+          </div>
+          <div class="note-text">${escapeHtml(n.text)}</div>
+        </div>
+        <button class="note-delete" onclick="deleteNote('${n.id}')">🗑️</button>
+      `;
+      panel.appendChild(div);
+    });
+  }
+
+  function updateNotesFilter() {
+    const sel = document.getElementById('notesFilterStudent');
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">Все ученики</option>';
+    const names = new Set();
+    notesList.forEach(n => { if (n.studentName) names.add(n.studentName); });
+    Array.from(names).sort().forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name; opt.innerText = name;
+      sel.appendChild(opt);
+    });
+    if (current && names.has(current)) sel.value = current;
+  }
+
+  // ==================== DRAG & DROP ====================
+  window.handleDragStart = (e, scheduleId) => { e.dataTransfer.setData('text/plain', scheduleId); e.dataTransfer.effectAllowed = 'move'; e.target.classList.add('dragging'); };
+  window.handleDragEnd = (e) => { document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging')); document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over')); };
+  window.handleDragOver = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; e.currentTarget.classList.add('drag-over'); };
+  window.handleDragLeave = (e) => { if (!e.currentTarget.contains(e.relatedTarget)) { e.currentTarget.classList.remove('drag-over'); } };
+
+  window.handleDrop = async (e) => {
+    e.preventDefault();
+    const target = e.currentTarget;
+    target.classList.remove('drag-over');
+    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    const scheduleId = e.dataTransfer.getData('text/plain');
+    if (!scheduleId) return;
+    const data = upcomingMap[scheduleId];
+    if (!data) return;
+    const newDateStr = target.dataset.date;
+    if (!newDateStr) return;
+    const oldDate = new Date(data.dateTime);
+    const newDate = new Date(newDateStr + 'T00:00:00');
+    newDate.setHours(oldDate.getHours(), oldDate.getMinutes(), 0, 0);
+    const oldStr = oldDate.toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+    const newStr = newDate.toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+    if (newDate.toDateString() === oldDate.toDateString()) return;
+    const confirmMove = confirm(`Перенести занятие "${data.studentName}"?\n\nБыло: ${oldStr}\nСтанет: ${newStr}`);
+    if (!confirmMove) return;
+    try {
+      await updateDoc(doc(db, "schedule", scheduleId), { dateTime: newDate.toISOString().slice(0, 16) });
+      if (draftsMap[scheduleId]) await deleteDoc(doc(db, "drafts", scheduleId));
+      const sId = Object.keys(studentsMap).find(k => studentsMap[k].name.toLowerCase() === data.studentName.toLowerCase());
+      await addDoc(collection(db, "history"), {
+        userId: currentUserId, studentId: sId || null, studentName: data.studentName,
+        type: 'moved', date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
+        rawDate: new Date().toISOString().slice(0, 16),
+        topic: `Перенос (drag): ${oldStr} → ${newStr}`,
+        comment: '', paidStatus: '—'
+      });
+    } catch (err) { alert('Ошибка переноса: ' + err.message); }
+  };
+
+  // ==================== ИНИЦИАЛИЗАЦИЯ ====================
   function initApp() {
     const modalHwList = document.getElementById('modalHwList');
     modalHwList.innerHTML = '';
     for (let i = 1; i <= 8; i++) {
       const div = document.createElement('div');
       div.className = 'hw-item';
-      div.innerHTML = `<select class="status-select" onchange="window.updateRowStatus(this)"><option value="none">⚪</option><option value="done">✅</option><option value="fail">❌</option></select><input type="text" class="hw-text-input" placeholder="Пункт ДЗ №${i}">`;
+      div.style.cssText = 'display:flex; gap:8px; align-items:center;';
+      div.innerHTML = `<select class="status-select" onchange="window.updateRowStatus(this)" style="border: 1.5px solid var(--border-color); padding: 6px; border-radius:6px; font-weight:bold; background:white;"><option value="none">⚪</option><option value="done">✅</option><option value="fail">❌</option></select><input type="text" class="hw-text-input" placeholder="Пункт ДЗ №${i}" style="flex:1;">`;
       modalHwList.appendChild(div);
     }
     const editHistoryHwList = document.getElementById('editHistoryHwList');
@@ -1766,7 +1529,8 @@
     for (let i = 1; i <= 8; i++) {
       const div = document.createElement('div');
       div.className = 'hw-item';
-      div.innerHTML = `<select class="status-select" onchange="window.updateRowStatus(this)"><option value="none">⚪</option><option value="done">✅</option><option value="fail">❌</option></select><input type="text" class="hw-text-input" placeholder="Пункт ДЗ №${i}">`;
+      div.style.cssText = 'display:flex; gap:8px; align-items:center;';
+      div.innerHTML = `<select class="status-select" onchange="window.updateRowStatus(this)" style="border: 1.5px solid var(--border-color); padding: 6px; border-radius:6px; font-weight:bold; background:white;"><option value="none">⚪</option><option value="done">✅</option><option value="fail">❌</option></select><input type="text" class="hw-text-input" placeholder="Пункт ДЗ №${i}" style="flex:1;">`;
       editHistoryHwList.appendChild(div);
     }
 
@@ -1795,11 +1559,7 @@
 
     unsubNotes = onSnapshot(qNotes, (snapshot) => {
       notesList = [];
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        data.id = docSnap.id;
-        notesList.push(data);
-      });
+      snapshot.forEach(docSnap => { const data = docSnap.data(); data.id = docSnap.id; notesList.push(data); });
       updateNotesFilter();
       renderNotesPanel();
     });
@@ -1820,9 +1580,7 @@
       allHistory = [];
       const studentsSet = new Set();
       snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        data.id = docSnap.id;
-        allHistory.push(data);
+        const data = docSnap.data(); data.id = docSnap.id; allHistory.push(data);
         if (data.studentName) studentsSet.add(data.studentName);
       });
       const select = document.getElementById('reportStudentSelect');
@@ -1834,11 +1592,6 @@
       renderStudentsCards();
       renderHistoryTable();
     });
-
-    setTimeout(() => {
-      const key = `tourDone_${currentUserId}`;
-      if (!localStorage.getItem(key)) startTour(false);
-    }, 1500);
   }
 
   function renderStudentsCards() {
@@ -1856,44 +1609,48 @@
       });
       const hwPercent = totalHw > 0 ? Math.round((doneHw / totalHw) * 100) : 100;
       const avgHwGrade = hwGradesCount > 0 ? (hwGradesSum / hwGradesCount).toFixed(1) : '—';
-      const parentLink = `https://artyom57-cmd.github.io/cabinet/parent.html?id=${sId}`;
-
-      // Ищем ближайшее ДЗ
-      const now = new Date();
+      
+      const initials = s.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      
       const upcomingForStudent = Object.values(upcomingMap)
         .filter(item => item.studentName === s.name || item.studentName.includes(s.name))
         .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
-      
       let upcomingHwText = '';
-      if (upcomingForStudent.length > 0) {
-        const nextLesson = upcomingForStudent[0];
-        if (nextLesson.assignedHw) {
-          upcomingHwText = nextLesson.assignedHw;
-        }
+      if (upcomingForStudent.length > 0 && upcomingForStudent[0].assignedHw) {
+        upcomingHwText = upcomingForStudent[0].assignedHw;
       }
 
       const card = document.createElement('div');
       card.className = 'student-card';
       card.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:start;">
-          <h4>${escapeHtml(s.name)} <small>(${escapeHtml(s.grade || '—')})</small></h4>
-          <span class="flask-badge economy-field">${userSettings.currencyIcon} ${s.flasksBalance || 0}</span>
+        <div class="student-header">
+          <div class="student-avatar">${escapeHtml(initials)}</div>
+          <div class="student-title">
+            <h4>${escapeHtml(s.name)}</h4>
+            <p>${escapeHtml(s.grade || 'Без класса')}</p>
+          </div>
+          <span style="background:var(--primary-light); color:var(--primary-dark); font-weight:700; padding:4px 10px; border-radius:12px; font-size:12px; display:inline-flex; align-items:center; gap:4px;">${userSettings.currencyIcon} ${s.flasksBalance || 0}</span>
         </div>
-        <p><strong>🎯 Цель:</strong> ${escapeHtml(s.goal || '—')}</p>
-        <p><strong>📞 Контакты:</strong> ${escapeHtml(s.parentContacts || '—')}</p>
         
+        <div class="student-stats">
+          <div class="stat-item"><div class="val">${totalLessons}</div><div class="lbl">Уроков</div></div>
+          <div class="stat-item"><div class="val">${hwPercent}%</div><div class="lbl">ДЗ</div></div>
+          <div class="stat-item"><div class="val">${avgHwGrade}</div><div class="lbl">Ср. балл</div></div>
+        </div>
+
         ${upcomingHwText ? `<div class="student-hw-preview"><strong>📝 Ближайшее ДЗ:</strong><br>${escapeHtml(upcomingHwText)}</div>` : ''}
 
-        <div style="background: #ffffff; border-radius: 6px; padding: 6px; margin: 8px 0; font-size: 12px; border: 1px solid #e5e7eb;">
-          📊 Уроков: <strong>${totalLessons}</strong> | ДЗ: <strong>${hwPercent}%</strong> | Ср. оценка: <strong>${avgHwGrade}</strong>
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+           <strong>🎯 Цель:</strong> ${escapeHtml(s.goal || '—')}
         </div>
-        <p style="margin-bottom: 8px;"><strong>🔗 Ссылка родителя:</strong>
-           <input type="text" readonly value="${escapeHtml(parentLink)}" onclick="this.select(); document.execCommand('copy'); alert('Скопировано!');" style="font-size:11px; cursor:pointer;">
-        </p>
-        <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:8px;">
-          <button class="btn-action" onclick="openStudentCardModal('${sId}')">✏️</button>
-          <button class="btn-action" style="background:#10b981; color:white;" onclick="openQrModal('${sId}', '${escapeHtml(s.name)}')">📱 QR</button>
-          <button class="btn-action" style="color:#ef4444; background:#fee2e2;" onclick="deleteStudentCard('${sId}', '${escapeHtml(s.name)}')">🗑️</button>
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+           <strong>📞 Контакты:</strong> ${escapeHtml(s.parentContacts || '—')}
+        </div>
+
+        <div class="student-actions">
+          <button class="btn-secondary" onclick="openStudentCardModal('${sId}')">✏️ Ред.</button>
+          <button class="btn-secondary" onclick="openQrModal('${sId}', '${escapeHtml(s.name)}')">📱 QR</button>
+          <button class="btn-danger" onclick="deleteStudentCard('${sId}', '${escapeHtml(s.name)}')">🗑️</button>
         </div>
       `;
       container.appendChild(card);
@@ -1922,9 +1679,15 @@
 
   window.switchScheduleView = (view) => {
     scheduleView = view;
-    document.getElementById('viewTableBtn').classList.toggle('active', view === 'table');
-    document.getElementById('viewWeekBtn').classList.toggle('active', view === 'week');
-    document.getElementById('viewMonthBtn').classList.toggle('active', view === 'month');
+    const tabs = ['viewTableBtn', 'viewWeekBtn', 'viewMonthBtn'];
+    tabs.forEach(id => {
+      const btn = document.getElementById(id);
+      if (id === 'view' + view.charAt(0).toUpperCase() + view.slice(1) + 'Btn') {
+        btn.style.background = 'white'; btn.style.color = 'var(--primary)'; btn.style.boxShadow = 'var(--shadow-sm)';
+      } else {
+        btn.style.background = 'transparent'; btn.style.color = 'var(--text-muted)'; btn.style.boxShadow = 'none';
+      }
+    });
     document.getElementById('scheduleTableView').style.display = view === 'table' ? 'block' : 'none';
     document.getElementById('scheduleCalendarView').style.display = view === 'table' ? 'none' : 'block';
     document.getElementById('calendarNav').style.display = view === 'table' ? 'none' : 'flex';
@@ -1956,27 +1719,39 @@
   function renderScheduleTable() {
     const tbody = document.getElementById('upcomingTable');
     tbody.innerHTML = '';
-    getScheduleItems().forEach(item => {
-      const data = item.data;
-      const id = item.id;
-      const hasDraft = !!draftsMap[id];
-      const formattedDate = new Date(data.dateTime).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+    const items = getScheduleItems();
+    if (items.length === 0) {
+      tbody.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:40px;">Пока нет запланированных занятий.</div>';
+      return;
+    }
+    items.forEach(item => {
+      const data = item.data; const id = item.id; const hasDraft = !!draftsMap[id];
+      const d = new Date(data.dateTime);
+      const months = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+      const dateStr = `${d.getDate()} ${months[d.getMonth()]}`;
+      const timeStr = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
       const repeatText = data.repeatDays == 7 ? 'Каждую неделю' : (data.repeatDays == 14 ? 'Каждые 2 недели' : 'Разовое');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td data-label="Дата"><strong>${formattedDate}</strong></td>
-        <td data-label="Ученик"><strong>${escapeHtml(data.studentName)}</strong> ${hasDraft ? '<span class="badge-draft">📝</span>' : ''}</td>
-        <td data-label="Повтор">${repeatText}</td>
-        <td data-label="ДЗ"><small>${escapeHtml(data.assignedHw || '—')}</small></td>
-        <td data-label="Действия">
-          <button class="btn-action" style="background:#10b981; color:white;" onclick="openCompleteModal('${id}')">✅</button>
-          <button class="btn-action" style="background:#fef3c7; color:#d97706;" onclick="openEditModal('${id}')">✏️</button>
-          <button class="btn-action btn-duplicate" onclick="openDuplicateModal('${id}')">📋</button>
-          <button class="btn-action" style="background:#dbeafe; color:#2563eb;" onclick="openMoveModal('${id}')">📅</button>
-          <button class="btn-action" style="background:#fee2e2; color:#dc2626;" onclick="openCancelModal('${id}')">❌</button>
-        </td>
+      
+      const div = document.createElement('div');
+      div.className = 'schedule-card';
+      div.innerHTML = `
+        <div class="schedule-time">
+          <div class="day">${dateStr}</div>
+          <div class="time">${timeStr}</div>
+        </div>
+        <div class="schedule-info">
+          <h4>${escapeHtml(data.studentName)} ${hasDraft ? '<span style="background:#fef3c7; color:#d97706; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold; margin-left:6px;">📝 Черновик</span>' : ''}</h4>
+          <p>${repeatText} · ДЗ: ${escapeHtml(data.assignedHw || 'не задано')}</p>
+        </div>
+        <div class="schedule-actions">
+          <button class="btn-success" style="padding:8px 12px;" onclick="openCompleteModal('${id}')" title="Завершить">✅</button>
+          <button class="btn-action" style="background:#fffbeb; color:#d97706;" onclick="openEditModal('${id}')" title="Редактировать">✏️</button>
+          <button class="btn-action" style="background:#f3e8ff; color:#6d28d9;" onclick="openDuplicateModal('${id}')" title="Задвоить">📋</button>
+          <button class="btn-action" style="background:#eff6ff; color:#2563eb;" onclick="openMoveModal('${id}')" title="Перенести">📅</button>
+          <button class="btn-action" style="background:#fef2f2; color:var(--danger);" onclick="openCancelModal('${id}')" title="Отменить">❌</button>
+        </div>
       `;
-      tbody.appendChild(tr);
+      tbody.appendChild(div);
     });
   }
 
@@ -1998,10 +1773,10 @@
       const isToday = d.toDateString() === todayStr;
       const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       html += `<div class="day-col ${isToday ? 'today' : ''}" data-date="${dateStr}" ondragover="window.handleDragOver(event)" ondragleave="window.handleDragLeave(event)" ondrop="window.handleDrop(event)">
-        <div class="day-header">${dayNames[i]} ${d.getDate()}.${(d.getMonth() + 1).toString().padStart(2, '0')}</div>`;
+        <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">${dayNames[i]} ${d.getDate()}.${(d.getMonth() + 1).toString().padStart(2, '0')}</div>`;
       dayLessons.forEach(item => {
         const time = new Date(item.data.dateTime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        html += `<div class="cal-lesson" draggable="true" ondragstart="window.handleDragStart(event, '${item.id}')" ondragend="window.handleDragEnd(event)" onclick="openCompleteModal('${item.id}')"><div class="cal-time">${time}</div><div>${escapeHtml(item.data.studentName).slice(0, 18)}</div></div>`;
+        html += `<div class="cal-lesson" draggable="true" ondragstart="window.handleDragStart(event, '${item.id}')" ondragend="window.handleDragEnd(event)" onclick="openCompleteModal('${item.id}')"><div style="font-weight:700; font-size:10px; opacity:0.85; margin-bottom:2px;">${time}</div><div>${escapeHtml(item.data.studentName).slice(0, 18)}</div></div>`;
       });
       html += `</div>`;
     }
@@ -2072,30 +1847,30 @@
       const doneHw = filledHw.filter(i => i.status === 'done').length;
       const isExam = data.type === 'exam';
       const isCancelled = data.type === 'cancelled';
-      let typeBadge = '<span class="badge-type">Урок</span>';
-      if (isExam) typeBadge = '<span class="badge-type" style="background:#fef3c7; color:#d97706;">🎓 Зачёт</span>';
-      if (isCancelled) typeBadge = '<span class="badge-type" style="background:#fee2e2; color:#dc2626;">❌ Отменён</span>';
-      if (data.type === 'duplicated') typeBadge = '<span class="badge-type" style="background:#ede9fe; color:#6d28d9;">📋 Дубликат</span>';
-      if (data.type === 'moved') typeBadge = '<span class="badge-type" style="background:#dbeafe; color:#2563eb;">📅 Перенос</span>';
+      let typeBadge = '<span style="background:#e0e7ff; color:#3730a3; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">Урок</span>';
+      if (isExam) typeBadge = '<span style="background:#fef3c7; color:#d97706; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">🎓 Зачёт</span>';
+      if (isCancelled) typeBadge = '<span style="background:#fef2f2; color:var(--danger); padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">❌ Отменён</span>';
+      if (data.type === 'duplicated') typeBadge = '<span style="background:#f3e8ff; color:#6d28d9; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">📋 Дубликат</span>';
+      if (data.type === 'moved') typeBadge = '<span style="background:#eff6ff; color:#2563eb; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">📅 Перенос</span>';
       
       let payHtml = '—';
-      if (data.paidStatus === 'Оплачено') payHtml = `<span style="color:#059669; font-weight:bold;">+${data.paidAmount || 0} ₽</span>`;
-      else if (data.paidStatus === 'Не оплачено') payHtml = `<span style="color:#dc2626; font-weight:bold;">Долг ${data.paidAmount || 0} ₽</span>`;
+      if (data.paidStatus === 'Оплачено') payHtml = `<span style="color:var(--success); font-weight:bold;">+${data.paidAmount || 0} ₽</span>`;
+      else if (data.paidStatus === 'Не оплачено') payHtml = `<span style="color:var(--danger); font-weight:bold;">Долг ${data.paidAmount || 0} ₽</span>`;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td data-label="Дата">${escapeHtml(data.date || '—')}</td>
         <td data-label="Ученик"><strong>${escapeHtml(data.studentName || '—')}</strong></td>
         <td data-label="Тип">${typeBadge}</td>
-        <td data-label="Тема">${escapeHtml(data.topic || '—')} ${isExam ? `(${escapeHtml(data.examStatus || '')})` : ''} ${isCancelled ? `<br><small style="color:#6b7280;">${escapeHtml(data.cancelReason || '—')}</small>` : ''}</td>
+        <td data-label="Тема">${escapeHtml(data.topic || '—')} ${isExam ? `(${escapeHtml(data.examStatus || '')})` : ''} ${isCancelled ? `<br><small style="color:var(--text-muted);">${escapeHtml(data.cancelReason || '—')}</small>` : ''}</td>
         <td data-label="Оценки">${isExam ? `Зачёт: <strong>${escapeHtml(data.examStatus || '')}</strong>` : (isCancelled ? '—' : `Опрос: ${escapeHtml(data.pollGrade || '-')} | ДЗ: ${escapeHtml(data.hwGrade || '-')} | Итог: ${escapeHtml(data.totalGrade || '-')}`)}</td>
         <td data-label="ДЗ">${filledHw.length > 0 ? `${doneHw} из ${filledHw.length}` : 'Без ДЗ'}</td>
         <td data-label="Оплата">${payHtml}</td>
         <td data-label="Действия">
-          <div style="display:flex; gap:5px; flex-wrap:wrap;">
-            <button class="btn-action" onclick="generateLessonReport('${data.id}')">Отчёт</button>
-            <button class="btn-action" style="background:#fef3c7; color:#d97706;" onclick="openEditHistoryModal('${data.id}')">✏️</button>
-            <button class="btn-action" style="color:#ef4444; background:#fee2e2;" onclick="deleteHistoryLesson('${data.id}')">🗑️</button>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
+            <button class="btn-secondary" style="padding:6px 10px; font-size:12px;" onclick="generateLessonReport('${data.id}')">Отчёт</button>
+            <button class="btn-action" style="background:#fffbeb; color:#d97706;" onclick="openEditHistoryModal('${data.id}')">✏️</button>
+            <button class="btn-action" style="background:#fef2f2; color:var(--danger);" onclick="deleteHistoryLesson('${data.id}')">🗑️</button>
           </div>
         </td>
       `;
@@ -2253,9 +2028,7 @@
     document.getElementById('dupRepeatInterval').value = data.repeatDays || 0;
     document.getElementById('dupAssignedHw').value = data.assignedHw || '';
     document.getElementById('dupNotifyParent').checked = false;
-    document.getElementById('dupLessonInfo').innerHTML =
-      `Исходное: <strong>${escapeHtml(data.studentName)}</strong> · ${srcDate.toLocaleString('ru-RU')}<br>
-       <span style="font-size:11px;">Исходное занятие останется. Будет создано новое.</span>`;
+    document.getElementById('dupLessonInfo').innerHTML = `Исходное: <strong>${escapeHtml(data.studentName)}</strong> · ${srcDate.toLocaleString('ru-RU')}<br><span style="font-size:11px;">Исходное занятие останется. Будет создано новое.</span>`;
     document.getElementById('duplicateModal').classList.add('active');
   };
   window.closeDuplicateModal = () => document.getElementById('duplicateModal').classList.remove('active');
@@ -2272,26 +2045,19 @@
     if (!newDateTime) { alert('Укажите дату!'); return; }
     try {
       await addDoc(collection(db, "schedule"), {
-        userId: currentUserId,
-        studentName: sourceData.studentName,
-        dateTime: newDateTime,
-        repeatDays: newRepeat,
-        assignedHw: newHw || sourceData.assignedHw || ''
+        userId: currentUserId, studentName: sourceData.studentName, dateTime: newDateTime, repeatDays: newRepeat, assignedHw: newHw || sourceData.assignedHw || ''
       });
       const sId = Object.keys(studentsMap).find(k => studentsMap[k].name.toLowerCase() === sourceData.studentName.toLowerCase());
       const srcDate = new Date(sourceData.dateTime);
       const newDateObj = new Date(newDateTime);
       await addDoc(collection(db, "history"), {
-        userId: currentUserId, studentId: sId || null, studentName: sourceData.studentName,
-        type: 'duplicated',
+        userId: currentUserId, studentId: sId || null, studentName: sourceData.studentName, type: 'duplicated',
         date: new Date().toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }),
         rawDate: new Date().toISOString().slice(0, 16),
         topic: `Дублирование: ${srcDate.toLocaleString('ru-RU')} → ${newDateObj.toLocaleString('ru-RU')}`,
         comment: '', paidStatus: '—'
       });
-      if (notify) {
-        notifyParentTelegram(`📋 <b>Дополнительное занятие</b>\n<b>Ученик:</b> ${escapeHtml(sourceData.studentName)}\n<b>Дата:</b> ${newDateObj.toLocaleString('ru-RU')}`);
-      }
+      if (notify) notifyParentTelegram(`📋 <b>Дополнительное занятие</b>\n<b>Ученик:</b> ${escapeHtml(sourceData.studentName)}\n<b>Дата:</b> ${newDateObj.toLocaleString('ru-RU')}`);
       closeDuplicateModal();
       alert('Занятие задвоено! 📋\nИсходное осталось на месте.');
     } catch (err) { alert('Ошибка: ' + err.message); }
@@ -2321,16 +2087,12 @@
         const existingStudentId = Object.keys(studentsMap).find(sId => studentsMap[sId].name.toLowerCase() === name.toLowerCase());
         if (!existingStudentId) {
           await addDoc(collection(db, "students"), {
-            userId: currentUserId, teacherChatId: userSettings.tgChatId || '',
-            name, grade: '', parentContacts: '', goal: '', notes: '', flasksBalance: 0, lessonRate: 0, hwTemplates: []
+            userId: currentUserId, teacherChatId: userSettings.tgChatId || '', name, grade: '', parentContacts: '', goal: '', notes: '', flasksBalance: 0, lessonRate: 0, hwTemplates: []
           });
         }
       }
       await addDoc(collection(db, "schedule"), {
-        userId: currentUserId, studentName: name,
-        dateTime: document.getElementById('nextLessonDate').value,
-        repeatDays: parseInt(document.getElementById('repeatInterval').value),
-        assignedHw: document.getElementById('addAssignedHw').value || ''
+        userId: currentUserId, studentName: name, dateTime: document.getElementById('nextLessonDate').value, repeatDays: parseInt(document.getElementById('repeatInterval').value), assignedHw: document.getElementById('addAssignedHw').value || ''
       });
       e.target.reset();
       toggleLessonFormatFields();
@@ -2362,14 +2124,11 @@
     document.getElementById('mRepeat').value = data.repeatDays;
     document.getElementById('mStudentName').innerText = data.studentName;
     document.getElementById('mFlasksChange').value = '';
-    
-    // Автозаполнение ставки из карточки ученика
     const sId = Object.keys(studentsMap).find(k => studentsMap[k].name.toLowerCase() === data.studentName.toLowerCase());
     const rate = sId ? (studentsMap[sId].lessonRate || 0) : 0;
     document.getElementById('mPaidAmount').value = rate;
     document.getElementById('mPaidStatus').value = 'Оплачено';
     toggleAmountInput();
-
     const draft = draftsMap[id];
     const initialType = draft ? (draft.type || 'lesson') : 'lesson';
     document.getElementById('mLessonTypeSelect').value = initialType;
@@ -2467,9 +2226,7 @@
       const currentBalance = studentsMap[sId].flasksBalance || 0;
       await updateDoc(doc(db, "students", sId), { flasksBalance: Math.max(0, currentBalance + flasksChange) });
     }
-
     const paidAmount = parseInt(document.getElementById('mPaidAmount').value) || 0;
-
     const historyData = {
       userId: currentUserId, studentId: sId || null, studentName, type: lessonType,
       date: formattedDate, rawDate,
@@ -2493,8 +2250,7 @@
         const nextDate = new Date(rawDate);
         nextDate.setDate(nextDate.getDate() + repeatDays);
         await addDoc(collection(db, "schedule"), {
-          userId: currentUserId, studentName, dateTime: nextDate.toISOString().slice(0, 16),
-          repeatDays, assignedHw: nextHw || ''
+          userId: currentUserId, studentName, dateTime: nextDate.toISOString().slice(0, 16), repeatDays, assignedHw: nextHw || ''
         });
       }
       closeModal();
@@ -2519,17 +2275,17 @@
       item.hwItems.forEach(hw => {
         const div = document.createElement('div');
         div.className = `hw-item ${hw.status === 'done' ? 'done' : (hw.status === 'fail' ? 'not-done' : '')}`;
+        div.style.cssText = 'padding:8px 12px; border-radius:6px; font-size:13px;';
+        if (hw.status === 'done') div.style.background = 'rgba(16, 185, 129, 0.1)';
+        else if (hw.status === 'fail') div.style.background = 'rgba(239, 68, 68, 0.1)';
         div.innerHTML = `<span>${hw.status === 'done' ? '✅' : (hw.status === 'fail' ? '❌' : '⚪')} ${escapeHtml(hw.text)}</span>`;
         hwDisplay.appendChild(div);
       });
     } else {
       hwDisplay.innerHTML = '<p style="font-size:13px; color:#6b7280;">ДЗ не задано.</p>';
     }
-    
-    // Добавляем текущее время для отчета
     const now = new Date();
     document.getElementById('repTime').innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
     const card = document.getElementById('lessonReportCard');
     card.classList.add('active');
     card.scrollIntoView({ behavior: 'smooth' });
@@ -2570,11 +2326,8 @@
     document.getElementById('pRepGradesList').innerText = totalGrades.length > 0 ? totalGrades.join(', ') : '—';
     document.getElementById('pRepComment').innerText = comment || 'Замечаний нет.';
     renderPeriodChart(chartLabels, chartGradesData, chartHwPercentData);
-    
-    // Добавляем текущее время для отчета за период
     const now = new Date();
     document.getElementById('pRepTime').innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
     const card = document.getElementById('periodReportCard');
     card.classList.add('active');
     card.scrollIntoView({ behavior: 'smooth' });
@@ -2628,8 +2381,8 @@
     container.innerHTML = '';
     currentCardTemplates.forEach((t, idx) => {
       const div = document.createElement('div');
-      div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#f3f4f6; padding:4px 8px; border-radius:4px; margin-bottom:4px; font-size:12px;';
-      div.innerHTML = `<span>${escapeHtml(t)}</span><button type="button" style="color:#ef4444; background:none; border:none; cursor:pointer;" onclick="removeHwTemplate(${idx})">❌</button>`;
+      div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--bg-body); padding:8px 12px; border-radius:var(--radius-sm); margin-bottom:8px; font-size:13px;';
+      div.innerHTML = `<span>${escapeHtml(t)}</span><button type="button" style="color:var(--danger); background:none; border:none; cursor:pointer; font-size:18px;" onclick="removeHwTemplate(${idx})">×</button>`;
       container.appendChild(div);
     });
   }
@@ -2742,48 +2495,9 @@
     } catch (err) { alert("Ошибка: " + err.message); }
   });
 
-  window.startTour = (manual = false) => {
-    const key = `tourDone_${currentUserId}`;
-    if (!manual && localStorage.getItem(key)) return;
-    tourIndex = 0;
-    document.getElementById('tourOverlay').classList.add('active');
-    showTourStep();
-  };
+  window.startTour = () => {};
+  window.endTour = () => {};
 
-  function showTourStep() {
-    const step = TOUR_STEPS[tourIndex];
-    if (!step) { endTour(); return; }
-    const el = document.querySelector(step.selector);
-    if (!el) { tourIndex++; showTourStep(); return; }
-    const rect = el.getBoundingClientRect();
-    const spotlight = document.getElementById('tourSpotlight');
-    spotlight.style.left = (rect.left - 6) + 'px';
-    spotlight.style.top = (rect.top - 6) + 'px';
-    spotlight.style.width = (rect.width + 12) + 'px';
-    spotlight.style.height = (rect.height + 12) + 'px';
-    spotlight.classList.add('active');
-    const tooltip = document.getElementById('tourTooltip');
-    document.getElementById('tourTitle').innerText = step.title;
-    document.getElementById('tourText').innerText = step.text;
-    document.getElementById('tourStep').innerText = `${tourIndex + 1} / ${TOUR_STEPS.length}`;
-    const nextBtn = document.getElementById('tourNextBtn');
-    nextBtn.innerText = tourIndex === TOUR_STEPS.length - 1 ? 'Готово ✓' : 'Далее ▶';
-    nextBtn.onclick = () => { tourIndex++; if (tourIndex >= TOUR_STEPS.length) endTour(); else showTourStep(); };
-    let tLeft = rect.left;
-    let tTop = rect.bottom + 12;
-    if (tLeft + 320 > window.innerWidth) tLeft = window.innerWidth - 340;
-    if (tTop + 200 > window.innerHeight) tTop = rect.top - 220;
-    tooltip.style.left = Math.max(10, tLeft) + 'px';
-    tooltip.style.top = Math.max(10, tTop) + 'px';
-    tooltip.classList.add('active');
-  }
-
-  window.endTour = () => {
-    document.getElementById('tourOverlay').classList.remove('active');
-    document.getElementById('tourSpotlight').classList.remove('active');
-    document.getElementById('tourTooltip').classList.remove('active');
-    if (currentUserId) localStorage.setItem(`tourDone_${currentUserId}`, 'true');
-  };
 </script>
 </body>
 </html>
