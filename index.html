@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ===== НОВЫЙ ДИЗАЙН ===== */
+    /* ===== ДИЗАЙН ===== */
     :root {
       --primary: #6366f1; --primary-hover: #4f46e5; --primary-light: #e0e7ff; --primary-dark: #3730a3;
       --bg-body: #f4f6f9; --bg-card: #ffffff; --bg-hover: #f1f5f9;
@@ -547,7 +547,7 @@
   <div class="mobile-nav-item" onclick="showScreen('settings')"><div class="icon">⚙️</div>Настройки</div>
 </div>
 
-<!-- МОДАЛКИ (все на месте) -->
+<!-- МОДАЛКИ -->
 <div class="modal" id="financeModal">
   <div class="modal-content" style="max-width: 500px;">
     <h3 style="color:var(--success);">💰 Финансовый отчёт</h3>
@@ -964,7 +964,6 @@
 </div>
 
 <script type="module">
-  // ВАЖНО: Скрипт полностью скопирован из вашего исходного файла index (6).html
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where, setDoc, updateDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1113,12 +1112,21 @@
       currentUserId = user.uid;
       document.getElementById('auth-screen').classList.add('hidden');
       document.getElementById('app-screen').style.display = 'block';
+      
+      // ================= ЗАГРУЗКА НАСТРОЕК =================
       const docSnap = await getDoc(doc(db, "users", currentUserId));
       if (docSnap.exists()) {
-        const fetchedData = docSnap.data(); if (!fetchedData.shopItems) fetchedData.shopItems = defaultShopItems;
-        userSettings = { ...userSettings, ...fetchedData }; applyThemeUI(userSettings);
-      } else { document.getElementById('onboardingModal').classList.add('active'); }
-      listenUserSettings(); initApp();
+        const fetchedData = docSnap.data(); 
+        if (!fetchedData.shopItems) fetchedData.shopItems = defaultShopItems;
+        userSettings = { ...userSettings, ...fetchedData }; 
+        applyThemeUI(userSettings);
+      } else { 
+        document.getElementById('onboardingModal').classList.add('active'); 
+      }
+      // =====================================================
+
+      listenUserSettings(); 
+      initApp();
     } else {
       currentUserId = null; document.getElementById('auth-screen').classList.remove('hidden'); document.getElementById('app-screen').style.display = 'none';
       if (unsubSchedule) unsubSchedule(); if (unsubHistory) unsubHistory(); if (unsubDrafts) unsubDrafts(); if (unsubStudents) unsubStudents(); if (unsubSettings) unsubSettings(); if (unsubNotes) unsubNotes();
@@ -1184,45 +1192,46 @@
   window.resetShopItemsToDefault = () => { if (confirm("Сбросить?")) renderShopEditRows(defaultShopItems); };
 
   document.getElementById('settingsForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  // Собираем данные из формы
-  const newSettings = {
-    teacherName: document.getElementById('setTeacherName').value.trim(),
-    subject: document.getElementById('setSubject').value,
-    tgEnabled: document.getElementById('setTgEnabled').checked,
-    tgBotToken: document.getElementById('setTgBotToken').value.trim(),
-    tgChatId: document.getElementById('setTgChatId').value.trim(),
-    autoMonthlyReport: document.getElementById('setAutoMonthlyReport').checked,
-    economyEnabled: document.getElementById('setEconomyEnabled').checked,
-    currencyName: document.getElementById('setCurrencyName').value.trim(),
-    currencyIcon: document.getElementById('setCurrencyIcon').value.trim(),
-    shopItems: []
-  };
+    e.preventDefault();
+    
+    // Собираем данные из формы
+    const newSettings = {
+      teacherName: document.getElementById('setTeacherName').value.trim(),
+      subject: document.getElementById('setSubject').value,
+      tgEnabled: document.getElementById('setTgEnabled').checked,
+      tgBotToken: document.getElementById('setTgBotToken').value.trim(),
+      tgChatId: document.getElementById('setTgChatId').value.trim(),
+      autoMonthlyReport: document.getElementById('setAutoMonthlyReport').checked,
+      economyEnabled: document.getElementById('setEconomyEnabled').checked,
+      currencyName: document.getElementById('setCurrencyName').value.trim(),
+      currencyIcon: document.getElementById('setCurrencyIcon').value.trim(),
+      shopItems: []
+    };
 
-  // Собираем магазин
-  const shopRows = document.querySelectorAll('#shopEditList > div');
-  shopRows.forEach(row => {
-    const title = row.querySelector('.shop-item-title').value.trim();
-    const price = parseInt(row.querySelector('.shop-item-price').value) || 0;
-    if (title) newSettings.shopItems.push({ title, price });
+    // Собираем магазин
+    const shopRows = document.querySelectorAll('#shopEditList > div');
+    shopRows.forEach(row => {
+      const title = row.querySelector('.shop-item-title').value.trim();
+      const price = parseInt(row.querySelector('.shop-item-price').value) || 0;
+      if (title) newSettings.shopItems.push({ title, price });
+    });
+
+    try {
+      // 1. Сохраняем в Firebase (merge: true не стирает остальные поля)
+      await setDoc(doc(db, "users", currentUserId), newSettings, { merge: true });
+      
+      // 2. Обновляем локальные настройки, чтобы UI сразу перекрасился (предмет, валюта и т.д.)
+      userSettings = { ...userSettings, ...newSettings };
+      applyThemeUI(userSettings);
+      
+      // 3. Переходим обратно и показываем успех
+      showScreen('students');
+      alert("Настройки успешно сохранены! 💾");
+    } catch (err) {
+      alert("Ошибка сохранения: " + err.message);
+    }
   });
 
-  try {
-    // 1. Сохраняем в Firebase (merge: true не стирает остальные поля)
-    await setDoc(doc(db, "users", currentUserId), newSettings, { merge: true });
-    
-    // 2. Обновляем локальные настройки, чтобы UI сразу перекрасился (предмет, валюта и т.д.)
-    userSettings = { ...userSettings, ...newSettings };
-    applyThemeUI(userSettings);
-    
-    // 3. Переходим обратно и показываем успех
-    showScreen('students');
-    alert("Настройки успешно сохранены! 💾");
-  } catch (err) {
-    alert("Ошибка сохранения: " + err.message);
-  }
-});
   window.toggleLessonFormatFields = () => {
     const format = document.getElementById('lessonFormatSelect').value;
     if (format === 'group') { document.getElementById('singleStudentGroup').style.display = 'none'; document.getElementById('multiStudentGroup').style.display = 'block'; }
