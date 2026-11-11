@@ -1184,20 +1184,45 @@
   window.resetShopItemsToDefault = () => { if (confirm("Сбросить?")) renderShopEditRows(defaultShopItems); };
 
   document.getElementById('settingsForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); const shopRows = document.querySelectorAll('#shopEditList > div'); const updatedShopItems = [];
-    shopRows.forEach(row => { const title = row.querySelector('.shop-item-title').value.trim(); const price = parseInt(row.querySelector('.shop-item-price').value) || 0; if (title) updatedShopItems.push({ title, price }); });
-    try {
-      await setDoc(doc(db, "users", currentUserId), {
-        teacherName: document.getElementById('setTeacherName').value.trim(), subject: document.getElementById('setSubject').value,
-        tgEnabled: document.getElementById('setTgEnabled').checked, tgBotToken: document.getElementById('setTgBotToken').value.trim(),
-        tgChatId: document.getElementById('setTgChatId').value.trim(), autoMonthlyReport: document.getElementById('setAutoMonthlyReport').checked,
-        economyEnabled: document.getElementById('setEconomyEnabled').checked, currencyName: document.getElementById('setCurrencyName').value.trim(),
-        currencyIcon: document.getElementById('setCurrencyIcon').value.trim(), shopItems: updatedShopItems
-      }, { merge: true });
-      showScreen('students'); alert("Сохранено! 💾");
-    } catch (err) { alert("Ошибка: " + err.message); }
+  e.preventDefault();
+  
+  // Собираем данные из формы
+  const newSettings = {
+    teacherName: document.getElementById('setTeacherName').value.trim(),
+    subject: document.getElementById('setSubject').value,
+    tgEnabled: document.getElementById('setTgEnabled').checked,
+    tgBotToken: document.getElementById('setTgBotToken').value.trim(),
+    tgChatId: document.getElementById('setTgChatId').value.trim(),
+    autoMonthlyReport: document.getElementById('setAutoMonthlyReport').checked,
+    economyEnabled: document.getElementById('setEconomyEnabled').checked,
+    currencyName: document.getElementById('setCurrencyName').value.trim(),
+    currencyIcon: document.getElementById('setCurrencyIcon').value.trim(),
+    shopItems: []
+  };
+
+  // Собираем магазин
+  const shopRows = document.querySelectorAll('#shopEditList > div');
+  shopRows.forEach(row => {
+    const title = row.querySelector('.shop-item-title').value.trim();
+    const price = parseInt(row.querySelector('.shop-item-price').value) || 0;
+    if (title) newSettings.shopItems.push({ title, price });
   });
 
+  try {
+    // 1. Сохраняем в Firebase (merge: true не стирает остальные поля)
+    await setDoc(doc(db, "users", currentUserId), newSettings, { merge: true });
+    
+    // 2. Обновляем локальные настройки, чтобы UI сразу перекрасился (предмет, валюта и т.д.)
+    userSettings = { ...userSettings, ...newSettings };
+    applyThemeUI(userSettings);
+    
+    // 3. Переходим обратно и показываем успех
+    showScreen('students');
+    alert("Настройки успешно сохранены! 💾");
+  } catch (err) {
+    alert("Ошибка сохранения: " + err.message);
+  }
+});
   window.toggleLessonFormatFields = () => {
     const format = document.getElementById('lessonFormatSelect').value;
     if (format === 'group') { document.getElementById('singleStudentGroup').style.display = 'none'; document.getElementById('multiStudentGroup').style.display = 'block'; }
